@@ -59,6 +59,7 @@ export function Header({ onSearch }: Props) {
               <Command className="h-2.5 w-2.5" /> K
             </kbd>
           </button>
+          </div>
         </div>
       </div>
     </header>
