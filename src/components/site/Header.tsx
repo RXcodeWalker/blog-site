@@ -1,11 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Command } from "lucide-react";
+import { Search, Command, Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 type Props = { onSearch: () => void };
 
 export function Header({ onSearch }: Props) {
   const [scrolled, setScrolled] = useState(false);
+  const { theme, toggleTheme } = useTheme();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -36,6 +38,16 @@ export function Header({ onSearch }: Props) {
             <NavItem to="/about">Theory</NavItem>
           </nav>
 
+          <div className="flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Light mode" : "Dark mode"}
+            className="group relative flex h-8 w-8 items-center justify-center rounded-md border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+          >
+            <Sun className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "dark" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`} />
+            <Moon className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "light" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"}`} />
+          </button>
           <button
             onClick={onSearch}
             className="group flex items-center gap-3 rounded-md border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
