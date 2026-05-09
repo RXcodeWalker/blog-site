@@ -52,3 +52,21 @@ export function Header({ onSearch }: Props) {
     </header>
   );
 }
+
+const navCls = "font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground underline-grow";
+
+function NavItem({ to, exact, children }: { to: "/" | "/about"; exact?: boolean; children: React.ReactNode }) {
+  return (
+    <Link to={to} className={navCls} activeProps={{ className: "text-foreground" }} activeOptions={{ exact: !!exact }}>
+      {children}
+    </Link>
+  );
+}
+
+function NavCat({ slug, children }: { slug: string; children: React.ReactNode }) {
+  return (
+    <Link to="/category/$slug" params={{ slug }} className={navCls} activeProps={{ className: "text-foreground" }}>
+      {children}
+    </Link>
+  );
+}
