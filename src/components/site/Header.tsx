@@ -29,24 +29,11 @@ export function Header({ onSearch }: Props) {
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
-            {[
-              { to: "/", label: "Index" },
-              { to: "/category/football", label: "Football" },
-              { to: "/category/technology", label: "Technology" },
-              { to: "/category/philosophy", label: "Philosophy" },
-              { to: "/about", label: "Theory" },
-            ].map((l) => (
-              <Link
-                key={l.to}
-                to={l.to}
-                params={l.to.includes("$") ? {} : undefined as never}
-                className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground underline-grow"
-                activeProps={{ className: "text-foreground" }}
-                activeOptions={{ exact: l.to === "/" }}
-              >
-                {l.label}
-              </Link>
-            ))}
+            <NavItem to="/" exact>Index</NavItem>
+            <NavCat slug="football">Football</NavCat>
+            <NavCat slug="technology">Technology</NavCat>
+            <NavCat slug="philosophy">Philosophy</NavCat>
+            <NavItem to="/about">Theory</NavItem>
           </nav>
 
           <button
