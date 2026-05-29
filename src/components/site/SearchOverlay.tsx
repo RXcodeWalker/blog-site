@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Search, X } from "lucide-react";
-import { articles, categories } from "@/lib/content";
+import { getAllPosts, getAllCategoriesWithCounts } from "@/content/api";
 import { Link } from "@tanstack/react-router";
 
 type Props = { open: boolean; onClose: () => void };
+
+const allPosts = getAllPosts();
+const allCategories = getAllCategoriesWithCounts();
 
 export function SearchOverlay({ open, onClose }: Props) {
   const [q, setQ] = useState("");
@@ -21,10 +24,14 @@ export function SearchOverlay({ open, onClose }: Props) {
 
   const term = q.toLowerCase().trim();
   const filtered = term
-    ? articles.filter(
-        (a) => a.title.toLowerCase().includes(term) || a.dek.toLowerCase().includes(term) || a.category.toLowerCase().includes(term),
+    ? allPosts.filter(
+        (p) =>
+          p.title.toLowerCase().includes(term) ||
+          p.excerpt.toLowerCase().includes(term) ||
+          p.category.toLowerCase().includes(term) ||
+          p.tags.some((t) => t.toLowerCase().includes(term)),
       )
-    : articles.slice(0, 4);
+    : allPosts.slice(0, 4);
 
   return (
     <div className="fixed inset-0 z-50 animate-fade-up" onClick={onClose}>
@@ -56,18 +63,22 @@ export function SearchOverlay({ open, onClose }: Props) {
               {term ? `${filtered.length} results` : "Suggested reading"}
             </div>
             <ul>
-              {filtered.map((a) => (
-                <li key={a.slug}>
+              {filtered.map((post) => (
+                <li key={post.slug}>
                   <Link
                     to="/article/$slug"
-                    params={{ slug: a.slug }}
+                    params={{ slug: post.slug }}
                     onClick={onClose}
                     className="group flex items-start gap-4 rounded-md p-3 transition-colors hover:bg-secondary"
                   >
                     <div className="flex-1">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric">{a.category}</div>
-                      <div className="font-serif text-lg leading-tight">{a.title}</div>
-                      <div className="mt-1 line-clamp-1 text-sm text-muted-foreground">{a.dek}</div>
+                      <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric">
+                        {post.category}
+                      </div>
+                      <div className="font-serif text-lg leading-tight">{post.title}</div>
+                      <div className="mt-1 line-clamp-1 text-sm text-muted-foreground">
+                        {post.excerpt}
+                      </div>
                     </div>
                     <ArrowUpRight className="mt-1 h-4 w-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
                   </Link>
@@ -81,7 +92,7 @@ export function SearchOverlay({ open, onClose }: Props) {
                   Sections
                 </div>
                 <div className="flex flex-wrap gap-2 p-3">
-                  {categories.slice(0, 6).map((c) => (
+                  {allCategories.map((c) => (
                     <Link
                       key={c.slug}
                       to="/category/$slug"

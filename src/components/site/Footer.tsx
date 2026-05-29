@@ -7,7 +7,7 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="font-serif text-3xl leading-[1.1] tracking-tight md:text-4xl">
-              A digital publication for those <em className="text-gold">not satisfied</em> with the basics.
+              A student blog on <em className="text-gold">Arsenal, code, and growth</em>.
             </p>
             <form className="mt-8 flex max-w-md gap-2" onSubmit={(e) => e.preventDefault()}>
               <input
@@ -22,35 +22,87 @@ export function Footer() {
           </div>
 
           <div className="md:col-span-2 md:col-start-8">
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Sections</h4>
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Sections
+            </h4>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><Link to="/category/football" className="underline-grow">Football</Link></li>
-              <li><Link to="/category/technology" className="underline-grow">Technology</Link></li>
-              <li><Link to="/category/philosophy" className="underline-grow">Philosophy</Link></li>
+              <li>
+                <Link to="/category/$slug" params={{ slug: "football" }} className="underline-grow">
+                  Football
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/$slug" params={{ slug: "mindset" }} className="underline-grow">
+                  Mindset
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/$slug" params={{ slug: "learning" }} className="underline-grow">
+                  Learning
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/$slug" params={{ slug: "building" }} className="underline-grow">
+                  Building
+                </Link>
+              </li>
+              <li>
+                <Link to="/category/$slug" params={{ slug: "journal" }} className="underline-grow">
+                  Journal
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="md:col-span-2">
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Editorial</h4>
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Editorial
+            </h4>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><Link to="/about" className="underline-grow">Theory</Link></li>
-              <li><a className="underline-grow" href="#">Colophon</a></li>
-              <li><a className="underline-grow" href="#">Archive</a></li>
+              <li>
+                <Link to="/about" className="underline-grow">
+                  About
+                </Link>
+              </li>
+              <li>
+                <a className="underline-grow" href="#">
+                  Colophon
+                </a>
+              </li>
+              <li>
+                <Link to="/" className="underline-grow">
+                  Archive
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="md:col-span-2">
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">Index</h4>
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+              Index
+            </h4>
             <ul className="mt-4 space-y-2 text-sm">
-              <li><a className="underline-grow" href="#">RSS</a></li>
-              <li><a className="underline-grow" href="#">X / Twitter</a></li>
-              <li><a className="underline-grow" href="#">Letters</a></li>
+              <li>
+                <a className="underline-grow" href="#">
+                  RSS
+                </a>
+              </li>
+              <li>
+                <a className="underline-grow" href="https://x.com" target="_blank" rel="noreferrer">
+                  X / Twitter
+                </a>
+              </li>
+              <li>
+                <a className="underline-grow" href="mailto:hello@beyondthebasics.me">
+                  Email
+                </a>
+              </li>
             </ul>
           </div>
         </div>
 
         <div className="editorial-rule mt-16" />
         <div className="mt-8 flex flex-wrap items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-          <span>© 2026 Beyond the Basics. All rights reserved.</span>
-          <span>Set in Fraunces & Inter. Made with intention.</span>
+          <span>© 2026 Beyond the Basics by Om Jhamvar.</span>
+          <span>Built in public. Learning every day.</span>
         </div>
       </div>
     </footer>

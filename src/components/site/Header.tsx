@@ -26,39 +26,47 @@ export function Header({ onSearch }: Props) {
           <Link to="/" className="group flex items-baseline gap-3">
             <span className="font-serif text-xl tracking-tight">Beyond&nbsp;the&nbsp;Basics</span>
             <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:inline">
-              / Vol. 04
+              / Om's Blog
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-8 md:flex">
-            <NavItem to="/" exact>Index</NavItem>
+          <nav className="hidden items-center gap-6 md:flex">
+            <NavItem to="/" exact>
+              Index
+            </NavItem>
             <NavCat slug="football">Football</NavCat>
-            <NavCat slug="technology">Technology</NavCat>
-            <NavCat slug="philosophy">Philosophy</NavCat>
-            <NavItem to="/about">Theory</NavItem>
+            <NavCat slug="mindset">Mindset</NavCat>
+            <NavCat slug="learning">Learning</NavCat>
+            <NavCat slug="building">Building</NavCat>
+            <NavCat slug="journal">Journal</NavCat>
+            <NavItem to="/about">About</NavItem>
           </nav>
 
           <div className="flex items-center gap-2">
-          <button
-            onClick={toggleTheme}
-            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-            title={theme === "dark" ? "Light mode" : "Dark mode"}
-            className="group relative flex h-8 w-8 items-center justify-center rounded-md border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            <Sun className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "dark" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`} />
-            <Moon className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "light" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"}`} />
-          </button>
-          <button
-            onClick={onSearch}
-            className="group flex items-center gap-3 rounded-md border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-            aria-label="Open search"
-          >
-            <Search className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Search</span>
-            <kbd className="hidden items-center gap-0.5 rounded border border-border bg-background/60 px-1.5 py-0.5 font-mono text-[10px] sm:flex">
-              <Command className="h-2.5 w-2.5" /> K
-            </kbd>
-          </button>
+            <button
+              onClick={toggleTheme}
+              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+              title={theme === "dark" ? "Light mode" : "Dark mode"}
+              className="group relative flex h-8 w-8 items-center justify-center rounded-md border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+            >
+              <Sun
+                className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "dark" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`}
+              />
+              <Moon
+                className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "light" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"}`}
+              />
+            </button>
+            <button
+              onClick={onSearch}
+              className="group flex items-center gap-3 rounded-md border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              aria-label="Open search"
+            >
+              <Search className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Search</span>
+              <kbd className="hidden items-center gap-0.5 rounded border border-border bg-background/60 px-1.5 py-0.5 font-mono text-[10px] sm:flex">
+                <Command className="h-2.5 w-2.5" /> K
+              </kbd>
+            </button>
           </div>
         </div>
       </div>
@@ -66,11 +74,25 @@ export function Header({ onSearch }: Props) {
   );
 }
 
-const navCls = "font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground underline-grow";
+const navCls =
+  "font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground underline-grow";
 
-function NavItem({ to, exact, children }: { to: "/" | "/about"; exact?: boolean; children: React.ReactNode }) {
+function NavItem({
+  to,
+  exact,
+  children,
+}: {
+  to: "/" | "/about";
+  exact?: boolean;
+  children: React.ReactNode;
+}) {
   return (
-    <Link to={to} className={navCls} activeProps={{ className: "text-foreground" }} activeOptions={{ exact: !!exact }}>
+    <Link
+      to={to}
+      className={navCls}
+      activeProps={{ className: "text-foreground" }}
+      activeOptions={{ exact: !!exact }}
+    >
       {children}
     </Link>
   );
@@ -78,7 +100,12 @@ function NavItem({ to, exact, children }: { to: "/" | "/about"; exact?: boolean;
 
 function NavCat({ slug, children }: { slug: string; children: React.ReactNode }) {
   return (
-    <Link to="/category/$slug" params={{ slug }} className={navCls} activeProps={{ className: "text-foreground" }}>
+    <Link
+      to="/category/$slug"
+      params={{ slug }}
+      className={navCls}
+      activeProps={{ className: "text-foreground" }}
+    >
       {children}
     </Link>
   );

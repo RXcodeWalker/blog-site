@@ -4,10 +4,17 @@ import { SiteShell } from "@/components/site/SiteShell";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "Theory — Beyond the Basics" },
-      { name: "description", content: "The editorial principles behind Beyond the Basics. Why we write what we write." },
-      { property: "og:title", content: "Theory — Beyond the Basics" },
-      { property: "og:description", content: "The editorial principles behind Beyond the Basics." },
+      { title: "About — Beyond the Basics" },
+      {
+        name: "description",
+        content:
+          "About Om Jhamvar: 10th grade student sharing football analysis, coding projects, and growth notes.",
+      },
+      { property: "og:title", content: "About — Beyond the Basics" },
+      {
+        property: "og:description",
+        content: "Get to know Om Jhamvar and the story behind Beyond the Basics.",
+      },
     ],
   }),
   component: About,
@@ -17,15 +24,15 @@ function About() {
   return (
     <SiteShell>
       <section className="mx-auto max-w-[1280px] px-6 pb-24 pt-24 lg:px-12 lg:pt-36">
-        <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">— The Theory</div>
+        <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">— The Story</div>
         <h1 className="mt-8 max-w-4xl font-serif text-[clamp(3rem,8vw,7rem)] font-light leading-[0.95] tracking-[-0.03em] text-balance">
-          We write for the <em className="italic text-gold">curious obsessive.</em>
+          About <em className="italic text-gold">Me.</em>
         </h1>
 
         <div className="mt-20 grid gap-16 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="font-serif text-2xl leading-snug text-muted-foreground italic text-pretty">
-              The internet is full of people writing about everything. Beyond the Basics is for people writing about the few things they cannot stop thinking about.
+              Hey! I'm Om Jhamvar, a 10th grade student from India who is obsessed with football, coding, and continuous learning.
             </p>
             <Link to="/" className="mt-10 inline-block font-mono text-[11px] uppercase tracking-[0.22em] underline-grow">
               ← Back to the index
@@ -33,29 +40,32 @@ function About() {
           </div>
           <div className="md:col-span-6 md:col-start-7 reading-prose !text-base">
             <p>
-              This is a publication built around a single conviction: the things worth writing about are the things you have spent at least a thousand hours obsessing over. Everything else is noise.
+              Welcome to my corner of the internet where I share my thoughts, projects, and journey. This blog is where
+              I document everything I learn, analyze, and build in public.
             </p>
             <p>
-              We cover four territories: <strong>football tactics</strong>, where geometry is destiny; <strong>technology</strong>, where the substrate determines the surface; <strong>systems thinking</strong>, the discipline of seeing whole pictures; and <strong>philosophy</strong>, because the examined life is the only one worth living at speed.
+              As a proud Arsenal supporter, I spend a lot of time analyzing matches, discussing tactics, and following
+              the transfer market. Football helps me understand strategy, teamwork, and resilience.
             </p>
             <p>
-              We do not publish on a schedule. We publish when there is something to say. Most weeks, that is once. Some weeks, that is nothing. The cost of waiting is the price of signal.
+              On the tech side, I'm diving deep into web development and software engineering. I love building things
+              that solve real problems and crafting user experiences that feel magical.
             </p>
           </div>
         </div>
       </section>
 
-      {/* Principles — brutalist */}
+      {/* What Drives Me */}
       <section className="border-y border-border bg-secondary/30">
         <div className="mx-auto max-w-[1280px] px-6 py-24 lg:px-12">
-          <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">— Principles</div>
-          <h2 className="mt-4 font-serif text-5xl font-light tracking-tight md:text-6xl">Four rules.</h2>
+          <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">— What Drives Me</div>
+          <h2 className="mt-4 font-serif text-5xl font-light tracking-tight md:text-6xl">Four pillars.</h2>
           <ol className="mt-16 grid gap-px overflow-hidden border border-border md:grid-cols-2">
             {[
-              { n: "I", t: "Depth over breadth", d: "If we cannot go further than the surface, we will not go at all. The shallow thought has no place here." },
-              { n: "II", t: "Write only what compounds", d: "Essays should still be useful in five years. We avoid the news cycle and the discourse." },
-              { n: "III", t: "Form is content", d: "Typography, spacing, and rhythm are not decoration. They are the argument made visible." },
-              { n: "IV", t: "Earn every adjective", d: "Strong claims demand strong evidence. We over-prepare and under-promise." },
+              { n: "I", t: "Football", d: "Die-hard Arsenal fan. I analyze tactics, follow transfers, and write about the beautiful game." },
+              { n: "II", t: "Coding", d: "Passionate about web development, software engineering, and learning new technologies." },
+              { n: "III", t: "Guitar", d: "LCM Grade 8 with High Distinction. Currently working towards my Diploma in music." },
+              { n: "IV", t: "Growth", d: "Committed to continuous learning and personal development across everything I do." },
             ].map((p) => (
               <li key={p.n} className="bg-background p-10 md:p-14">
                 <div className="font-serif text-5xl italic text-gold">{p.n}</div>
@@ -71,21 +81,21 @@ function About() {
       <section className="mx-auto max-w-[1280px] px-6 py-24 lg:px-12">
         <div className="grid gap-16 md:grid-cols-12">
           <div className="md:col-span-5">
-            <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">— The Editor</div>
-            <h2 className="mt-4 font-serif text-5xl font-light leading-tight tracking-tight">K. Mensah</h2>
+            <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">— Quick Facts</div>
+            <h2 className="mt-4 font-serif text-5xl font-light leading-tight tracking-tight">Om Jhamvar</h2>
             <p className="mt-6 max-w-md text-muted-foreground">
-              Engineer by training. Writer by compulsion. Spends an unreasonable amount of time watching football matches with the sound off.
+              Student builder, Arsenal fan, and curious creator sharing honest progress over polished perfection.
             </p>
           </div>
           <div className="md:col-span-7">
             <dl className="grid grid-cols-2 gap-x-12 gap-y-8 font-mono text-[11px] uppercase tracking-[0.18em]">
               {[
-                ["Based in", "Lisbon"],
-                ["Writes since", "2019"],
-                ["Reading", "Deutsch · Wilson"],
-                ["Watching", "Bayer Leverkusen"],
-                ["Building", "Quiet things"],
-                ["Inbox", "open · slow"],
+                ["Grade", "10th Grade Student"],
+                ["Club", "Arsenal FC"],
+                ["Based in", "India"],
+                ["Focus", "Learning and building daily"],
+                ["Goals", "Build things that matter"],
+                ["Inbox", "Always open"],
               ].map(([k, v]) => (
                 <div key={k as string} className="border-b border-border pb-4">
                   <dt className="text-muted-foreground">{k}</dt>
@@ -102,18 +112,18 @@ function About() {
         <div className="mx-auto max-w-[1280px] px-6 py-24 lg:px-12">
           <div className="grid gap-12 md:grid-cols-12">
             <div className="md:col-span-4">
-              <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">— Colophon</div>
-              <h2 className="mt-4 font-serif text-4xl font-light leading-tight tracking-tight">Made with care.</h2>
+              <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">— Let's Connect</div>
+              <h2 className="mt-4 font-serif text-4xl font-light leading-tight tracking-tight">Let's talk football or build something cool.</h2>
             </div>
             <div className="reading-prose md:col-span-7 md:col-start-6 !text-base">
               <p>
-                Set in <strong>Fraunces</strong>, a contemporary serif drawn from the lineage of Cooper. Body text in <strong>Inter</strong>. Mono in <strong>JetBrains Mono</strong>.
+                Whether you want to debate Arsenal's best XI, collaborate on a project, or just say hi, I'd love to hear from you.
               </p>
               <p>
-                Built on TanStack Start with attention to the small frictions: page transitions, type rhythm, the cost of every kilobyte. The cursor moves; the page should respond.
+                Beyond the Basics is my place to think out loud, document what I'm learning, and connect with people who care about craft.
               </p>
               <p>
-                If something here was useful — or, better, useless but beautiful — please write back. The inbox is open.
+                If something here resonated with you, reach out and let's build in public together.
               </p>
             </div>
           </div>
