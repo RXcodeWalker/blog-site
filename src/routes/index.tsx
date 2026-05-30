@@ -1,11 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import {
-  getAllCategoriesWithCounts,
-  getLatestPost,
-  getLatestPosts,
-} from "@/content/api";
-import type { PostRecord } from "@/content/api";
+import { getAllCategoriesWithCounts, getLatestPost, getLatestPosts } from "@/content/api.ts";
+import type { PostRecord } from "@/content/api.ts";
 import { obsessions, signals } from "@/lib/content";
 import { images } from "@/lib/content";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
@@ -169,8 +165,7 @@ function Index() {
               className="group relative bg-card p-8 transition-all duration-500 hover:bg-secondary"
             >
               <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                {String(idx + 1).padStart(2, "0")} / {c.count}{" "}
-                {c.count === 1 ? "entry" : "entries"}
+                {String(idx + 1).padStart(2, "0")} / {c.count} {c.count === 1 ? "entry" : "entries"}
               </div>
               <div className="mt-8 font-serif text-3xl font-light leading-tight transition-transform duration-500 group-hover:-translate-y-0.5">
                 {c.name}
@@ -335,7 +330,11 @@ function ArticleCard({ post, index }: { post: PostRecord; index: number }) {
   });
 
   return (
-    <Link to="/article/$slug" params={{ slug: post.slug }} className="group flex flex-col hover-lift">
+    <Link
+      to="/article/$slug"
+      params={{ slug: post.slug }}
+      className="group flex flex-col hover-lift"
+    >
       <div
         className={`relative overflow-hidden ${
           isFootball ? "aspect-[16/10]" : tall ? "aspect-[3/4]" : "aspect-[4/5]"
@@ -370,4 +369,3 @@ function ArticleCard({ post, index }: { post: PostRecord; index: number }) {
     </Link>
   );
 }
-

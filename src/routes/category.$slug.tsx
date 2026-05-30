@@ -5,8 +5,8 @@ import {
   getPostsByCategory,
   getCategoryWithCount,
   getAllCategoriesWithCounts,
-} from "@/content/api";
-import type { CategorySlug } from "@/content/api";
+} from "@/content/api.ts";
+import type { CategorySlug } from "@/content/api.ts";
 import { ArrowUpRight, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

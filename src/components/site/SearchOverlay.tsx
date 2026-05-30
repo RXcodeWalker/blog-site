@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { ArrowUpRight, Search, X } from "lucide-react";
-import { getAllPosts, getAllCategoriesWithCounts } from "@/content/api";
+import { getAllPosts, getAllCategoriesWithCounts } from "@/content/api.ts";
 import { Link } from "@tanstack/react-router";
 
 type Props = { open: boolean; onClose: () => void };

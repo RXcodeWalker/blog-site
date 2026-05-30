@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { getPostBySlug, getRelatedPosts } from "@/content/api";
+import { getPostBySlug, getRelatedPosts } from "@/content/api.ts";
 import { mdxComponents } from "@/content/render/mdx-components";
 import { useEffect, useState } from "react";
 import { Bookmark, Share2, ArrowUpRight, ArrowLeft } from "lucide-react";
