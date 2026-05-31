@@ -45,4 +45,5 @@ export interface CategoryWithCount extends CategoryMeta {
 export interface MdxModule {
   default: ComponentType<{ components?: Record<string, ComponentType>; [k: string]: unknown }>;
   frontmatter: Record<string, unknown>;
+  rawBody?: string;
 }

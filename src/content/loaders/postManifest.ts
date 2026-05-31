@@ -1,9 +1,9 @@
 /**
  * postManifest — the single build-time discovery and normalization step.
  *
- * Two globs run eagerly at module-init time (i.e. once at build, never per-request):
- *   1. compiled MDX modules  → gives us the React component + exported frontmatter
- *   2. raw MDX strings        → gives us text for reading-time + excerpt fallback
+ * One glob runs eagerly at module-init time (i.e. once at build, never per-request):
+ *   compiled MDX modules → gives us the React component + frontmatter + rawBody (injected
+ *   by the remarkExportRaw plugin in vite.config.ts) for reading-time + excerpt fallback.
  *
  * The output is a readonly array of PostRecord objects sorted newest-first.
  */
@@ -21,12 +21,6 @@ const mdxModules = import.meta.glob<MdxModule>('../posts/**/*.mdx', {
   eager: true,
 });
 
-const rawModules = import.meta.glob<string>('../posts/**/*.mdx', {
-  eager: true,
-  query: '?raw',
-  import: 'default',
-});
-
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -34,11 +28,6 @@ const rawModules = import.meta.glob<string>('../posts/**/*.mdx', {
 /** Derive a slug from a Vite glob key like '../../content/posts/2026/my-post.mdx' */
 function slugFromPath(path: string): string {
   return path.split('/').pop()!.replace(/\.mdx$/, '');
-}
-
-/** Strip YAML frontmatter block and return plain prose text for reading-time. */
-function extractBody(raw: string): string {
-  return raw.replace(/^---[\s\S]*?---\n?/, '').trim();
 }
 
 /** Extract first non-empty paragraph as an excerpt fallback. */
@@ -69,8 +58,7 @@ function buildManifest(): PostRecord[] {
   const records: PostRecord[] = [];
 
   for (const [path, mod] of Object.entries(mdxModules)) {
-    const rawContent = rawModules[path] ?? '';
-    const body = extractBody(rawContent);
+    const body = mod.rawBody ?? '';
     const rt = readingTime(body);
 
     // Validate frontmatter through zod schema — throws in dev, skips in prod.
