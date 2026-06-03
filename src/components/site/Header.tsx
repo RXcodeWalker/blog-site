@@ -1,13 +1,15 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Command, Sun, Moon } from "lucide-react";
+import { Search, Command, Sun, Moon, Bookmark } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
+import { useBookmarks } from "@/hooks/useBookmarks";
 
 type Props = { onSearch: () => void };
 
 export function Header({ onSearch }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
+  const { bookmarks } = useBookmarks();
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -17,6 +19,7 @@ export function Header({ onSearch }: Props) {
 
   return (
     <header
+      data-reading-chrome
       className={`sticky top-0 z-40 transition-all duration-500 ${
         scrolled ? "glass-strong border-b border-border" : "bg-transparent"
       }`}
@@ -43,8 +46,37 @@ export function Header({ onSearch }: Props) {
           </nav>
 
           <div className="flex items-center gap-2">
+            <Link
+              to="/reading-list"
+              aria-label="Reading list"
+              title="Reading list"
+              className="group relative flex h-8 w-8 items-center justify-center rounded-md border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              <Bookmark className="h-3.5 w-3.5" />
+              {bookmarks.length > 0 && (
+                <span className="absolute -right-1 -top-1 flex h-3.5 min-w-3.5 items-center justify-center rounded-full bg-gold px-1 font-mono text-[9px] font-medium text-background">
+                  {bookmarks.length}
+                </span>
+              )}
+            </Link>
             <button
-              onClick={toggleTheme}
+              onClick={() => {
+                try {
+                  toggleTheme();
+                } catch (e) {
+                  // Fallback: toggle class on <html> directly if React handler unavailable
+                  const root = document.documentElement;
+                  const next = root.classList.contains("dark") ? "light" : "dark";
+                  root.classList.remove("dark", "light");
+                  root.classList.add(next);
+                  try {
+                    root.style.colorScheme = next;
+                    root.setAttribute("data-theme", next);
+                    window.localStorage.setItem("btb-theme", next);
+                  } catch {}
+                }
+              }}
               aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
               title={theme === "dark" ? "Light mode" : "Dark mode"}
               className="group relative flex h-8 w-8 items-center justify-center rounded-md border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"

@@ -10,9 +10,9 @@ import {
   BY_TAG,
   FEATURED_POSTS,
   CATEGORIES_WITH_COUNTS,
-} from './loaders/postIndexes';
-import { POST_MANIFEST } from './loaders/postManifest';
-import type { CategorySlug, CategoryWithCount, PostMeta, PostRecord } from './types';
+} from "./loaders/postIndexes";
+import { POST_MANIFEST } from "./loaders/postManifest";
+import type { CategorySlug, CategoryWithCount, PostMeta, PostRecord } from "./types";
 
 export type { CategorySlug, CategoryWithCount, PostMeta, PostRecord };
 
@@ -96,6 +96,34 @@ export function getRelatedPosts(post: PostRecord, limit = 3): PostRecord[] {
   }
 
   return result;
+}
+
+/**
+ * The chronologically adjacent posts around `post` in the full manifest (newest-first).
+ * `prev` is the newer post, `next` is the older one — i.e. the natural "keep reading" direction.
+ */
+export function getAdjacentPosts(post: PostRecord): {
+  prev: PostRecord | null;
+  next: PostRecord | null;
+} {
+  const i = POST_MANIFEST.findIndex((p) => p.slug === post.slug);
+  if (i === -1) return { prev: null, next: null };
+  return {
+    prev: i > 0 ? POST_MANIFEST[i - 1] : null,
+    next: i < POST_MANIFEST.length - 1 ? POST_MANIFEST[i + 1] : null,
+  };
+}
+
+/**
+ * All posts in the same series as `post` (including `post`), ordered by `series.order`.
+ * Returns an empty array when the post is not part of a series.
+ */
+export function getSeriesPosts(post: PostRecord): PostRecord[] {
+  if (!post.series) return [];
+  const name = post.series.name;
+  return POST_MANIFEST.filter((p) => p.series?.name === name).sort(
+    (a, b) => (a.series?.order ?? 0) - (b.series?.order ?? 0),
+  );
 }
 
 // ---------------------------------------------------------------------------

@@ -10,6 +10,7 @@ import remarkFrontmatter from "remark-frontmatter";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
+import rehypePrettyCode from "rehype-pretty-code";
 
 // Remark plugin: embed the MDX body text (frontmatter stripped) as a named export so
 // postManifest.ts can calculate reading time without relying on `?raw` imports.
@@ -51,6 +52,66 @@ function remarkExportRaw() {
   };
 }
 
+// Rehype plugin: collect h2/h3 headings (with the ids rehype-slug already assigned) and embed
+// them as a JSON string export `headingsJson`, so the table of contents can be built at build
+// time without re-parsing markdown at runtime. MUST run after rehypeSlug so ids exist.
+function rehypeCollectHeadings() {
+  const textOf = (node: any): string => {
+    if (node.type === "text") return node.value;
+    if (Array.isArray(node.children)) return node.children.map(textOf).join("");
+    return "";
+  };
+  const walk = (node: any, out: any[]) => {
+    if (node.type === "element" && (node.tagName === "h2" || node.tagName === "h3")) {
+      const id = node.properties?.id;
+      if (id)
+        out.push({ depth: node.tagName === "h2" ? 2 : 3, id: String(id), text: textOf(node) });
+    }
+    if (Array.isArray(node.children)) for (const child of node.children) walk(child, out);
+  };
+  return function (tree: any) {
+    const headings: { depth: number; id: string; text: string }[] = [];
+    walk(tree, headings);
+    const json = JSON.stringify(headings);
+    tree.children.push({
+      type: "mdxjsEsm",
+      value: `export const headingsJson = ${JSON.stringify(json)}`,
+      data: {
+        estree: {
+          type: "Program",
+          sourceType: "module",
+          body: [
+            {
+              type: "ExportNamedDeclaration",
+              exportKind: "value",
+              declaration: {
+                type: "VariableDeclaration",
+                kind: "const",
+                declarations: [
+                  {
+                    type: "VariableDeclarator",
+                    id: { type: "Identifier", name: "headingsJson" },
+                    init: { type: "Literal", value: json },
+                  },
+                ],
+              },
+              specifiers: [],
+              source: null,
+            },
+          ],
+        },
+      },
+    });
+  };
+}
+
+// Build-time syntax highlighting via Shiki. Dual themes emit `--shiki-light`/`--shiki-dark` CSS
+// variables on each token so the rendered code follows the app's .light/.dark theme (see styles.css).
+const rehypePrettyCodeOptions = {
+  theme: { light: "github-light", dark: "github-dark" },
+  keepBackground: false,
+};
+
 // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
 // @cloudflare/vite-plugin builds from this — wrangler.jsonc main alone is insufficient.
 export default defineConfig({
@@ -61,7 +122,11 @@ export default defineConfig({
     plugins: [
       mdx({
         remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm, remarkExportRaw],
-        rehypePlugins: [rehypeSlug],
+        rehypePlugins: [
+          rehypeSlug,
+          rehypeCollectHeadings,
+          [rehypePrettyCode, rehypePrettyCodeOptions],
+        ],
       }),
     ],
   },

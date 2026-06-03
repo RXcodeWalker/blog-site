@@ -69,25 +69,28 @@
   --border: oklch(1 0 0 / 0.08);
   --input: oklch(1 0 0 / 0.1);
   --ring: oklch(0.72 0.18 245 / 0.5);
+  /* Shiki syntax highlighting fallbacks */
+  --shiki-dark: oklch(0.94 0.012 80);
+  --shiki-light: oklch(0.16 0.005 260);
 }
 
 .light {
   --background: oklch(0.98 0.005 80);
-  --foreground: oklch(0.16 0.005 260);
+  --foreground: #000000;
   --ivory: oklch(0.16 0.005 260);
   --graphite: oklch(0.96 0.005 80);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.16 0.005 260);
+  --card-foreground: #000000;
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.16 0.005 260);
+  --popover-foreground: #000000;
   --primary: oklch(0.16 0.005 260);
   --primary-foreground: oklch(0.98 0.005 80);
   --secondary: oklch(0.94 0.005 80);
-  --secondary-foreground: oklch(0.16 0.005 260);
+  --secondary-foreground: #000000;
   --muted: oklch(0.94 0.005 80);
-  --muted-foreground: oklch(0.45 0.01 260);
+  --muted-foreground: #444444;
   --accent: oklch(0.92 0.005 80);
-  --accent-foreground: oklch(0.16 0.005 260);
+  --accent-foreground: #000000;
   --electric: oklch(0.5 0.18 245);
   --gold: oklch(0.62 0.13 75);
   --border: oklch(0 0 0 / 0.08);
@@ -267,7 +270,7 @@
     font-family: var(--font-serif);
     font-size: 1.25rem;
     line-height: 1.75;
-    color: color-mix(in oklab, var(--foreground) 88%, transparent);
+    color: var(--foreground);
     font-weight: 400;
   }
   .reading-prose p {
@@ -315,5 +318,80 @@
   .reading-prose em {
     color: var(--gold);
     font-style: italic;
+  }
+
+  /* GFM footnotes (remark-gfm) ------------------------------------------------ */
+  .reading-prose sup a {
+    font-family: var(--font-mono);
+    font-size: 0.7em;
+    text-decoration: none;
+    padding: 0 0.15em;
+    color: var(--gold);
+  }
+  .reading-prose .footnotes {
+    margin-top: 3.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    color: var(--muted-foreground);
+  }
+  .reading-prose .footnotes h2 {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    color: var(--muted-foreground);
+    margin: 0 0 1rem;
+  }
+  .reading-prose .footnotes ol {
+    padding-left: 1.25rem;
+  }
+  .reading-prose .footnotes li {
+    margin-bottom: 0.5rem;
+  }
+  .reading-prose .footnotes a[data-footnote-backref] {
+    font-family: var(--font-mono);
+    text-decoration: none;
+    color: var(--gold);
+  }
+
+  /* Shiki dual-theme syntax highlighting (rehype-pretty-code, keepBackground:false) ---- */
+  .reading-prose [data-rehype-pretty-code-figure] code {
+    display: grid;
+    background: transparent;
+    padding: 0;
+    counter-reset: line;
+  }
+  .reading-prose [data-rehype-pretty-code-figure] code [data-line] {
+    padding: 0 0.25rem;
+    border-left: 2px solid transparent;
+  }
+  .reading-prose [data-rehype-pretty-code-figure] [data-highlighted-line] {
+    background: color-mix(in oklab, var(--gold) 12%, transparent);
+    border-left-color: var(--gold);
+  }
+  /* Token colours come from CSS vars emitted per-span; pick the right theme. */
+  .dark .reading-prose [data-rehype-pretty-code-figure] span {
+    color: var(--shiki-dark, inherit);
+  }
+  .light .reading-prose [data-rehype-pretty-code-figure] span {
+    color: var(--shiki-light, inherit);
+  }
+  .reading-prose [data-rehype-pretty-code-figure] [data-line] span {
+    background: transparent !important;
+  }
+
+  /* Distraction-free focus mode ---------------------------------------------- */
+  .focus-mode [data-reading-chrome] {
+    opacity: 0.08;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .focus-mode [data-reading-chrome]:hover,
+  .focus-mode [data-reading-chrome]:focus-within {
+    opacity: 1;
+    pointer-events: auto;
   }
 }

@@ -2,14 +2,54 @@
  * Custom MDX component mappings.
  * Each element maps to a styled React component that matches the publication design system.
  */
-import type { ComponentPropsWithoutRef } from 'react';
-import { Link } from '@tanstack/react-router';
+import type { ComponentPropsWithoutRef } from "react";
+import { Link } from "@tanstack/react-router";
+import { Link as LinkIcon } from "lucide-react";
+import { toast } from "sonner";
+import { copyToClipboard } from "@/lib/share";
+import { CodeBlock } from "@/components/article/CodeBlock";
+import { ImageLightbox } from "@/components/article/ImageLightbox";
 
-type AnchorProps = ComponentPropsWithoutRef<'a'>;
-type ImgProps = ComponentPropsWithoutRef<'img'>;
+type AnchorProps = ComponentPropsWithoutRef<"a">;
 
-function MdxLink({ href = '', children, ...rest }: AnchorProps) {
-  const isInternal = href.startsWith('/') || href.startsWith('#');
+/** A heading that reveals a click-to-copy permalink anchor on hover. */
+function AnchoredHeading({
+  as: Tag,
+  id,
+  className,
+  children,
+  ...rest
+}: { as: "h2" | "h3"; id?: string } & ComponentPropsWithoutRef<"h2">) {
+  const copyLink = async () => {
+    if (!id) return;
+    const url = `${window.location.origin}${window.location.pathname}#${id}`;
+    history.replaceState(null, "", `#${id}`);
+    try {
+      await copyToClipboard(url);
+      toast.success("Section link copied");
+    } catch {
+      toast.error("Couldn't copy link");
+    }
+  };
+  return (
+    <Tag id={id} className={`group scroll-mt-28 ${className ?? ""}`} {...rest}>
+      {children}
+      {id && (
+        <button
+          type="button"
+          onClick={copyLink}
+          aria-label="Copy link to this section"
+          className="ml-2 inline-flex translate-y-[-2px] align-middle text-muted-foreground opacity-0 transition-opacity hover:text-gold group-hover:opacity-100 focus-visible:opacity-100"
+        >
+          <LinkIcon className="h-4 w-4" />
+        </button>
+      )}
+    </Tag>
+  );
+}
+
+function MdxLink({ href = "", children, ...rest }: AnchorProps) {
+  const isInternal = href.startsWith("/") || href.startsWith("#");
   if (isInternal) {
     return (
       <Link to={href} {...(rest as object)}>
@@ -24,26 +64,7 @@ function MdxLink({ href = '', children, ...rest }: AnchorProps) {
   );
 }
 
-function MdxImage({ src, alt, ...rest }: ImgProps) {
-  return (
-    <figure className="my-10">
-      <img
-        src={src}
-        alt={alt ?? ''}
-        loading="lazy"
-        className="w-full rounded object-cover"
-        {...rest}
-      />
-      {alt && (
-        <figcaption className="mt-3 text-center font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
-          {alt}
-        </figcaption>
-      )}
-    </figure>
-  );
-}
-
-function MdxBlockquote({ children, ...rest }: ComponentPropsWithoutRef<'blockquote'>) {
+function MdxBlockquote({ children, ...rest }: ComponentPropsWithoutRef<"blockquote">) {
   return (
     <blockquote
       className="my-8 border-l-2 border-gold pl-6 font-serif text-xl italic leading-relaxed text-muted-foreground"
@@ -54,18 +75,13 @@ function MdxBlockquote({ children, ...rest }: ComponentPropsWithoutRef<'blockquo
   );
 }
 
-function MdxPre({ children, ...rest }: ComponentPropsWithoutRef<'pre'>) {
-  return (
-    <pre
-      className="my-8 overflow-x-auto rounded bg-secondary p-6 font-mono text-sm leading-relaxed"
-      {...rest}
-    >
-      {children}
-    </pre>
-  );
-}
-
-function MdxCode({ children, ...rest }: ComponentPropsWithoutRef<'code'>) {
+function MdxCode({ children, ...rest }: ComponentPropsWithoutRef<"code">) {
+  // rehype-pretty-code stamps `data-language` on fenced (block) code — leave those untouched so
+  // Shiki's token colours show through. Only inline code gets the gold pill treatment.
+  const isBlock = "data-language" in rest;
+  if (isBlock) {
+    return <code {...rest}>{children}</code>;
+  }
   return (
     <code
       className="rounded bg-secondary px-1.5 py-0.5 font-mono text-[0.875em] text-gold"
@@ -76,29 +92,31 @@ function MdxCode({ children, ...rest }: ComponentPropsWithoutRef<'code'>) {
   );
 }
 
-function MdxH2({ children, ...rest }: ComponentPropsWithoutRef<'h2'>) {
+function MdxH2({ children, ...rest }: ComponentPropsWithoutRef<"h2">) {
   return (
-    <h2
+    <AnchoredHeading
+      as="h2"
       className="mt-14 mb-4 font-serif text-3xl font-light leading-tight tracking-tight"
       {...rest}
     >
       {children}
-    </h2>
+    </AnchoredHeading>
   );
 }
 
-function MdxH3({ children, ...rest }: ComponentPropsWithoutRef<'h3'>) {
+function MdxH3({ children, ...rest }: ComponentPropsWithoutRef<"h3">) {
   return (
-    <h3
+    <AnchoredHeading
+      as="h3"
       className="mt-10 mb-3 font-serif text-2xl font-light leading-tight tracking-tight"
       {...rest}
     >
       {children}
-    </h3>
+    </AnchoredHeading>
   );
 }
 
-function MdxH4({ children, ...rest }: ComponentPropsWithoutRef<'h4'>) {
+function MdxH4({ children, ...rest }: ComponentPropsWithoutRef<"h4">) {
   return (
     <h4
       className="mt-8 mb-2 font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground"
@@ -113,7 +131,7 @@ function MdxHr() {
   return <hr className="my-12 border-border" />;
 }
 
-function MdxUl({ children, ...rest }: ComponentPropsWithoutRef<'ul'>) {
+function MdxUl({ children, ...rest }: ComponentPropsWithoutRef<"ul">) {
   return (
     <ul className="my-6 space-y-2 pl-6 list-disc marker:text-gold" {...rest}>
       {children}
@@ -121,7 +139,7 @@ function MdxUl({ children, ...rest }: ComponentPropsWithoutRef<'ul'>) {
   );
 }
 
-function MdxOl({ children, ...rest }: ComponentPropsWithoutRef<'ol'>) {
+function MdxOl({ children, ...rest }: ComponentPropsWithoutRef<"ol">) {
   return (
     <ol className="my-6 space-y-2 pl-6 list-decimal marker:text-gold" {...rest}>
       {children}
@@ -135,9 +153,9 @@ function MdxOl({ children, ...rest }: ComponentPropsWithoutRef<'ol'>) {
  */
 export const mdxComponents = {
   a: MdxLink,
-  img: MdxImage,
+  img: ImageLightbox,
   blockquote: MdxBlockquote,
-  pre: MdxPre,
+  pre: CodeBlock,
   code: MdxCode,
   h2: MdxH2,
   h3: MdxH3,

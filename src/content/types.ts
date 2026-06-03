@@ -1,8 +1,21 @@
-import type { ComponentType } from 'react';
+import type { ComponentType } from "react";
 
-export type CategorySlug = 'football' | 'mindset' | 'learning' | 'building' | 'journal';
+export type CategorySlug = "football" | "mindset" | "learning" | "building" | "journal";
 
-export type PostTag = 'Essay' | 'Analysis' | 'Signal' | 'Note' | 'Series';
+export type PostTag = "Essay" | "Analysis" | "Signal" | "Note" | "Series";
+
+/** A single heading extracted from the post body, used to build the table of contents. */
+export interface TocHeading {
+  depth: 2 | 3;
+  id: string;
+  text: string;
+}
+
+/** Series membership — groups multiple posts into an ordered reading sequence. */
+export interface SeriesRef {
+  name: string;
+  order: number;
+}
 
 /** Normalized, validated metadata for a single post — safe to pass to any component or route. */
 export interface PostMeta {
@@ -21,6 +34,8 @@ export interface PostMeta {
   readingTimeMinutes: number;
   wordCount: number;
   url: string;
+  headings: TocHeading[];
+  series: SeriesRef | null;
 }
 
 /** Full post record: metadata + the compiled React component for the body. */
@@ -46,4 +61,6 @@ export interface MdxModule {
   default: ComponentType<{ components?: Record<string, ComponentType>; [k: string]: unknown }>;
   frontmatter: Record<string, unknown>;
   rawBody?: string;
+  /** JSON-encoded TocHeading[] injected by the rehypeCollectHeadings plugin in vite.config.ts. */
+  headingsJson?: string;
 }

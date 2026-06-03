@@ -7,17 +7,17 @@
  *
  * The output is a readonly array of PostRecord objects sorted newest-first.
  */
-import readingTime from 'reading-time';
-import { postFrontmatterSchema } from '../schemas/postFrontmatter';
-import { CATEGORIES, CATEGORY_SLUGS } from '../taxonomy/categories';
-import { runIntegrityChecks } from '../integrity';
-import type { MdxModule, PostRecord, CategorySlug } from '../types';
+import readingTime from "reading-time";
+import { postFrontmatterSchema } from "../schemas/postFrontmatter";
+import { CATEGORIES, CATEGORY_SLUGS } from "../taxonomy/categories";
+import { runIntegrityChecks } from "../integrity";
+import type { MdxModule, PostRecord, CategorySlug, TocHeading } from "../types";
 
 // ---------------------------------------------------------------------------
 // Vite globs — must be literals; cannot be dynamic.
 // ---------------------------------------------------------------------------
 
-const mdxModules = import.meta.glob<MdxModule>('../posts/**/*.mdx', {
+const mdxModules = import.meta.glob<MdxModule>("../posts/**/*.mdx", {
   eager: true,
 });
 
@@ -27,26 +27,45 @@ const mdxModules = import.meta.glob<MdxModule>('../posts/**/*.mdx', {
 
 /** Derive a slug from a Vite glob key like '../../content/posts/2026/my-post.mdx' */
 function slugFromPath(path: string): string {
-  return path.split('/').pop()!.replace(/\.mdx$/, '');
+  return path
+    .split("/")
+    .pop()!
+    .replace(/\.mdx$/, "");
 }
 
 /** Extract first non-empty paragraph as an excerpt fallback. */
 function extractExcerpt(body: string): string {
-  const lines = body.split('\n');
+  const lines = body.split("\n");
   for (const line of lines) {
     const stripped = line.trim();
     // Skip headings, blank lines, and MDX import/export statements
-    if (stripped && !stripped.startsWith('#') && !stripped.startsWith('import') && !stripped.startsWith('export')) {
+    if (
+      stripped &&
+      !stripped.startsWith("#") &&
+      !stripped.startsWith("import") &&
+      !stripped.startsWith("export")
+    ) {
       // Remove inline markdown: bold, italic, links, code
       return stripped
-        .replace(/\*\*(.+?)\*\*/g, '$1')
-        .replace(/\*(.+?)\*/g, '$1')
-        .replace(/\[(.+?)\]\(.+?\)/g, '$1')
-        .replace(/`(.+?)`/g, '$1')
+        .replace(/\*\*(.+?)\*\*/g, "$1")
+        .replace(/\*(.+?)\*/g, "$1")
+        .replace(/\[(.+?)\]\(.+?\)/g, "$1")
+        .replace(/`(.+?)`/g, "$1")
         .slice(0, 200);
     }
   }
-  return '';
+  return "";
+}
+
+/** Parse the JSON heading list injected by the rehypeCollectHeadings build plugin. */
+function parseHeadings(json: string | undefined): TocHeading[] {
+  if (!json) return [];
+  try {
+    const parsed = JSON.parse(json);
+    return Array.isArray(parsed) ? (parsed as TocHeading[]) : [];
+  } catch {
+    return [];
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -58,7 +77,7 @@ function buildManifest(): PostRecord[] {
   const records: PostRecord[] = [];
 
   for (const [path, mod] of Object.entries(mdxModules)) {
-    const body = mod.rawBody ?? '';
+    const body = mod.rawBody ?? "";
     const rt = readingTime(body);
 
     // Validate frontmatter through zod schema — throws in dev, skips in prod.
@@ -105,6 +124,8 @@ function buildManifest(): PostRecord[] {
       readingTimeMinutes: Math.ceil(rt.minutes) || 1,
       wordCount: rt.words,
       url: `/article/${slug}`,
+      headings: parseHeadings(mod.headingsJson),
+      series: fm.series ?? null,
       Content: mod.default,
     });
   }

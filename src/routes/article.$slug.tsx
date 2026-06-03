@@ -1,9 +1,25 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { getPostBySlug, getRelatedPosts } from "@/content/api.ts";
+import { getPostBySlug, getRelatedPosts, getAdjacentPosts, getSeriesPosts } from "@/content/api.ts";
 import { mdxComponents } from "@/content/render/mdx-components";
-import { useEffect, useState } from "react";
-import { Bookmark, Share2, ArrowUpRight, ArrowLeft } from "lucide-react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { ArrowUpRight, ArrowLeft, RotateCcw, X } from "lucide-react";
+import { toast } from "sonner";
+import { shareOrCopy } from "@/lib/share";
+import { useReadingProgress } from "@/hooks/useReadingProgress";
+import { useReadingPosition } from "@/hooks/useReadingPosition";
+import { useBookmarks } from "@/hooks/useBookmarks";
+import { useSpeech } from "@/hooks/useSpeech";
+import { useLocalStorageState } from "@/hooks/useLocalStorageState";
+import { useArticleShortcuts } from "@/hooks/useArticleShortcuts";
+import { ReadingRail } from "@/components/article/ReadingRail";
+import { MobileActionBar } from "@/components/article/MobileActionBar";
+import { TableOfContents } from "@/components/article/TableOfContents";
+import { QuoteShare } from "@/components/article/QuoteShare";
+import { SubscribeCTA } from "@/components/article/SubscribeCTA";
+import { PrevNextNav } from "@/components/article/PrevNextNav";
+import { SeriesNav } from "@/components/article/SeriesNav";
+import { ShortcutsHelp } from "@/components/article/ShortcutsHelp";
 
 export const Route = createFileRoute("/article/$slug")({
   loader: ({ params }) => {
@@ -47,84 +63,90 @@ function Article() {
   const post = Route.useLoaderData();
   const { Content } = post;
   const related = getRelatedPosts(post, 3);
+  const { prev, next } = getAdjacentPosts(post);
+  const seriesPosts = getSeriesPosts(post);
 
-  const [progress, setProgress] = useState(0);
+  const bodyRef = useRef<HTMLDivElement>(null);
+
+  const { progress, minutesLeft, activeHeadingId } = useReadingProgress(
+    post.readingTimeMinutes,
+    post.headings,
+  );
+  const { savedPercent, resume, dismiss } = useReadingPosition(post.slug);
+  const { isBookmarked, toggle } = useBookmarks();
+  const speech = useSpeech();
+  const [focusMode, setFocusMode] = useLocalStorageState("btb:focus-mode", false);
+  const [tocHidden, setTocHidden] = useState(false);
+  const [helpOpen, setHelpOpen] = useState(false);
   const [shareStatus, setShareStatus] = useState<"idle" | "shared" | "copied" | "error">("idle");
 
+  const bookmarked = isBookmarked(post.slug);
+
+  // Apply focus-mode class to <html> so global chrome can dim (see styles.css).
   useEffect(() => {
-    const onScroll = () => {
-      const h = document.documentElement;
-      const total = h.scrollHeight - h.clientHeight;
-      setProgress(total > 0 ? Math.min(100, (h.scrollTop / total) * 100) : 0);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    const root = document.documentElement;
+    root.classList.toggle("focus-mode", focusMode);
+    return () => root.classList.remove("focus-mode");
+  }, [focusMode]);
 
   useEffect(() => {
     if (shareStatus === "idle") return;
-    const timeout = window.setTimeout(() => setShareStatus("idle"), 2500);
-    return () => window.clearTimeout(timeout);
+    const t = window.setTimeout(() => setShareStatus("idle"), 2500);
+    return () => window.clearTimeout(t);
   }, [shareStatus]);
 
-  const copyArticleUrl = async (url: string) => {
-    if (navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(url);
-      return;
-    }
-    const textarea = document.createElement("textarea");
-    textarea.value = url;
-    textarea.setAttribute("readonly", "");
-    textarea.style.position = "fixed";
-    textarea.style.opacity = "0";
-    document.body.appendChild(textarea);
-    try {
-      textarea.select();
-      if (!document.execCommand("copy")) throw new Error("Copy command was rejected");
-    } finally {
-      document.body.removeChild(textarea);
-    }
-  };
+  const handleShare = useCallback(async () => {
+    const outcome = await shareOrCopy({
+      title: post.title,
+      text: post.excerpt,
+      url: window.location.href,
+    });
+    setShareStatus(outcome);
+  }, [post.title, post.excerpt]);
 
-  const handleShare = async () => {
-    const url = window.location.href;
-    const shareData = { title: post.title, text: post.excerpt, url };
-    try {
-      if (navigator.share) {
-        await navigator.share(shareData);
-        setShareStatus("shared");
-        return;
-      }
-      await copyArticleUrl(url);
-      setShareStatus("copied");
-    } catch (error) {
-      if (error instanceof DOMException && error.name === "AbortError") return;
-      try {
-        await copyArticleUrl(url);
-        setShareStatus("copied");
-      } catch {
-        setShareStatus("error");
-      }
-    }
-  };
+  const handleToggleBookmark = useCallback(() => {
+    const added = toggle(post.slug);
+    toast.success(added ? "Saved to reading list" : "Removed from reading list");
+  }, [toggle, post.slug]);
 
-  // Format ISO date for display
+  const handleToggleListen = useCallback(() => {
+    speech.toggle(() => bodyRef.current?.textContent ?? post.excerpt);
+  }, [speech, post.excerpt]);
+
+  useArticleShortcuts({
+    onBookmark: handleToggleBookmark,
+    onToggleFocus: () => setFocusMode((v) => !v),
+    onToggleToc: () => setTocHidden((v) => !v),
+    onToggleHelp: () => setHelpOpen((v) => !v),
+  });
+
   const displayDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
   });
 
+  const shareLabel =
+    shareStatus === "shared"
+      ? "Shared"
+      : shareStatus === "copied"
+        ? "Copied"
+        : shareStatus === "error"
+          ? "Error"
+          : "Share";
+
   return (
     <SiteShell>
       {/* Progress bar */}
-      <div className="fixed left-0 right-0 top-16 z-30 h-px bg-transparent">
+      <div data-reading-chrome className="fixed left-0 right-0 top-16 z-30 h-px bg-transparent">
         <div
           className="h-px bg-gold transition-[width] duration-150"
           style={{ width: `${progress}%` }}
         />
       </div>
+
+      <QuoteShare containerRef={bodyRef} title={post.title} />
+      <ShortcutsHelp open={helpOpen} onOpenChange={setHelpOpen} />
 
       <article>
         <header className="mx-auto max-w-3xl px-6 pb-16 pt-20 text-center lg:pt-32">
@@ -160,45 +182,68 @@ function Article() {
           </div>
         </div>
 
-        {/* Floating side rail */}
-        <div className="relative mx-auto mt-20 grid max-w-[1280px] grid-cols-1 gap-12 px-6 lg:grid-cols-[1fr_minmax(0,680px)_1fr]">
-          <aside className="hidden lg:flex lg:sticky lg:top-32 lg:h-fit lg:flex-col lg:items-end lg:gap-6 lg:pr-8">
-            <button className="group flex flex-col items-center gap-2 text-muted-foreground transition-colors hover:text-foreground">
-              <Bookmark className="h-4 w-4" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.22em]">Save</span>
+        {/* Resume prompt */}
+        {savedPercent !== null && (
+          <div className="mx-auto mt-8 flex max-w-2xl items-center justify-between gap-4 rounded border border-border bg-secondary/40 px-6 py-3">
+            <button
+              type="button"
+              onClick={resume}
+              className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.18em] text-foreground"
+            >
+              <RotateCcw className="h-3.5 w-3.5 text-gold" />
+              Resume where you left off ({Math.round(savedPercent)}%)
             </button>
             <button
               type="button"
-              onClick={handleShare}
-              aria-label={`Share ${post.title}`}
-              className="group flex flex-col items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
+              onClick={dismiss}
+              aria-label="Dismiss"
+              className="text-muted-foreground hover:text-foreground"
             >
-              <Share2 className="h-4 w-4" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.22em]">
-                {shareStatus === "shared"
-                  ? "Shared"
-                  : shareStatus === "copied"
-                    ? "Copied"
-                    : shareStatus === "error"
-                      ? "Error"
-                      : "Share"}
-              </span>
+              <X className="h-4 w-4" />
             </button>
-            <div className="font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground">
-              {Math.round(progress)}%
-            </div>
-          </aside>
+          </div>
+        )}
 
-          {/* MDX body */}
-          <div className="reading-prose">
+        {/* Series index (kept outside .reading-prose so it doesn't inherit prose styles) */}
+        {seriesPosts.length > 1 && (
+          <div className="mt-16 px-6">
+            <SeriesNav posts={seriesPosts} currentSlug={post.slug} />
+          </div>
+        )}
+
+        {/* Body + rails */}
+        <div className="relative mx-auto mt-20 grid max-w-[1280px] grid-cols-1 gap-12 px-6 lg:grid-cols-[1fr_minmax(0,680px)_1fr]">
+          <ReadingRail
+            bookmarked={bookmarked}
+            onToggleBookmark={handleToggleBookmark}
+            onShare={handleShare}
+            shareLabel={shareLabel}
+            listenSupported={speech.supported}
+            listenState={speech.state}
+            onToggleListen={handleToggleListen}
+            focusMode={focusMode}
+            onToggleFocus={() => setFocusMode((v) => !v)}
+            progress={progress}
+            minutesLeft={minutesLeft}
+          />
+
+          <div ref={bodyRef} className="reading-prose">
             <Content components={mdxComponents} />
           </div>
 
-          <div className="hidden lg:block" />
+          <div className="hidden lg:block">
+            {!tocHidden && (
+              <div data-reading-chrome className="lg:sticky lg:top-32 lg:pl-8">
+                <TableOfContents headings={post.headings} activeId={activeHeadingId} />
+              </div>
+            )}
+          </div>
         </div>
 
+        <SubscribeCTA />
+
         {/* Author + CTA */}
-        <div className="mx-auto mt-24 max-w-2xl px-6">
+        <div className="mx-auto mt-16 max-w-2xl px-6">
           <div className="flex items-start gap-5 border-y border-border py-8">
             <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border font-serif italic text-gold">
               O
@@ -214,6 +259,8 @@ function Article() {
             </button>
           </div>
         </div>
+
+        <PrevNextNav prev={prev} next={next} />
       </article>
 
       {/* Related */}
@@ -263,6 +310,21 @@ function Article() {
           </div>
         </section>
       )}
+
+      {/* Spacer so the mobile action bar never covers the footer */}
+      <div className="h-20 lg:hidden" />
+
+      <MobileActionBar
+        bookmarked={bookmarked}
+        onToggleBookmark={handleToggleBookmark}
+        onShare={handleShare}
+        listenSupported={speech.supported}
+        listenState={speech.state}
+        onToggleListen={handleToggleListen}
+        progress={progress}
+        headings={post.headings}
+        activeHeadingId={activeHeadingId}
+      />
     </SiteShell>
   );
 }

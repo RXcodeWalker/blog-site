@@ -24,6 +24,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     root.classList.remove("light", "dark");
     root.classList.add(theme);
     root.style.colorScheme = theme;
+    // Mirror the theme on a data attribute for easier debugging and CSS hooks
+    try {
+      root.setAttribute("data-theme", theme);
+    } catch {}
+    // Debug log so users can see toggles in the browser console
+    try {
+      // eslint-disable-next-line no-console
+      console.debug("Theme applied:", theme);
+    } catch {}
     try {
       window.localStorage.setItem(STORAGE_KEY, theme);
     } catch {}
@@ -32,7 +41,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
   const value: Ctx = {
     theme,
     setTheme: setThemeState,
-    toggleTheme: () => setThemeState((t) => (t === "dark" ? "light" : "dark")),
+    toggleTheme: () =>
+      setThemeState((t) => {
+        const next = t === "dark" ? "light" : "dark";
+        try {
+          // eslint-disable-next-line no-console
+          console.debug("Theme toggle:", t, "->", next);
+        } catch {}
+        return next;
+      }),
   };
 
   return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
