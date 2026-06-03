@@ -8,7 +8,7 @@
  *   import { runIntegrityChecks } from '@/content/integrity';
  *   runIntegrityChecks(POST_MANIFEST);
  */
-import type { PostRecord } from './types';
+import type { PostRecord } from "./types";
 
 interface IntegrityViolation {
   slug: string;
@@ -25,7 +25,7 @@ export function runIntegrityChecks(posts: readonly PostRecord[]): void {
     if (slugsSeen.has(post.slug)) {
       violations.push({
         slug: post.slug,
-        rule: 'DUPLICATE_SLUG',
+        rule: "DUPLICATE_SLUG",
         detail: `Slug "${post.slug}" already used by another post.`,
       });
     }
@@ -36,7 +36,7 @@ export function runIntegrityChecks(posts: readonly PostRecord[]): void {
     if (isNaN(date.getTime())) {
       violations.push({
         slug: post.slug,
-        rule: 'INVALID_DATE',
+        rule: "INVALID_DATE",
         detail: `publishedAt "${post.publishedAt}" is not a valid ISO date.`,
       });
     }
@@ -45,7 +45,7 @@ export function runIntegrityChecks(posts: readonly PostRecord[]): void {
     if (date > new Date()) {
       violations.push({
         slug: post.slug,
-        rule: 'FUTURE_DATE',
+        rule: "FUTURE_DATE",
         detail: `publishedAt "${post.publishedAt}" is in the future. Was this intentional?`,
       });
     }
@@ -54,8 +54,8 @@ export function runIntegrityChecks(posts: readonly PostRecord[]): void {
     if (!post.excerpt) {
       violations.push({
         slug: post.slug,
-        rule: 'MISSING_EXCERPT',
-        detail: 'No excerpt found. Add one in frontmatter or write a non-heading first paragraph.',
+        rule: "MISSING_EXCERPT",
+        detail: "No excerpt found. Add one in frontmatter or write a non-heading first paragraph.",
       });
     }
 
@@ -65,7 +65,7 @@ export function runIntegrityChecks(posts: readonly PostRecord[]): void {
       if (!allSlugs.has(relatedSlug)) {
         violations.push({
           slug: post.slug,
-          rule: 'DANGLING_RELATED',
+          rule: "DANGLING_RELATED",
           detail: `related slug "${relatedSlug}" does not match any existing post.`,
         });
       }
@@ -75,8 +75,8 @@ export function runIntegrityChecks(posts: readonly PostRecord[]): void {
     if (post.tags.length === 0) {
       violations.push({
         slug: post.slug,
-        rule: 'NO_TAGS',
-        detail: 'Post has no tags. At least one tag is recommended.',
+        rule: "NO_TAGS",
+        detail: "Post has no tags. At least one tag is recommended.",
       });
     }
   }
@@ -86,15 +86,15 @@ export function runIntegrityChecks(posts: readonly PostRecord[]): void {
     return;
   }
 
-  const errors = violations.filter((v) => v.rule !== 'FUTURE_DATE' && v.rule !== 'NO_TAGS');
-  const warnings = violations.filter((v) => v.rule === 'FUTURE_DATE' || v.rule === 'NO_TAGS');
+  const errors = violations.filter((v) => v.rule !== "FUTURE_DATE" && v.rule !== "NO_TAGS");
+  const warnings = violations.filter((v) => v.rule === "FUTURE_DATE" || v.rule === "NO_TAGS");
 
   for (const w of warnings) {
     console.warn(`[content] WARN [${w.rule}] ${w.slug}: ${w.detail}`);
   }
 
   if (errors.length > 0) {
-    const lines = errors.map((e) => `  [${e.rule}] ${e.slug}: ${e.detail}`).join('\n');
+    const lines = errors.map((e) => `  [${e.rule}] ${e.slug}: ${e.detail}`).join("\n");
     throw new Error(`[content] Content integrity check failed:\n${lines}`);
   }
 }

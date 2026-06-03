@@ -11,7 +11,7 @@
  * Or call generateRssFeed() from a build script and write the output
  * to the /public folder for static serving.
  */
-import { getAllPosts } from '../api';
+import { getAllPosts } from "../api";
 
 interface RssFeedOptions {
   siteUrl: string;
@@ -23,19 +23,19 @@ interface RssFeedOptions {
 
 function escapeXml(str: string): string {
   return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&apos;');
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
 }
 
 export function generateRssFeed(options: RssFeedOptions): string {
   const {
     siteUrl,
-    title = 'Beyond the Basics — Om Jhamvar',
-    description = 'Football tactics, coding journeys, and growth notes from Om Jhamvar.',
-    language = 'en-US',
+    title = "Beyond the Basics — Om Jhamvar",
+    description = "Football tactics, coding journeys, and growth notes from Om Jhamvar.",
+    language = "en-US",
     limit = 20,
   } = options;
 
@@ -56,10 +56,10 @@ export function generateRssFeed(options: RssFeedOptions): string {
       <description>${escapeXml(post.excerpt)}</description>
       <pubDate>${pubDate}</pubDate>
       <category>${escapeXml(post.category)}</category>
-      ${post.tags.map((t) => `<category>${escapeXml(t)}</category>`).join('\n      ')}
+      ${post.tags.map((t) => `<category>${escapeXml(t)}</category>`).join("\n      ")}
     </item>`.trim();
     })
-    .join('\n  ');
+    .join("\n  ");
 
   return `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">

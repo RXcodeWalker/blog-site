@@ -9,7 +9,7 @@
  *   const docs = getSearchDocuments();
  *   // or, for JSON export at build time, see scripts/generate-search-index.ts
  */
-import { getAllPosts } from '../api';
+import { getAllPosts } from "../api";
 
 export interface SearchDocument {
   slug: string;

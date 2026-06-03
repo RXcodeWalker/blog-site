@@ -1,5 +1,5 @@
-declare module '*.mdx' {
-  import type { ComponentType, ComponentPropsWithoutRef, ElementType } from 'react';
+declare module "*.mdx" {
+  import type { ComponentType, ComponentPropsWithoutRef, ElementType } from "react";
 
   type MDXComponents = Record<string, ComponentType | ElementType>;
 

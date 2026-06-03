@@ -4,9 +4,9 @@
  * All indexes are built at module-init time (build time / process start)
  * so every route loader does an O(1) map lookup, never an array scan.
  */
-import { POST_MANIFEST } from './postManifest';
-import type { CategorySlug, CategoryWithCount, PostRecord } from '../types';
-import { CATEGORIES, CATEGORY_SLUGS } from '../taxonomy/categories';
+import { POST_MANIFEST } from "./postManifest";
+import type { CategorySlug, CategoryWithCount, PostRecord } from "../types";
+import { CATEGORIES, CATEGORY_SLUGS } from "../taxonomy/categories";
 
 // ---------------------------------------------------------------------------
 // Index maps
@@ -19,10 +19,7 @@ export const BY_SLUG: ReadonlyMap<string, PostRecord> = new Map(
 
 /** O(1) lookup by category slug → sorted posts. */
 export const BY_CATEGORY: ReadonlyMap<CategorySlug, PostRecord[]> = new Map(
-  CATEGORY_SLUGS.map((cat) => [
-    cat,
-    POST_MANIFEST.filter((p) => p.category === cat),
-  ]),
+  CATEGORY_SLUGS.map((cat) => [cat, POST_MANIFEST.filter((p) => p.category === cat)]),
 );
 
 /** O(1) lookup by tag → posts with that tag. */
