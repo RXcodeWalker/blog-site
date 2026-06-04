@@ -28,7 +28,11 @@ export const Route = createFileRoute("/article/$slug")({
     const post = getPostBySlug(params.slug);
     if (!post) throw notFound();
     const interactions = await getInteractions({ data: params.slug });
-    return { post, interactions };
+    // Strip the Content component (a non-serializable function) so TanStack Router
+    // can inject the dehydrated router state needed for client-side hydration.
+    // The component re-fetches it via getPostBySlug, which is a cheap in-memory lookup.
+    const { Content: _content, ...serializablePost } = post;
+    return { post: serializablePost, interactions };
   },
   head: ({ loaderData }) => ({
     meta: loaderData?.post
@@ -63,7 +67,10 @@ export const Route = createFileRoute("/article/$slug")({
 });
 
 function Article() {
-  const { post, interactions } = Route.useLoaderData();
+  const { post: loaderPost, interactions } = Route.useLoaderData();
+  // Re-resolve the full post (including non-serializable Content component) from the
+  // in-memory manifest — same data, available on both server and client.
+  const post = getPostBySlug(loaderPost.slug)!;
   const { Content } = post;
   const related = getRelatedPosts(post, 3);
   const { prev, next } = getAdjacentPosts(post);
