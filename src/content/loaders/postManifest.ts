@@ -7,7 +7,13 @@
  *
  * The output is a readonly array of PostRecord objects sorted newest-first.
  */
-import readingTime from "reading-time";
+/** Words per minute used to estimate reading time. */
+const WPM = 200;
+
+function readingTime(text: string): { minutes: number; words: number } {
+  const words = text.trim().split(/\s+/).filter(Boolean).length;
+  return { minutes: words / WPM, words };
+}
 import { postFrontmatterSchema } from "../schemas/postFrontmatter";
 import { CATEGORIES, CATEGORY_SLUGS } from "../taxonomy/categories";
 import { runIntegrityChecks } from "../integrity";
