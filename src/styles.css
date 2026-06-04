@@ -294,10 +294,6 @@
   }
 
   .reading-prose {
-    --reading-font: var(--font-serif);
-    --reading-size: 1.25rem;
-    --reading-lh: 1.75;
-
     font-family: var(--reading-font);
     font-size: var(--reading-size);
     line-height: var(--reading-lh);
@@ -306,38 +302,19 @@
   }
 
   /* Typography preference mappings */
-  :root[data-reading-font="sans"] {
-    --reading-font: var(--font-sans);
-  }
-  :root[data-reading-font="mono"] {
-    --reading-font: var(--font-mono);
-  }
-  :root[data-reading-font="dyslexic"] {
-    --reading-font: "OpenDyslexic", ui-sans-serif, system-ui, sans-serif;
-  }
+  html[data-reading-font="serif"] .reading-prose { --reading-font: var(--font-serif) !important; }
+  html[data-reading-font="sans"] .reading-prose { --reading-font: var(--font-sans) !important; }
+  html[data-reading-font="mono"] .reading-prose { --reading-font: var(--font-mono) !important; }
+  html[data-reading-font="dyslexic"] .reading-prose { --reading-font: "OpenDyslexic", ui-sans-serif, system-ui, sans-serif !important; }
 
-  :root[data-reading-size="sm"] {
-    --reading-size: 1.125rem;
-  }
-  :root[data-reading-size="base"] {
-    --reading-size: 1.25rem;
-  }
-  :root[data-reading-size="lg"] {
-    --reading-size: 1.4rem;
-  }
-  :root[data-reading-size="xl"] {
-    --reading-size: 1.6rem;
-  }
+  html[data-reading-size="sm"] .reading-prose { --reading-size: 1.1rem !important; }
+  html[data-reading-size="base"] .reading-prose { --reading-size: 1.25rem !important; }
+  html[data-reading-size="lg"] .reading-prose { --reading-size: 1.45rem !important; }
+  html[data-reading-size="xl"] .reading-prose { --reading-size: 1.7rem !important; }
 
-  :root[data-reading-lh="tight"] {
-    --reading-lh: 1.5;
-  }
-  :root[data-reading-lh="base"] {
-    --reading-lh: 1.75;
-  }
-  :root[data-reading-lh="relaxed"] {
-    --reading-lh: 2;
-  }
+  html[data-reading-lh="tight"] .reading-prose { --reading-lh: 1.4 !important; }
+  html[data-reading-lh="base"] .reading-prose { --reading-lh: 1.75 !important; }
+  html[data-reading-lh="relaxed"] .reading-prose { --reading-lh: 2.1 !important; }
 
   .reading-prose p {
     margin-bottom: 1.6em;
@@ -464,6 +441,13 @@
      override is now redundant but kept for extra specificity/clarity. */
   .focus-mode [data-focus-toggle] {
     opacity: 0.4;
+    transition: opacity 0.4s;
+  }
+  .focus-mode [data-focus-toggle]:hover {
+    opacity: 1;
+  }
+}
+: 0.4;
     transition: opacity 0.4s;
   }
   .focus-mode [data-focus-toggle]:hover {
