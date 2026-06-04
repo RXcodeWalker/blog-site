@@ -98,6 +98,30 @@
   --ring: oklch(0.5 0.18 245 / 0.4);
 }
 
+.sepia {
+  --background: oklch(0.92 0.03 85);
+  --foreground: oklch(0.25 0.03 85);
+  --ivory: oklch(0.2 0.03 85);
+  --graphite: oklch(0.88 0.03 85);
+  --card: oklch(0.9 0.03 85);
+  --card-foreground: oklch(0.25 0.03 85);
+  --popover: oklch(0.9 0.03 85);
+  --popover-foreground: oklch(0.25 0.03 85);
+  --primary: oklch(0.25 0.03 85);
+  --primary-foreground: oklch(0.92 0.03 85);
+  --secondary: oklch(0.88 0.03 85);
+  --secondary-foreground: oklch(0.25 0.03 85);
+  --muted: oklch(0.88 0.03 85);
+  --muted-foreground: oklch(0.45 0.03 85);
+  --accent: oklch(0.85 0.03 85);
+  --accent-foreground: oklch(0.25 0.03 85);
+  --electric: oklch(0.45 0.1 245);
+  --gold: oklch(0.55 0.12 75);
+  --border: oklch(0.25 0.03 85 / 0.1);
+  --input: oklch(0.25 0.03 85 / 0.05);
+  --ring: oklch(0.45 0.1 245 / 0.4);
+}
+
 @layer base {
   * {
     border-color: var(--color-border);
@@ -112,6 +136,9 @@
     font-feature-settings: "ss01", "cv11";
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
+  }
+  button {
+    cursor: pointer;
   }
   ::selection {
     background: color-mix(in oklab, var(--electric) 35%, transparent);
@@ -267,12 +294,51 @@
   }
 
   .reading-prose {
-    font-family: var(--font-serif);
-    font-size: 1.25rem;
-    line-height: 1.75;
+    --reading-font: var(--font-serif);
+    --reading-size: 1.25rem;
+    --reading-lh: 1.75;
+
+    font-family: var(--reading-font);
+    font-size: var(--reading-size);
+    line-height: var(--reading-lh);
     color: var(--foreground);
     font-weight: 400;
   }
+
+  /* Typography preference mappings */
+  :root[data-reading-font="sans"] {
+    --reading-font: var(--font-sans);
+  }
+  :root[data-reading-font="mono"] {
+    --reading-font: var(--font-mono);
+  }
+  :root[data-reading-font="dyslexic"] {
+    --reading-font: "OpenDyslexic", ui-sans-serif, system-ui, sans-serif;
+  }
+
+  :root[data-reading-size="sm"] {
+    --reading-size: 1.125rem;
+  }
+  :root[data-reading-size="base"] {
+    --reading-size: 1.25rem;
+  }
+  :root[data-reading-size="lg"] {
+    --reading-size: 1.4rem;
+  }
+  :root[data-reading-size="xl"] {
+    --reading-size: 1.6rem;
+  }
+
+  :root[data-reading-lh="tight"] {
+    --reading-lh: 1.5;
+  }
+  :root[data-reading-lh="base"] {
+    --reading-lh: 1.75;
+  }
+  :root[data-reading-lh="relaxed"] {
+    --reading-lh: 2;
+  }
+
   .reading-prose p {
     margin-bottom: 1.6em;
   }
@@ -387,11 +453,20 @@
   .focus-mode [data-reading-chrome] {
     opacity: 0.08;
     transition: opacity 0.4s;
-    pointer-events: none;
+    pointer-events: auto;
   }
   .focus-mode [data-reading-chrome]:hover,
-  .focus-mode [data-reading-chrome]:focus-within {
+  .focus-mode [data-reading-chrome]:focus-within,
+  .focus-mode [data-reading-chrome]:active {
     opacity: 1;
-    pointer-events: auto;
+  }
+  /* pointer-events: auto on the parent is enough; the explicit focus-toggle 
+     override is now redundant but kept for extra specificity/clarity. */
+  .focus-mode [data-focus-toggle] {
+    opacity: 0.4;
+    transition: opacity 0.4s;
+  }
+  .focus-mode [data-focus-toggle]:hover {
+    opacity: 1;
   }
 }

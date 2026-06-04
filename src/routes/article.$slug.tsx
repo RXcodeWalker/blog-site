@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { getPostBySlug, getRelatedPosts, getAdjacentPosts, getSeriesPosts } from "@/content/api.ts";
+import { getInteractions } from "@/lib/interactions";
 import { mdxComponents } from "@/content/render/mdx-components";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowUpRight, ArrowLeft, RotateCcw, X } from "lucide-react";
@@ -20,21 +21,23 @@ import { SubscribeCTA } from "@/components/article/SubscribeCTA";
 import { PrevNextNav } from "@/components/article/PrevNextNav";
 import { SeriesNav } from "@/components/article/SeriesNav";
 import { ShortcutsHelp } from "@/components/article/ShortcutsHelp";
+import { Interactions } from "@/components/article/Interactions";
 
 export const Route = createFileRoute("/article/$slug")({
-  loader: ({ params }) => {
+  loader: async ({ params }) => {
     const post = getPostBySlug(params.slug);
     if (!post) throw notFound();
-    return post;
+    const interactions = await getInteractions({ data: params.slug });
+    return { post, interactions };
   },
   head: ({ loaderData }) => ({
-    meta: loaderData
+    meta: loaderData?.post
       ? [
-          { title: `${loaderData.title} — Beyond the Basics` },
-          { name: "description", content: loaderData.excerpt },
-          { property: "og:title", content: loaderData.title },
-          { property: "og:description", content: loaderData.excerpt },
-          { property: "og:image", content: loaderData.cover },
+          { title: `${loaderData.post.title} — Beyond the Basics` },
+          { name: "description", content: loaderData.post.excerpt },
+          { property: "og:title", content: loaderData.post.title },
+          { property: "og:description", content: loaderData.post.excerpt },
+          { property: "og:image", content: loaderData.post.cover },
         ]
       : [],
   }),
@@ -60,7 +63,7 @@ export const Route = createFileRoute("/article/$slug")({
 });
 
 function Article() {
-  const post = Route.useLoaderData();
+  const { post, interactions } = Route.useLoaderData();
   const { Content } = post;
   const related = getRelatedPosts(post, 3);
   const { prev, next } = getAdjacentPosts(post);
@@ -102,12 +105,15 @@ function Article() {
       url: window.location.href,
     });
     setShareStatus(outcome);
+    if (outcome === "copied") toast.success("Link copied to clipboard");
+    else if (outcome === "error") toast.error("Couldn't share — please copy the URL manually");
   }, [post.title, post.excerpt]);
 
   const handleToggleBookmark = useCallback(() => {
-    const added = toggle(post.slug);
-    toast.success(added ? "Saved to reading list" : "Removed from reading list");
-  }, [toggle, post.slug]);
+    const adding = !isBookmarked(post.slug);
+    toggle(post.slug);
+    toast.success(adding ? "Saved to reading list" : "Removed from reading list");
+  }, [toggle, isBookmarked, post.slug]);
 
   const handleToggleListen = useCallback(() => {
     speech.toggle(() => bodyRef.current?.textContent ?? post.excerpt);
@@ -241,6 +247,8 @@ function Article() {
         </div>
 
         <SubscribeCTA />
+
+        <Interactions slug={post.slug} initialInteractions={interactions} />
 
         {/* Author + CTA */}
         <div className="mx-auto mt-16 max-w-2xl px-6">

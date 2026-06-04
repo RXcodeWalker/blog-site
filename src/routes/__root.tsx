@@ -11,6 +11,7 @@ import {
 import appCss from "../styles.css?url";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { Toaster } from "@/components/ui/sonner";
+import { ReadingPreferencesProvider } from "../contexts/ReadingPreferencesContext";
 
 function NotFoundComponent() {
   return (
@@ -74,14 +75,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Beyond the Basics" },
+      { name: "description", content: "Personal blog of Om Jhamvar" },
+      { name: "author", content: "Om Jhamvar" },
+      { property: "og:title", content: "Beyond the Basics" },
+      { property: "og:description", content: "Personal blog of Om Jhamvar" },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       {
@@ -116,8 +116,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
-        <Outlet />
-        <Toaster position="bottom-right" />
+        <ReadingPreferencesProvider>
+          <Outlet />
+          <Toaster position="bottom-right" />
+        </ReadingPreferencesProvider>
       </ThemeProvider>
     </QueryClientProvider>
   );

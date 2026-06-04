@@ -10,25 +10,30 @@ const STORAGE_KEY = "btb:bookmarks";
 export function useBookmarks() {
   const [bookmarks, setBookmarks] = useLocalStorageState<string[]>(STORAGE_KEY, []);
 
-  const isBookmarked = useCallback((slug: string) => bookmarks.includes(slug), [bookmarks]);
+  const isBookmarked = useCallback(
+    (slug: string) => Array.isArray(bookmarks) && bookmarks.includes(slug),
+    [bookmarks],
+  );
 
   const toggle = useCallback(
-    (slug: string): boolean => {
-      let added = false;
+    (slug: string) => {
       setBookmarks((prev) => {
-        if (prev.includes(slug)) return prev.filter((s) => s !== slug);
-        added = true;
-        return [slug, ...prev];
+        const safePrev = Array.isArray(prev) ? prev : [];
+        return safePrev.includes(slug) ? safePrev.filter((s) => s !== slug) : [slug, ...safePrev];
       });
-      return added;
     },
     [setBookmarks],
   );
 
   const remove = useCallback(
-    (slug: string) => setBookmarks((prev) => prev.filter((s) => s !== slug)),
+    (slug: string) => {
+      setBookmarks((prev) => {
+        const safePrev = Array.isArray(prev) ? prev : [];
+        return safePrev.filter((s) => s !== slug);
+      });
+    },
     [setBookmarks],
   );
 
-  return { bookmarks, isBookmarked, toggle, remove };
+  return { bookmarks: Array.isArray(bookmarks) ? bookmarks : [], isBookmarked, toggle, remove };
 }

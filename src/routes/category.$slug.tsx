@@ -1,5 +1,6 @@
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { z } from "zod";
 import { SiteShell } from "@/components/site/SiteShell";
 import {
   getPostsByCategory,
@@ -7,16 +8,29 @@ import {
   getAllCategoriesWithCounts,
 } from "@/content/api.ts";
 import type { CategorySlug } from "@/content/api.ts";
-import { ArrowUpRight, SlidersHorizontal } from "lucide-react";
+import { ArrowUpRight, SlidersHorizontal, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 
+const categorySearchSchema = z.object({
+  tag: z.string().catch("All"),
+  sort: z
+    .enum(["recency-desc", "recency-asc", "title-asc", "title-desc", "length-desc", "length-asc"])
+    .catch("recency-desc"),
+  readTime: z.enum(["any", "short", "medium", "long"]).catch("any"),
+});
+
 export const Route = createFileRoute("/category/$slug")({
+  validateSearch: categorySearchSchema,
   loader: ({ params }) => {
     const category = getCategoryWithCount(params.slug);
     if (!category) throw notFound();
@@ -48,38 +62,46 @@ export const Route = createFileRoute("/category/$slug")({
   component: Category,
 });
 
-type SortOption =
-  | "recency-desc"
-  | "recency-asc"
-  | "title-asc"
-  | "title-desc"
-  | "length-desc"
-  | "length-asc";
+type SortOption = z.infer<typeof categorySearchSchema>["sort"];
+type ReadTimeOption = z.infer<typeof categorySearchSchema>["readTime"];
 
 function Category() {
   const { category: c, posts: allPosts } = Route.useLoaderData();
+  const { tag, sort, readTime } = Route.useSearch();
+  const navigate = Route.useNavigate();
   const allCategories = getAllCategoriesWithCounts();
   const categoryIndex = allCategories.findIndex((cat) => cat.slug === c.slug);
 
-  const [tagFilter, setTagFilter] = useState("All");
-  const [sortFilter, setSortFilter] = useState<SortOption>("recency-desc");
+  const setTag = (t: string) => navigate({ search: (prev) => ({ ...prev, tag: t }) });
+  const setSort = (s: SortOption) => navigate({ search: (prev) => ({ ...prev, sort: s }) });
+  const setReadTime = (rt: ReadTimeOption) =>
+    navigate({ search: (prev) => ({ ...prev, readTime: rt }) });
 
   const filteredItems = useMemo(() => {
-    const base =
-      tagFilter === "All"
+    let base =
+      tag === "All"
         ? allPosts
-        : allPosts.filter((p) => p.tags.some((t) => t.toLowerCase() === tagFilter.toLowerCase()));
+        : allPosts.filter((p) => p.tags.some((t) => t.toLowerCase() === tag.toLowerCase()));
+
+    if (readTime !== "any") {
+      base = base.filter((p) => {
+        if (readTime === "short") return p.readingTimeMinutes < 5;
+        if (readTime === "medium") return p.readingTimeMinutes >= 5 && p.readingTimeMinutes <= 10;
+        if (readTime === "long") return p.readingTimeMinutes > 10;
+        return true;
+      });
+    }
 
     return [...base].sort((a, b) => {
-      if (sortFilter === "title-asc") return a.title.localeCompare(b.title);
-      if (sortFilter === "title-desc") return b.title.localeCompare(a.title);
-      if (sortFilter === "length-desc") return b.readingTimeMinutes - a.readingTimeMinutes;
-      if (sortFilter === "length-asc") return a.readingTimeMinutes - b.readingTimeMinutes;
-      if (sortFilter === "recency-asc")
+      if (sort === "title-asc") return a.title.localeCompare(b.title);
+      if (sort === "title-desc") return b.title.localeCompare(a.title);
+      if (sort === "length-desc") return b.readingTimeMinutes - a.readingTimeMinutes;
+      if (sort === "length-asc") return a.readingTimeMinutes - b.readingTimeMinutes;
+      if (sort === "recency-asc")
         return new Date(a.publishedAt).getTime() - new Date(b.publishedAt).getTime();
       return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
     });
-  }, [allPosts, sortFilter, tagFilter]);
+  }, [allPosts, sort, tag, readTime]);
 
   const sortLabels: Record<SortOption, string> = {
     "recency-desc": "Most Recent",
@@ -88,6 +110,13 @@ function Category() {
     "title-desc": "Title (Z-A)",
     "length-desc": "Longest Read",
     "length-asc": "Shortest Read",
+  };
+
+  const readTimeLabels: Record<ReadTimeOption, string> = {
+    any: "Any Length",
+    short: "Short (< 5m)",
+    medium: "Medium (5-10m)",
+    long: "Long (> 10m)",
   };
 
   return (
@@ -137,9 +166,9 @@ function Category() {
           {["All", "Essay", "Analysis", "Signal", "Note", "Series"].map((t) => (
             <button
               key={t}
-              onClick={() => setTagFilter(t)}
+              onClick={() => setTag(t)}
               className={`whitespace-nowrap rounded-full border px-4 py-1.5 transition-colors ${
-                tagFilter === t
+                tag === t
                   ? "border-foreground bg-foreground text-background"
                   : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
               }`}
@@ -152,31 +181,78 @@ function Category() {
               <Button
                 variant="outline"
                 size="sm"
-                className="ml-auto gap-2 rounded-full border-border px-4 text-[11px] uppercase tracking-[0.18em]"
+                className={`ml-auto gap-2 rounded-full border-border px-4 text-[11px] uppercase tracking-[0.18em] ${
+                  sort !== "recency-desc" || readTime !== "any" || tag !== "All"
+                    ? "border-foreground bg-secondary"
+                    : ""
+                }`}
               >
                 <SlidersHorizontal className="h-3.5 w-3.5" />
-                Filter: {sortLabels[sortFilter]}
+                Filter & Sort
+                {(sort !== "recency-desc" || readTime !== "any" || tag !== "All") && (
+                  <span className="ml-1 flex h-4 w-4 items-center justify-center rounded-full bg-gold text-[9px] font-bold text-background">
+                    {
+                      [sort !== "recency-desc", readTime !== "any", tag !== "All"].filter(Boolean)
+                        .length
+                    }
+                  </span>
+                )}
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56">
-              <DropdownMenuItem onClick={() => setSortFilter("recency-desc")}>
-                Recency: newest first
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortFilter("recency-asc")}>
-                Recency: oldest first
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortFilter("title-asc")}>
-                Title: A to Z
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortFilter("title-desc")}>
-                Title: Z to A
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortFilter("length-desc")}>
-                Length: longest first
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setSortFilter("length-asc")}>
-                Length: shortest first
-              </DropdownMenuItem>
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuLabel className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                Sort By
+              </DropdownMenuLabel>
+              <DropdownMenuRadioGroup value={sort} onValueChange={(v) => setSort(v as SortOption)}>
+                {Object.entries(sortLabels).map(([val, label]) => (
+                  <DropdownMenuRadioItem key={val} value={val} className="text-xs uppercase">
+                    {label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuLabel className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                Reading Time
+              </DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                value={readTime}
+                onValueChange={(v) => setReadTime(v as ReadTimeOption)}
+              >
+                {Object.entries(readTimeLabels).map(([val, label]) => (
+                  <DropdownMenuRadioItem key={val} value={val} className="text-xs uppercase">
+                    {label}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuLabel className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                Tag
+              </DropdownMenuLabel>
+              <DropdownMenuRadioGroup value={tag} onValueChange={setTag}>
+                {["All", "Essay", "Analysis", "Signal", "Note", "Series"].map((t) => (
+                  <DropdownMenuRadioItem key={t} value={t} className="text-xs uppercase">
+                    {t}
+                  </DropdownMenuRadioItem>
+                ))}
+              </DropdownMenuRadioGroup>
+
+              {(sort !== "recency-desc" || readTime !== "any" || tag !== "All") && (
+                <>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => {
+                      navigate({ search: { tag: "All", sort: "recency-desc", readTime: "any" } });
+                    }}
+                    className="justify-center text-center font-mono text-[10px] uppercase tracking-widest text-gold"
+                  >
+                    Clear All Filters
+                  </DropdownMenuItem>
+                </>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

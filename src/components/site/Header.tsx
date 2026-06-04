@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Search, Command, Sun, Moon, Bookmark } from "lucide-react";
+import { Search, Command, Sun, Moon, Bookmark, Coffee } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useBookmarks } from "@/hooks/useBookmarks";
@@ -61,36 +61,24 @@ export function Header({ onSearch }: Props) {
               )}
             </Link>
             <button
-              onClick={() => {
-                try {
-                  toggleTheme();
-                } catch (e) {
-                  // Fallback: toggle class on <html> directly if React handler unavailable
-                  const root = document.documentElement;
-                  const next = root.classList.contains("dark") ? "light" : "dark";
-                  root.classList.remove("dark", "light");
-                  root.classList.add(next);
-                  try {
-                    root.style.colorScheme = next;
-                    root.setAttribute("data-theme", next);
-                    window.localStorage.setItem("btb-theme", next);
-                  } catch {}
-                }
-              }}
-              aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-              title={theme === "dark" ? "Light mode" : "Dark mode"}
-              className="group relative flex h-8 w-8 items-center justify-center rounded-md border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              onClick={() => toggleTheme()}
+              aria-label={`Switch theme (current: ${theme})`}
+              title={`Switch theme (current: ${theme})`}
+              className="group relative flex h-8 w-8 cursor-pointer items-center justify-center rounded-md border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
             >
               <Sun
-                className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "dark" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`}
+                className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "light" ? "rotate-0 scale-100 opacity-100" : "-rotate-90 scale-0 opacity-0"}`}
               />
               <Moon
-                className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "light" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"}`}
+                className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "dark" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"}`}
+              />
+              <Coffee
+                className={`absolute h-3.5 w-3.5 transition-all duration-500 ${theme === "sepia" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-0 opacity-0"}`}
               />
             </button>
             <button
               onClick={onSearch}
-              className="group flex items-center gap-3 rounded-md border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className="group flex cursor-pointer items-center gap-3 rounded-md border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               aria-label="Open search"
             >
               <Search className="h-3.5 w-3.5" />

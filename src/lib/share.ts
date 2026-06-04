@@ -26,22 +26,32 @@ export async function copyToClipboard(text: string): Promise<void> {
  * Returns what actually happened so the UI can confirm ("Shared" / "Copied" / "Error").
  * A user-cancelled native share resolves to "shared" (treated as a no-op success).
  */
-export async function shareOrCopy(data: {
-  title: string;
-  text: string;
-  url: string;
-}): Promise<ShareOutcome> {
+export async function shareOrCopy(
+  data: {
+    title: string;
+    text: string;
+    url: string;
+  },
+  copyText?: string,
+): Promise<ShareOutcome> {
+  const textToCopy = copyText ?? data.url;
+
   try {
     if (navigator.share) {
+      if (navigator.canShare && !navigator.canShare(data)) {
+        // Fall back to copy if the platform explicitly says it can't share this data
+        await copyToClipboard(textToCopy);
+        return "copied";
+      }
       await navigator.share(data);
       return "shared";
     }
-    await copyToClipboard(data.url);
+    await copyToClipboard(textToCopy);
     return "copied";
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") return "shared";
     try {
-      await copyToClipboard(data.url);
+      await copyToClipboard(textToCopy);
       return "copied";
     } catch {
       return "error";

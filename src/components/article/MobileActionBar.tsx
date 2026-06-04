@@ -1,4 +1,4 @@
-import { Bookmark, Share2, Volume2, Pause, List } from "lucide-react";
+import { Bookmark, Share2, Volume2, Pause, List, Type } from "lucide-react";
 import {
   Drawer,
   DrawerClose,
@@ -8,6 +8,7 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { TableOfContents } from "./TableOfContents";
+import { ReadingPreferences } from "./ReadingPreferences";
 import type { TocHeading } from "@/content/types";
 
 type ListenState = "idle" | "playing" | "paused";
@@ -55,7 +56,7 @@ export function MobileActionBar({
           type="button"
           onClick={onToggleBookmark}
           aria-label={bookmarked ? "Remove bookmark" : "Save"}
-          className={`flex flex-col items-center gap-1 ${bookmarked ? "text-gold" : "text-muted-foreground"}`}
+          className={`flex cursor-pointer flex-col items-center gap-1 ${bookmarked ? "text-gold" : "text-muted-foreground"}`}
         >
           <Bookmark className={`h-5 w-5 ${bookmarked ? "fill-current" : ""}`} />
         </button>
@@ -64,17 +65,29 @@ export function MobileActionBar({
           type="button"
           onClick={onShare}
           aria-label="Share"
-          className="flex flex-col items-center gap-1 text-muted-foreground"
+          className="flex cursor-pointer flex-col items-center gap-1 text-muted-foreground"
         >
           <Share2 className="h-5 w-5" />
         </button>
+
+        <ReadingPreferences
+          trigger={
+            <button
+              type="button"
+              aria-label="Typography preferences"
+              className="flex cursor-pointer flex-col items-center gap-1 text-muted-foreground"
+            >
+              <Type className="h-5 w-5" />
+            </button>
+          }
+        />
 
         {listenSupported && (
           <button
             type="button"
             onClick={onToggleListen}
             aria-label={listenState === "playing" ? "Pause" : "Listen"}
-            className={`flex flex-col items-center gap-1 ${listenState !== "idle" ? "text-gold" : "text-muted-foreground"}`}
+            className={`flex cursor-pointer flex-col items-center gap-1 ${listenState !== "idle" ? "text-gold" : "text-muted-foreground"}`}
           >
             {listenState === "playing" ? (
               <Pause className="h-5 w-5" />
@@ -90,7 +103,7 @@ export function MobileActionBar({
               <button
                 type="button"
                 aria-label="Table of contents"
-                className="flex flex-col items-center gap-1 text-muted-foreground"
+                className="flex cursor-pointer flex-col items-center gap-1 text-muted-foreground"
               >
                 <List className="h-5 w-5" />
               </button>

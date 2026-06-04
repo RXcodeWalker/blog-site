@@ -1,4 +1,5 @@
-import { Bookmark, Share2, Volume2, Pause, Maximize2, Minimize2 } from "lucide-react";
+import { Bookmark, Share2, Volume2, Pause, Maximize2, Minimize2, Type } from "lucide-react";
+import { ReadingPreferences } from "./ReadingPreferences";
 
 type ListenState = "idle" | "playing" | "paused";
 
@@ -31,7 +32,7 @@ function RailButton({
     <button
       type="button"
       onClick={onClick}
-      className={`group flex flex-col items-center gap-2 transition-colors hover:text-foreground ${
+      className={`group flex cursor-pointer flex-col items-center gap-2 transition-colors hover:text-foreground ${
         active ? "text-gold" : "text-muted-foreground"
       }`}
     >
@@ -88,9 +89,23 @@ export function ReadingRail({
         </RailButton>
       )}
 
-      <RailButton onClick={onToggleFocus} label="Focus" active={focusMode}>
-        {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
-      </RailButton>
+      <div data-focus-toggle>
+        <RailButton onClick={onToggleFocus} label="Focus" active={focusMode}>
+          {focusMode ? <Minimize2 className="h-4 w-4" /> : <Maximize2 className="h-4 w-4" />}
+        </RailButton>
+
+        <ReadingPreferences
+          trigger={
+            <button
+              type="button"
+              className="group flex flex-col items-center gap-2 pt-6 text-muted-foreground transition-colors hover:text-foreground"
+            >
+              <Type className="h-4 w-4" />
+              <span className="font-mono text-[9px] uppercase tracking-[0.22em]">Type</span>
+            </button>
+          }
+        />
+      </div>
 
       <div className="mt-2 flex flex-col items-end gap-0.5 font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground">
         <span>{Math.round(progress)}%</span>

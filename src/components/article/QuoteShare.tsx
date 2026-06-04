@@ -64,7 +64,7 @@ export function QuoteShare({ containerRef, title }: Props) {
   const quoted = `"${anchor.text}" — ${title}`;
 
   const handleShare = async () => {
-    const outcome = await shareOrCopy({ title, text: quoted, url });
+    const outcome = await shareOrCopy({ title, text: quoted, url }, `${quoted}\n${url}`);
     if (outcome === "copied") toast.success("Quote copied");
     else if (outcome === "error") toast.error("Couldn't share quote");
     clear();

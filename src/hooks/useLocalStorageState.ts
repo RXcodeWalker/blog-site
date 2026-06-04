@@ -12,57 +12,81 @@ export function useLocalStorageState<T>(
   initialValue: T,
 ): [T, (value: T | ((prev: T) => T)) => void] {
   const [value, setValue] = useState<T>(initialValue);
-  // Track the latest value so the cross-tab listener can read it without re-subscribing.
+
+  // Track the latest value in a ref so listeners can compare without triggering re-renders
+  // or needing value in their dependency arrays.
   const valueRef = useRef(value);
   valueRef.current = value;
 
+  // Track initialValue in a ref so we don't re-run effects if the caller passes a new literal.
+  const initialValueRef = useRef(initialValue);
+
   const read = useCallback((): T => {
-    if (typeof window === "undefined") return initialValue;
+    if (typeof window === "undefined") return initialValueRef.current;
     try {
       const raw = window.localStorage.getItem(key);
-      return raw === null ? initialValue : (JSON.parse(raw) as T);
+      return raw === null ? initialValueRef.current : (JSON.parse(raw) as T);
     } catch {
-      return initialValue;
+      return initialValueRef.current;
     }
-    // initialValue is intentionally read once; callers pass stable values.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [key]);
 
   // Hydrate from storage after mount.
+  const hydrated = useRef(false);
   useEffect(() => {
-    setValue(read());
+    if (!hydrated.current) {
+      const stored = read();
+      // Only set if we actually have something in storage that differs from initialValue
+      if (JSON.stringify(stored) !== JSON.stringify(initialValueRef.current)) {
+        setValue(stored);
+      }
+      hydrated.current = true;
+    }
   }, [read]);
 
   // Keep in sync when other tabs or hook instances change the same key.
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const sync = () => setValue(read());
+    const sync = (e: Event) => {
+      // If it's a native storage event, check the key.
+      if (e instanceof StorageEvent && e.key !== key) return;
+
+      const latest = read();
+      // Only update if the value in storage is different from our local state.
+      if (JSON.stringify(latest) !== JSON.stringify(valueRef.current)) {
+        setValue(latest);
+      }
+    };
+
     window.addEventListener("storage", sync);
     window.addEventListener("local-storage", sync);
     return () => {
       window.removeEventListener("storage", sync);
       window.removeEventListener("local-storage", sync);
     };
-  }, [read]);
+  }, [key, read]);
 
   const set = useCallback(
     (next: T | ((prev: T) => T)) => {
-      setValue((prev) => {
-        const resolved = typeof next === "function" ? (next as (p: T) => T)(prev) : next;
-        if (typeof window !== "undefined") {
-          try {
-            window.localStorage.setItem(key, JSON.stringify(resolved));
-            // Notify other instances in this same tab (storage event only fires cross-tab).
-            window.dispatchEvent(new Event("local-storage"));
-          } catch {
-            /* quota / private mode — keep in-memory value */
-          }
+      const resolved = typeof next === "function" ? (next as (p: T) => T)(valueRef.current) : next;
+
+      // Update local state
+      setValue(resolved);
+
+      // Persist to localStorage
+      if (typeof window !== "undefined") {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(resolved));
+          // Notify other instances in this same tab.
+          window.dispatchEvent(new Event("local-storage"));
+        } catch {
+          /* quota / private mode */
         }
-        return resolved;
-      });
+      }
     },
     [key],
   );
 
   return [value, set];
 }
+
