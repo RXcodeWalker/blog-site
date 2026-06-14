@@ -447,10 +447,3 @@
     opacity: 1;
   }
 }
-: 0.4;
-    transition: opacity 0.4s;
-  }
-  .focus-mode [data-focus-toggle]:hover {
-    opacity: 1;
-  }
-}
