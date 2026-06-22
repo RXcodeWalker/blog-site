@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { ArrowRight } from "lucide-react";
 import { toast } from "sonner";
+import { track } from "@/lib/analytics";
 
 /**
  * Inline newsletter call-to-action shown after the article body.
@@ -12,6 +13,7 @@ export function SubscribeCTA() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email.trim()) return;
+    track("newsletter_signup", { source: "article" });
     toast.success("Thanks — you're on the list.");
     setEmail("");
   };

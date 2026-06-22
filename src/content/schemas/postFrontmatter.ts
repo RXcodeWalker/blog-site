@@ -8,7 +8,7 @@ export const CategorySlugSchema = z.enum([
   "journal",
 ]);
 
-export const PostTagSchema = z.enum(["Essay", "Analysis", "Signal", "Note", "Series"]);
+export const PostTagSchema = z.enum(["Essay", "Analysis", "Reflection", "Observation", "Series"]);
 
 /**
  * Zod schema for MDX frontmatter.

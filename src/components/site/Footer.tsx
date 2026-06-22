@@ -1,6 +1,19 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { toast } from "sonner";
+import { track } from "@/lib/analytics";
 
 export function Footer() {
+  const [email, setEmail] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    track("newsletter_signup", { source: "footer" });
+    toast.success("Thanks — you're on the list.");
+    setEmail("");
+  };
+
   return (
     <footer className="mt-32 border-t border-border">
       <div className="mx-auto max-w-[1440px] px-6 py-16 lg:px-12">
@@ -9,9 +22,12 @@ export function Footer() {
             <p className="font-serif text-3xl leading-[1.1] tracking-tight md:text-4xl">
               A student blog on <em className="text-gold">Arsenal, code, and growth</em>.
             </p>
-            <form className="mt-8 flex max-w-md gap-2" onSubmit={(e) => e.preventDefault()}>
+            <form className="mt-8 flex max-w-md gap-2" onSubmit={handleSubmit}>
               <input
                 type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@inbox.com"
                 className="flex-1 border-b border-border bg-transparent py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none"
               />

@@ -81,6 +81,7 @@ function Article() {
   const { progress, minutesLeft, activeHeadingId } = useReadingProgress(
     post.readingTimeMinutes,
     post.headings,
+    { slug: post.slug, category: post.category },
   );
   const { savedPercent, resume, dismiss } = useReadingPosition(post.slug);
   const { isBookmarked, toggle } = useBookmarks();

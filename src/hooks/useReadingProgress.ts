@@ -1,5 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { TocHeading } from "@/content/types";
+import { track } from "@/lib/analytics";
 
 interface ReadingProgress {
   /** Scroll-through percentage of the document, 0–100. */
@@ -17,20 +18,35 @@ interface ReadingProgress {
 export function useReadingProgress(
   readingTimeMinutes: number,
   headings: TocHeading[],
+  articleMeta?: { slug: string; category: string },
 ): ReadingProgress {
   const [progress, setProgress] = useState(0);
   const [activeHeadingId, setActiveHeadingId] = useState<string | null>(null);
+  const hasFiredRef = useRef(false);
+
+  useEffect(() => {
+    hasFiredRef.current = false;
+  }, [articleMeta?.slug]);
 
   useEffect(() => {
     const onScroll = () => {
       const h = document.documentElement;
       const total = h.scrollHeight - h.clientHeight;
-      setProgress(total > 0 ? Math.min(100, Math.max(0, (h.scrollTop / total) * 100)) : 0);
+      const pct = total > 0 ? Math.min(100, Math.max(0, (h.scrollTop / total) * 100)) : 0;
+      setProgress(pct);
+      if (pct >= 80 && !hasFiredRef.current && articleMeta) {
+        hasFiredRef.current = true;
+        track("article_read", {
+          slug: articleMeta.slug,
+          category: articleMeta.category,
+          read_time: readingTimeMinutes,
+        });
+      }
     };
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [articleMeta, readingTimeMinutes]);
 
   useEffect(() => {
     if (headings.length === 0) return;
