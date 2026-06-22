@@ -1,22 +1,8 @@
-import { useState } from "react";
-import { ArrowRight } from "lucide-react";
-import { toast } from "sonner";
-import { track } from "@/lib/analytics";
+import { ArrowRight, Loader2 } from "lucide-react";
+import { useNewsletterSubscription } from "@/hooks/useNewsletterSubscription";
 
-/**
- * Inline newsletter call-to-action shown after the article body.
- * No backend yet — submitting confirms locally so it's drop-in to wire to a provider later.
- */
 export function SubscribeCTA() {
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    track("newsletter_signup", { source: "article" });
-    toast.success("Thanks — you're on the list.");
-    setEmail("");
-  };
+  const { email, setEmail, status, handleSubmit } = useNewsletterSubscription("article");
 
   return (
     <section className="mx-auto mt-24 max-w-2xl px-6">
@@ -34,6 +20,15 @@ export function SubscribeCTA() {
           onSubmit={handleSubmit}
           className="mx-auto mt-6 flex max-w-md flex-col gap-2 sm:flex-row"
         >
+          {/* honeypot — bots fill this, humans don't */}
+          <input
+            type="text"
+            name="website"
+            tabIndex={-1}
+            autoComplete="off"
+            className="sr-only"
+            aria-hidden="true"
+          />
           <input
             type="email"
             required
@@ -41,13 +36,25 @@ export function SubscribeCTA() {
             onChange={(e) => setEmail(e.target.value)}
             placeholder="you@example.com"
             aria-label="Email address"
-            className="flex-1 rounded border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-foreground/40"
+            disabled={status === "loading" || status === "success"}
+            className="flex-1 rounded border border-border bg-background px-4 py-2.5 text-sm outline-none transition-colors focus:border-foreground/40 disabled:opacity-60"
           />
           <button
             type="submit"
-            className="flex items-center justify-center gap-2 rounded bg-primary px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-primary-foreground transition-opacity hover:opacity-90"
+            disabled={status === "loading" || status === "success"}
+            className="flex items-center justify-center gap-2 rounded bg-primary px-5 py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-60"
           >
-            Subscribe <ArrowRight className="h-3.5 w-3.5" />
+            {status === "loading" ? (
+              <>
+                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Subscribing
+              </>
+            ) : status === "success" ? (
+              "Check inbox"
+            ) : (
+              <>
+                Subscribe <ArrowRight className="h-3.5 w-3.5" />
+              </>
+            )}
           </button>
         </form>
       </div>

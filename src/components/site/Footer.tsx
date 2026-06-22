@@ -1,18 +1,8 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { toast } from "sonner";
-import { track } from "@/lib/analytics";
+import { useNewsletterSubscription } from "@/hooks/useNewsletterSubscription";
 
 export function Footer() {
-  const [email, setEmail] = useState("");
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email.trim()) return;
-    track("newsletter_signup", { source: "footer" });
-    toast.success("Thanks — you're on the list.");
-    setEmail("");
-  };
+  const { email, setEmail, status, handleSubmit } = useNewsletterSubscription("footer");
 
   return (
     <footer className="mt-32 border-t border-border">
@@ -23,16 +13,30 @@ export function Footer() {
               A student blog on <em className="text-gold">Arsenal, code, and growth</em>.
             </p>
             <form className="mt-8 flex max-w-md gap-2" onSubmit={handleSubmit}>
+              {/* honeypot — bots fill this, humans don't */}
+              <input
+                type="text"
+                name="website"
+                tabIndex={-1}
+                autoComplete="off"
+                className="sr-only"
+                aria-hidden="true"
+              />
               <input
                 type="email"
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@inbox.com"
-                className="flex-1 border-b border-border bg-transparent py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none"
+                disabled={status === "loading" || status === "success"}
+                className="flex-1 border-b border-border bg-transparent py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60"
               />
-              <button className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground">
-                Subscribe →
+              <button
+                type="submit"
+                disabled={status === "loading" || status === "success"}
+                className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground disabled:opacity-60"
+              >
+                {status === "loading" ? "..." : status === "success" ? "Check inbox →" : "Subscribe →"}
               </button>
             </form>
           </div>
@@ -85,8 +89,8 @@ export function Footer() {
                 </a>
               </li>
               <li>
-                <Link to="/" className="underline-grow">
-                  Archive
+                <Link to="/newsletter" className="underline-grow">
+                  Newsletter
                 </Link>
               </li>
             </ul>
