@@ -6,6 +6,9 @@ import { useBookmarks } from "@/hooks/useBookmarks";
 
 type Props = { onSearch: () => void };
 
+const navCls =
+  "font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground underline-grow";
+
 export function Header({ onSearch }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const { theme, toggleTheme } = useTheme();
@@ -34,6 +37,9 @@ export function Header({ onSearch }: Props) {
           </Link>
 
           <nav className="hidden items-center gap-6 md:flex">
+            <Link to="/start" className={navCls} activeProps={{ className: "text-foreground" }}>
+              <span className="text-gold">Start Here</span>
+            </Link>
             <NavItem to="/" exact>
               Index
             </NavItem>
@@ -93,9 +99,6 @@ export function Header({ onSearch }: Props) {
     </header>
   );
 }
-
-const navCls =
-  "font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground underline-grow";
 
 function NavItem({
   to,

@@ -9,15 +9,28 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StartRouteImport } from './routes/start'
 import { Route as ReadingListRouteImport } from './routes/reading-list'
+import { Route as NewsletterRouteImport } from './routes/newsletter'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as NewsletterConfirmedRouteImport } from './routes/newsletter_.confirmed'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as ArticleSlugRouteImport } from './routes/article.$slug'
 
+const StartRoute = StartRouteImport.update({
+  id: '/start',
+  path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ReadingListRoute = ReadingListRouteImport.update({
   id: '/reading-list',
   path: '/reading-list',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsletterRoute = NewsletterRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -28,6 +41,11 @@ const AboutRoute = AboutRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsletterConfirmedRoute = NewsletterConfirmedRouteImport.update({
+  id: '/newsletter_/confirmed',
+  path: '/newsletter/confirmed',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
@@ -44,59 +62,99 @@ const ArticleSlugRoute = ArticleSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
+  '/start': typeof StartRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/newsletter/confirmed': typeof NewsletterConfirmedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
+  '/start': typeof StartRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/newsletter/confirmed': typeof NewsletterConfirmedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
+  '/start': typeof StartRoute
   '/article/$slug': typeof ArticleSlugRoute
   '/category/$slug': typeof CategorySlugRoute
+  '/newsletter_/confirmed': typeof NewsletterConfirmedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/about'
+    | '/newsletter'
     | '/reading-list'
+    | '/start'
     | '/article/$slug'
     | '/category/$slug'
+    | '/newsletter/confirmed'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/reading-list' | '/article/$slug' | '/category/$slug'
+  to:
+    | '/'
+    | '/about'
+    | '/newsletter'
+    | '/reading-list'
+    | '/start'
+    | '/article/$slug'
+    | '/category/$slug'
+    | '/newsletter/confirmed'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/newsletter'
     | '/reading-list'
+    | '/start'
     | '/article/$slug'
     | '/category/$slug'
+    | '/newsletter_/confirmed'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  NewsletterRoute: typeof NewsletterRoute
   ReadingListRoute: typeof ReadingListRoute
+  StartRoute: typeof StartRoute
   ArticleSlugRoute: typeof ArticleSlugRoute
   CategorySlugRoute: typeof CategorySlugRoute
+  NewsletterConfirmedRoute: typeof NewsletterConfirmedRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/start': {
+      id: '/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reading-list': {
       id: '/reading-list'
       path: '/reading-list'
       fullPath: '/reading-list'
       preLoaderRoute: typeof ReadingListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsletter': {
+      id: '/newsletter'
+      path: '/newsletter'
+      fullPath: '/newsletter'
+      preLoaderRoute: typeof NewsletterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -111,6 +169,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsletter_/confirmed': {
+      id: '/newsletter_/confirmed'
+      path: '/newsletter/confirmed'
+      fullPath: '/newsletter/confirmed'
+      preLoaderRoute: typeof NewsletterConfirmedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/category/$slug': {
@@ -133,9 +198,12 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  NewsletterRoute: NewsletterRoute,
   ReadingListRoute: ReadingListRoute,
+  StartRoute: StartRoute,
   ArticleSlugRoute: ArticleSlugRoute,
   CategorySlugRoute: CategorySlugRoute,
+  NewsletterConfirmedRoute: NewsletterConfirmedRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

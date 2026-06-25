@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 
-export const Route = createFileRoute("/newsletter/confirmed")({
+export const Route = createFileRoute("/newsletter_/confirmed")({
   head: () => ({
     meta: [
       { title: "You're subscribed — Beyond the Basics" },

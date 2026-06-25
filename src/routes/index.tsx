@@ -77,6 +77,12 @@ function Index() {
             >
               About Me →
             </Link>
+            <Link
+              to="/start"
+              className="font-mono text-[11px] uppercase tracking-[0.2em] text-gold hover:text-foreground underline-grow"
+            >
+              New here? Start here →
+            </Link>
           </div>
         </div>
 
