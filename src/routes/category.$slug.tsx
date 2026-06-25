@@ -163,7 +163,7 @@ function Category() {
       {/* Filter row */}
       <section className="border-b border-border">
         <div className="mx-auto flex max-w-[1440px] items-center gap-2 overflow-x-auto px-6 py-4 lg:px-12 font-mono text-[11px] uppercase tracking-[0.18em]">
-          {["All", "Essay", "Analysis", "Reflection", "Observation", "Series"].map((t) => (
+          {["All", "Articles", "Notes", "Series"].map((t) => (
             <button
               key={t}
               onClick={() => setTag(t)}
@@ -233,7 +233,7 @@ function Category() {
                 Tag
               </DropdownMenuLabel>
               <DropdownMenuRadioGroup value={tag} onValueChange={setTag}>
-                {["All", "Essay", "Analysis", "Reflection", "Observation", "Series"].map((t) => (
+                {["All", "Articles", "Notes", "Series"].map((t) => (
                   <DropdownMenuRadioItem key={t} value={t} className="text-xs uppercase">
                     {t}
                   </DropdownMenuRadioItem>

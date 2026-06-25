@@ -2,7 +2,7 @@ import type { ComponentType } from "react";
 
 export type CategorySlug = "football" | "mindset" | "learning" | "building" | "journal";
 
-export type PostTag = "Essay" | "Analysis" | "Reflection" | "Observation" | "Series";
+export type PostTag = "Articles" | "Notes" | "Series";
 
 /** A single heading extracted from the post body, used to build the table of contents. */
 export interface TocHeading {
