@@ -1,20 +1,11 @@
-/**
- * Sitemap generator.
- *
- * Produces a valid XML sitemap from the post manifest + static routes.
- * Wire to a TanStack Start server function at /sitemap.xml:
- *
- *   export const Route = createFileRoute('/sitemap.xml')({
- *     loader: () => generateSitemap({ siteUrl: 'https://beyondthebasics.me' }),
- *   });
- */
 import { getAllPosts, getAllCategoriesWithCounts } from "../api";
+import { SITE_URL } from "./constants";
 
 interface SitemapOptions {
-  siteUrl: string;
+  siteUrl?: string;
 }
 
-export function generateSitemap({ siteUrl }: SitemapOptions): string {
+export function generateSitemap({ siteUrl = SITE_URL }: SitemapOptions = {}): string {
   const posts = getAllPosts();
   const categories = getAllCategoriesWithCounts();
 

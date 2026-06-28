@@ -1,24 +1,15 @@
-/**
- * RSS feed generator.
- *
- * Produces a valid RSS 2.0 XML string from the post manifest.
- * Wire this to a TanStack Start server function or API route when ready:
- *
- *   export const Route = createFileRoute('/rss.xml')({
- *     loader: () => generateRssFeed({ siteUrl: 'https://beyondthebasics.me' }),
- *   });
- *
- * Or call generateRssFeed() from a build script and write the output
- * to the /public folder for static serving.
- */
 import { getAllPosts } from "../api";
+import type { PostRecord } from "../types";
+import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION } from "./constants";
 
 interface RssFeedOptions {
-  siteUrl: string;
+  siteUrl?: string;
   title?: string;
   description?: string;
   language?: string;
   limit?: number;
+  posts?: readonly PostRecord[];
+  selfUrl?: string;
 }
 
 function escapeXml(str: string): string {
@@ -30,21 +21,22 @@ function escapeXml(str: string): string {
     .replace(/'/g, "&apos;");
 }
 
-export function generateRssFeed(options: RssFeedOptions): string {
+export function generateRssFeed(options: RssFeedOptions = {}): string {
   const {
-    siteUrl,
-    title = "Beyond the Basics — Om Jhamvar",
-    description = "Football tactics, coding journeys, and growth notes from Om Jhamvar.",
+    siteUrl = SITE_URL,
+    title = SITE_TITLE,
+    description = SITE_DESCRIPTION,
     language = "en-US",
     limit = 20,
+    posts,
+    selfUrl,
   } = options;
 
-  const posts = getAllPosts().slice(0, limit);
-  const lastBuildDate = posts[0]
-    ? new Date(posts[0].publishedAt).toUTCString()
-    : new Date().toUTCString();
+  const resolvedPosts = (posts ?? getAllPosts()).slice(0, limit);
+  const lastBuildDate = new Date().toUTCString();
+  const atomSelf = selfUrl ?? `${siteUrl}/rss.xml`;
 
-  const items = posts
+  const items = resolvedPosts
     .map((post) => {
       const pubDate = new Date(post.publishedAt).toUTCString();
       const link = `${siteUrl}${post.url}`;
@@ -69,7 +61,9 @@ export function generateRssFeed(options: RssFeedOptions): string {
     <description>${escapeXml(description)}</description>
     <language>${language}</language>
     <lastBuildDate>${lastBuildDate}</lastBuildDate>
-    <atom:link href="${escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml" />
+    <ttl>60</ttl>
+    <generator>Beyond the Basics</generator>
+    <atom:link href="${escapeXml(atomSelf)}" rel="self" type="application/rss+xml" />
     ${items}
   </channel>
 </rss>`;

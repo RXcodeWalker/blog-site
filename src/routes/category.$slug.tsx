@@ -46,6 +46,16 @@ export const Route = createFileRoute("/category/$slug")({
           { property: "og:description", content: loaderData.category.desc },
         ]
       : [],
+    links: loaderData
+      ? [
+          {
+            rel: "alternate",
+            type: "application/rss+xml",
+            title: `${loaderData.category.name} — RSS Feed`,
+            href: `/category/${loaderData.category.slug}/rss.xml`,
+          },
+        ]
+      : [],
   }),
   notFoundComponent: () => (
     <SiteShell>

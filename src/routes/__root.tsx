@@ -84,9 +84,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
+      { rel: "stylesheet", href: appCss },
       {
-        rel: "stylesheet",
-        href: appCss,
+        rel: "alternate",
+        type: "application/rss+xml",
+        title: "Beyond the Basics — RSS Feed",
+        href: "/rss.xml",
+      },
+      {
+        rel: "alternate",
+        type: "application/feed+json",
+        title: "Beyond the Basics — JSON Feed",
+        href: "/feed.json",
       },
     ],
   }),

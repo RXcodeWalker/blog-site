@@ -101,8 +101,13 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
-                <a className="underline-grow" href="#">
+                <a className="underline-grow" href="/rss.xml">
                   RSS
+                </a>
+              </li>
+              <li>
+                <a className="underline-grow" href="/feeds">
+                  All Feeds
                 </a>
               </li>
               <li>
