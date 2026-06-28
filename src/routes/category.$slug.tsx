@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { getCategoryStructuredData } from "@/lib/structured-data";
 import { z } from "zod";
 import { SiteShell } from "@/components/site/SiteShell";
 import {
@@ -38,6 +39,12 @@ export const Route = createFileRoute("/category/$slug")({
     return { category, posts };
   },
   head: ({ loaderData }) => ({
+    scripts: loaderData
+      ? getCategoryStructuredData(loaderData.category).map((schema) => ({
+          type: "application/ld+json",
+          children: JSON.stringify(schema),
+        }))
+      : [],
     meta: loaderData
       ? [
           { title: `${loaderData.category.name} — Beyond the Basics` },

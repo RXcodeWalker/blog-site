@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
+import { getArticleStructuredData } from "@/lib/structured-data";
 import { getPostBySlug, getRelatedPosts, getAdjacentPosts, getSeriesPosts } from "@/content/api.ts";
 import { getInteractions } from "@/lib/interactions";
 import { mdxComponents } from "@/content/render/mdx-components";
@@ -35,6 +36,12 @@ export const Route = createFileRoute("/article/$slug")({
     return { post: serializablePost, interactions };
   },
   head: ({ loaderData }) => ({
+    scripts: loaderData?.post
+      ? getArticleStructuredData(loaderData.post).map((schema) => ({
+          type: "application/ld+json",
+          children: JSON.stringify(schema),
+        }))
+      : [],
     meta: loaderData?.post
       ? [
           { title: `${loaderData.post.title} — Beyond the Basics` },

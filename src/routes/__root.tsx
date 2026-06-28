@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { getSiteStructuredData } from "@/lib/structured-data";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { Toaster } from "@/components/ui/sonner";
 import { ReadingPreferencesProvider } from "../contexts/ReadingPreferencesContext";
@@ -88,6 +89,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: "https://beyondthebasics.me/og/default.png" },
     ],
+    scripts: getSiteStructuredData().map((schema) => ({
+      type: "application/ld+json",
+      children: JSON.stringify(schema),
+    })),
     links: [
       { rel: "stylesheet", href: appCss },
       {
