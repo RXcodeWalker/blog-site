@@ -39,9 +39,19 @@ export const Route = createFileRoute("/article/$slug")({
       ? [
           { title: `${loaderData.post.title} — Beyond the Basics` },
           { name: "description", content: loaderData.post.excerpt },
+          { property: "og:type", content: "article" },
           { property: "og:title", content: loaderData.post.title },
           { property: "og:description", content: loaderData.post.excerpt },
-          { property: "og:image", content: loaderData.post.cover },
+          { property: "og:url", content: `https://beyondthebasics.me/article/${loaderData.post.slug}` },
+          { property: "og:image", content: `https://beyondthebasics.me/og/${loaderData.post.slug}.png` },
+          { property: "og:image:width", content: "1200" },
+          { property: "og:image:height", content: "630" },
+          { property: "og:image:alt", content: `${loaderData.post.title} — Beyond the Basics` },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:title", content: loaderData.post.title },
+          { name: "twitter:description", content: loaderData.post.excerpt },
+          { name: "twitter:image", content: `https://beyondthebasics.me/og/${loaderData.post.slug}.png` },
+          { name: "twitter:image:alt", content: `${loaderData.post.title} — Beyond the Basics` },
         ]
       : [],
     links: loaderData?.post

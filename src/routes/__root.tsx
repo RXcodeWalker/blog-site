@@ -81,7 +81,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "Beyond the Basics" },
       { property: "og:description", content: "Personal blog of Om Jhamvar" },
       { property: "og:type", content: "website" },
+      { property: "og:image", content: "https://beyondthebasics.me/og/default.png" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "Beyond the Basics — Om Jhamvar" },
       { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:image", content: "https://beyondthebasics.me/og/default.png" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

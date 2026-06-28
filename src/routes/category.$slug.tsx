@@ -44,6 +44,10 @@ export const Route = createFileRoute("/category/$slug")({
           { name: "description", content: loaderData.category.desc },
           { property: "og:title", content: `${loaderData.category.name} — Beyond the Basics` },
           { property: "og:description", content: loaderData.category.desc },
+          { property: "og:image", content: `https://beyondthebasics.me/og/category--${loaderData.category.slug}.png` },
+          { property: "og:image:alt", content: `${loaderData.category.name} — Beyond the Basics` },
+          { name: "twitter:card", content: "summary_large_image" },
+          { name: "twitter:image", content: `https://beyondthebasics.me/og/category--${loaderData.category.slug}.png` },
         ]
       : [],
     links: loaderData

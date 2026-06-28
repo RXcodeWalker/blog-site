@@ -12,8 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as ReadingListRouteImport } from './routes/reading-list'
 import { Route as NewsletterRouteImport } from './routes/newsletter'
-import { Route as AboutRouteImport } from './routes/about'
+import { Route as FeedsRouteImport } from './routes/feeds'
 import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsletterConfirmedRouteImport } from './routes/newsletter_.confirmed'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
@@ -34,14 +35,19 @@ const NewsletterRoute = NewsletterRouteImport.update({
   path: '/newsletter',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AboutRoute = AboutRouteImport.update({
-  id: '/about',
-  path: '/about',
+const FeedsRoute = FeedsRouteImport.update({
+  id: '/feeds',
+  path: '/feeds',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArchiveRoute = ArchiveRouteImport.update({
   id: '/archive',
   path: '/archive',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AboutRoute = AboutRouteImport.update({
+  id: '/about',
+  path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -69,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
+  '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
   '/start': typeof StartRoute
@@ -80,6 +87,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
+  '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
   '/start': typeof StartRoute
@@ -92,6 +100,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
+  '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
   '/start': typeof StartRoute
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/archive'
+    | '/feeds'
     | '/newsletter'
     | '/reading-list'
     | '/start'
@@ -116,6 +126,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/archive'
+    | '/feeds'
     | '/newsletter'
     | '/reading-list'
     | '/start'
@@ -127,6 +138,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/archive'
+    | '/feeds'
     | '/newsletter'
     | '/reading-list'
     | '/start'
@@ -139,6 +151,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ArchiveRoute: typeof ArchiveRoute
+  FeedsRoute: typeof FeedsRoute
   NewsletterRoute: typeof NewsletterRoute
   ReadingListRoute: typeof ReadingListRoute
   StartRoute: typeof StartRoute
@@ -170,11 +183,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsletterRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
+    '/feeds': {
+      id: '/feeds'
+      path: '/feeds'
+      fullPath: '/feeds'
+      preLoaderRoute: typeof FeedsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/archive': {
@@ -182,6 +195,13 @@ declare module '@tanstack/react-router' {
       path: '/archive'
       fullPath: '/archive'
       preLoaderRoute: typeof ArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/about': {
+      id: '/about'
+      path: '/about'
+      fullPath: '/about'
+      preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -219,6 +239,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ArchiveRoute: ArchiveRoute,
+  FeedsRoute: FeedsRoute,
   NewsletterRoute: NewsletterRoute,
   ReadingListRoute: ReadingListRoute,
   StartRoute: StartRoute,
