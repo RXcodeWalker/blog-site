@@ -85,6 +85,16 @@ export function SearchOverlay({ open, onClose }: Props) {
                 </li>
               ))}
             </ul>
+            {term && filtered.length > 8 && (
+              <Link
+                to="/archive"
+                search={{ q: term, view: "timeline", category: "all", tag: "All", readTime: "any", year: "all", sort: "recency-desc", page: 1 }}
+                onClick={onClose}
+                className="block border-t border-border px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+              >
+                Browse all {filtered.length} results in Archive →
+              </Link>
+            )}
 
             {!term && (
               <>

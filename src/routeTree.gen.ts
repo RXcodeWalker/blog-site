@@ -13,6 +13,7 @@ import { Route as StartRouteImport } from './routes/start'
 import { Route as ReadingListRouteImport } from './routes/reading-list'
 import { Route as NewsletterRouteImport } from './routes/newsletter'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as NewsletterConfirmedRouteImport } from './routes/newsletter_.confirmed'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
@@ -36,6 +37,11 @@ const NewsletterRoute = NewsletterRouteImport.update({
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -62,6 +68,7 @@ const ArticleSlugRoute = ArticleSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
   '/start': typeof StartRoute
@@ -72,6 +79,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
   '/start': typeof StartRoute
@@ -83,6 +91,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/archive': typeof ArchiveRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
   '/start': typeof StartRoute
@@ -95,6 +104,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/archive'
     | '/newsletter'
     | '/reading-list'
     | '/start'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/archive'
     | '/newsletter'
     | '/reading-list'
     | '/start'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/archive'
     | '/newsletter'
     | '/reading-list'
     | '/start'
@@ -126,6 +138,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  ArchiveRoute: typeof ArchiveRoute
   NewsletterRoute: typeof NewsletterRoute
   ReadingListRoute: typeof ReadingListRoute
   StartRoute: typeof StartRoute
@@ -164,6 +177,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -198,6 +218,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  ArchiveRoute: ArchiveRoute,
   NewsletterRoute: NewsletterRoute,
   ReadingListRoute: ReadingListRoute,
   StartRoute: StartRoute,

@@ -153,3 +153,16 @@ export function getAllCategoriesWithCounts(): readonly CategoryWithCount[] {
 export function getCategoryWithCount(slug: string): CategoryWithCount | undefined {
   return CATEGORIES_WITH_COUNTS.find((c) => c.slug === slug);
 }
+
+// ---------------------------------------------------------------------------
+// Archive helpers
+// ---------------------------------------------------------------------------
+
+/** Unique years present in the manifest, newest-first. */
+export function getPostYears(): number[] {
+  const years = new Set<number>();
+  for (const p of POST_MANIFEST) {
+    years.add(new Date(p.publishedAt).getFullYear());
+  }
+  return [...years].sort((a, b) => b - a);
+}

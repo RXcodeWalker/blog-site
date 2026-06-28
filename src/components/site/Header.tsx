@@ -48,6 +48,7 @@ export function Header({ onSearch }: Props) {
             <NavCat slug="learning">Learning</NavCat>
             <NavCat slug="building">Building</NavCat>
             <NavCat slug="journal">Journal</NavCat>
+            <NavItem to="/archive">Archive</NavItem>
             <NavItem to="/about">About</NavItem>
           </nav>
 
@@ -105,7 +106,7 @@ function NavItem({
   exact,
   children,
 }: {
-  to: "/" | "/about";
+  to: "/" | "/about" | "/archive";
   exact?: boolean;
   children: React.ReactNode;
 }) {
