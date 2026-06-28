@@ -1,0 +1,129 @@
+---
+title: "I Thought I Was Building a Productivity App. I Was Wrong."
+publishedAt: 2026-06-28
+category: building
+tags: [Articles]
+featured: false
+excerpt: "There was a moment when I opened up the architecture map for North, zoomed out, and realised something weird: I wasn't looking at a task manager anymore."
+author: "Om Jhamvar"
+---
+
+There was a moment when I opened up the architecture map for Momentum OS (now called "North"), zoomed out, and realized something weird: I wasn't looking at a task manager anymore.
+
+That might sound a bit dramatic, right? But it genuinely caught me off guard!
+
+If you haven't come across North before, it's the project I've been building to rethink personal productivity from the ground up. It has tasks, planning, focus sessions, and reflections, but those are really just the interface. The bigger goal is to build software that understands how people actually work, then adapts to them instead of expecting them to adapt to it.
+
+See, the project had grown far past the original concept. It didn't happen because I kept piling on random features, either. No, it happened because every single problem I solved uncovered a much more interesting, deeper dilemma underneath. Think about it: a better task list forces you to look at decision making. Better planning leads to questions about energy levels. Better focus? That makes you wonder why focus disappears in the first place!
+
+Eventually, the software stopped revolving around tasks. It started revolving around <em>you</em>.
+
+<strong>The Problem With Most Productivity Tools</strong>
+
+Look at most productivity tools out there today. They all begin with the exact same assumption: you have work to do, and the software's job is to help you organize it. We rarely stop to question this! Calendars get smarter, task managers get prettier, and AI writes your priorities for you. But underneath all those glossy updates, the basic model stays exactly the same.
+
+Here is your list. Good luck.
+
+The more I thought about it, the less satisfying that felt.
+
+Because let's be honest for a second: people aren't inconsistent by accident. Some days you wake up completely on fire, ready to tackle the hardest project on your plate. Other days? You stare at the exact same task and it feels strangely, impossibly heavy. Nothing about the task changed, though. <em>You</em> did!
+
+That gap fascinated me far more than another feature ever could. So, I stopped asking a generic question: "How do I help someone finish more tasks?" Instead, I started asking a human one: "Why does the exact same person behave so differently from one day to the next?"
+
+Everything that followed came from that single pivot.
+
+<strong>Designing How the System Reasons</strong>
+
+It forced one massive decision that changed the entire project. Instead of opening up Figma and designing pretty screens, I started designing how the system should reason.
+
+Now, I don't mean "reasoning" in the way tech companies like to market it, where everything suddenly becomes magically intelligent. Forget that hype! I mean something much simpler: if this software was going to suggest what you should do next, what would it actually need to understand first?
+
+It wouldn't need deadlines. It wouldn't care about your daily streaks.
+
+It would need to understand <em>you</em>.
+
+That meant building an internal model of behavior before I even touched the interface. I had to look at things we all experience but rarely quantify: recovery debt, cognitive strain, execution stability, emotional friction, resilience, and momentum.
+
+At first glance, those might look like metrics. But let's be real here: they aren't objective measurements. They can't be! Human beings are just too messy for that.
+
+It turns out they are <em>interpretations</em>.
+
+That distinction became one of the core philosophies behind North. The system doesn't claim to know exactly what's happening inside your head; it simply says, "Based on everything I've observed, this seems like the most likely explanation." There is a lot of humility in that approach, and honestly, software needs a whole lot more of it.
+
+<strong>When a To-Do List Stops Looking Ordinary</strong>
+
+The interesting part is that once you start looking at behavior through this lens, even an ordinary to-do list stops looking ordinary.
+
+Take a standard list: write an article, reply to an email, go for a run. If you spend enough time thinking about human behavior, those labels start to feel totally incomplete. Some tasks quietly drain your battery before you even touch them! Others create a wave of momentum that carries you through the rest of your afternoon. Some aren't difficult because they're technically challenging; they're difficult because they carry emotional weight you've been avoiding for weeks.
+
+Traditional task managers mostly care about what needs to happen. North slowly evolved to care just as much about what happens to <em>you</em> while you're doing it. That single shift ended up changing almost every decision the system makes.
+
+<strong>The Smartest Intervention Is Often No Intervention</strong>
+
+Then came a realization I honestly didn't expect: the smartest intervention is often no intervention at all.
+
+That sounds obvious now, doesn't it? But it goes completely against how most productivity software behaves! Everything wants your attention, all the time. Another reminder, another notification, another generic motivational quote, another digital badge... it's exhausting. It tries to fix an overloaded mind by throwing <em>more</em> things at it that demand attention.
+
+In practice, I found myself deleting ideas far more often than adding them. If you are deeply focused, why interrupt you? If you are totally overwhelmed, why confront you with twelve overdue tasks before you've even had your morning coffee?! If the system isn't confident about a pattern, why should it pretend it has certainty?
+
+Those questions became our core design principles.
+
+The result is something I'm incredibly proud of: North now spends almost as much effort deciding when to stay silent as it does deciding when to speak. That might be my favorite part of the whole architecture!
+
+<strong>A Natural Rhythm</strong>
+
+Around this point, a subtle shift happened. The product stopped feeling like a random collection of features and started feeling like a natural rhythm.
+
+Morning calibration wasn't just an onboarding flow anymore; it became the moment where you pause long enough to understand what today actually requires from you. Focus mode wasn't just a timer; it became a way to protect your attention when that attention is already fragile. Evening reflection wasn't about measuring success or failure; it became an opportunity to notice patterns before they quietly turned into permanent habits.
+
+A day has a beginning, a middle, and an end. The software simply learned how to support each part differently. That felt much more human than opening the exact same static dashboard every single morning forever!
+
+<strong>An Interface That Adapts</strong>
+
+The interface itself had to change too, which was way harder than I expected. It is shockingly easy to build a sophisticated behavioral engine and then bury it beneath a generic, boring UI.
+
+I almost did exactly that! At first, everyone saw roughly the same dashboard: the same cards, the same priorities, and the same information hierarchy.
+
+But here's the catch: if the engine genuinely believes you need recovery, why should your screen look identical to someone who is ready to crush a high-energy day?
+
+It shouldn't! Someone recovering from burnout shouldn't be greeted by an interface that quietly pressures them into doing more. On the flip side, if you are full of energy, you shouldn't be slowed down by unnecessary friction, either.
+
+So, the interface became adaptive. It isn't flashy or dramatic, just... appropriate. Recovery became quieter. Focus became simpler. Expansion became a little more ambitious. The changes are subtle enough that you might never consciously notice them, which is exactly how I wanted it. The best adaptations rarely announce themselves with a megaphone.
+
+<strong>Four Stages I Didn't Plan</strong>
+
+Looking back now, I can clearly see four distinct stages, even though they weren't obvious while I was living through them.
+
+First came <em>philosophy</em>: before writing any behavioral logic, I had to decide what the product stood for, what it should optimize for, and where its boundaries lay. We had to know when it should admit uncertainty instead of pretending to be confident. Those decisions shaped every line of code that followed.
+
+Then came the <em>behavioral engine</em>: the reasoning layer. It isn't something you will ever see directly on your screen, but it's the foundation that every single decision flows through.
+
+Only after that did the actual <em>experience</em> begin to take shape through adaptive screens, behavioral reflections, protected focus, and morning calibration. Instead of exposing the raw engine directly, the interface learned how to express it.
+
+Finally, the product stopped being organized around screens altogether. It became organized around <em>moments</em>: starting the day, getting distracted, returning after a difficult week, finishing meaningful work, looking back, and planning the next week.
+
+That's when North finally started feeling coherent. More importantly, it didn't happen because it had more functionality, but because every single piece was pulling in the exact same direction.
+
+<strong>Why I'm Becoming Less Interested in AI</strong>
+
+There's one perspective that has grown stronger the longer I've worked on this: I am actually becoming less interested in AI. Or at least, less interested in the way companies currently package it up and sell it.
+
+So much software today speaks with absolute, unearned confidence. It confidently predicts, confidently recommends, and confidently explains. But human behavior rarely deserves that level of certainty! Sometimes there isn't a hidden pattern to decode. Sometimes today was simply hard. Sometimes the most honest answer is just: "I don't know yet."
+
+I believe software earns trust by saying less, not more. North tries to follow that principle everywhere. If confidence is low, it stays quiet. If evidence is weak, it waits. I'd rather give you one insight you genuinely believe than twenty observations you will immediately ignore!
+
+<strong>So What Is North Now?</strong>
+
+Honestly, I'm still figuring out how to answer that. Calling it a productivity app feels too small. Calling it an AI coach feels misleading. Neither description captures what it's actually trying to do.
+
+If we were sitting down having a coffee right now, I'd probably tell you this: North is an attempt to build software that respects the fact that people are complicated.
+
+Some days we need a challenge. Some days we need protection. Some days we don't need another system trying to squeeze a little more output from us; we need one that understands the difference.
+
+Whether I've succeeded is something only real users can tell me. This product is far from finished (I haven't even started working on the frontend yet!) But somewhere along the way, without ever planning to, I stopped building software that manages tasks and instead started trying to build software that understands the person doing them.
+
+And to me, that is a far more interesting problem to solve.
+
+--
+
+Om Jhamvar
