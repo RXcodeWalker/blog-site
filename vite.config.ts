@@ -12,6 +12,7 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import remarkGfm from "remark-gfm";
 import rehypeSlug from "rehype-slug";
 import rehypePrettyCode from "rehype-pretty-code";
+import { remarkMdxLint } from "./src/components/article/mdx/mdx-lint";
 
 // Remark plugin: embed the MDX body text (frontmatter stripped) as a named export so
 // postManifest.ts can calculate reading time without relying on `?raw` imports.
@@ -122,7 +123,7 @@ export default defineConfig({
   vite: {
     plugins: [
       mdx({
-        remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm, remarkExportRaw],
+        remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter, remarkGfm, remarkExportRaw, remarkMdxLint],
         rehypePlugins: [
           rehypeSlug,
           rehypeCollectHeadings,

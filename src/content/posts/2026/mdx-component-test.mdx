@@ -1,0 +1,139 @@
+---
+title: "MDX Component Library Test"
+publishedAt: 2026-06-29
+category: building
+tags: [Articles]
+featured: false
+draft: true
+excerpt: "A test post exercising all 9 MDX components from the magazine-grade component library."
+author: "Om Jhamvar"
+---
+
+This post exercises every component in the MDX library. It is marked `draft: true` and will not appear in the feed.
+
+## PullQuote
+
+<PullQuote attribution="— Om Jhamvar, 2026">
+  The best systems are the ones you barely notice — until the day you can't work without them.
+</PullQuote>
+
+<PullQuote accent="electric">
+  Precision matters more than speed. Get the architecture right first.
+</PullQuote>
+
+## Sidenote
+
+The rendering pipeline was rebuilt from scratch<Sidenote label="Technical detail">The old renderer used a synchronous DOM walk which blocked the main thread on large documents. The new one is async and chunked.</Sidenote> to handle documents with thousands of nodes without dropping frames.
+
+A second sidenote demonstrates stacking<Sidenote label="Performance">Memory usage dropped by 40% as a result of switching to a linked-list structure.</Sidenote> behavior.
+
+## Callout
+
+<Callout type="info" title="Context">
+  This component test requires the dev server running with `npm run dev`.
+</Callout>
+
+<Callout type="tip" title="Pro tip">
+  Use `accent="electric"` on PullQuotes for technical content and `accent="gold"` for narrative quotes.
+</Callout>
+
+<Callout type="warning" title="Watch out">
+  The `ComparisonColumn` tag must be a direct child of `ComparisonBlock`.
+</Callout>
+
+<Callout type="danger">
+  Never commit API keys. The linter will not catch this — that is your responsibility.
+</Callout>
+
+<Callout type="insight" title="Editorial insight">
+  Readers spend 3× more time on posts with interactive elements compared to text-only articles.
+</Callout>
+
+## Statistic
+
+<Statistic value="47%" label="Load time reduction" context="30-day rolling average" />
+
+<div className="flex flex-wrap gap-10 my-8">
+  <Statistic value="2.4M" label="Monthly active users" accent="electric" />
+  <Statistic value="99.97%" label="Uptime SLA" />
+  <Statistic value="14ms" label="P99 latency" accent="electric" />
+</div>
+
+## Timeline
+
+<Timeline>
+  <TimelineItem id="early" date="2020" title="Early experiments" accent>
+    First prototypes built over a weekend with vanilla JS and no framework.
+  </TimelineItem>
+  <TimelineItem date="2022" title="Framework rewrite">
+    Migrated to React after the DOM manipulation became unmanageable.
+  </TimelineItem>
+  <TimelineItem date="2024" title="Launch" accent>
+    Shipped to 500 users on day one. Server costs: $4/month.
+  </TimelineItem>
+  <TimelineItem date="2026" title="Today">
+    2.4M monthly active users and still running on the original architecture.
+  </TimelineItem>
+</Timeline>
+
+## ComparisonBlock
+
+<ComparisonBlock labels={["Before", "After"]} accent="gold">
+  <ComparisonColumn>
+    **Synchronous rendering** blocked the main thread. Users saw blank screens for 2–3 seconds on slow connections. No streaming, no skeleton states.
+  </ComparisonColumn>
+  <ComparisonColumn>
+    **Async chunked rendering** streams content as it arrives. Users see meaningful content in under 200ms. Skeleton states fill in progressively.
+  </ComparisonColumn>
+</ComparisonBlock>
+
+<ComparisonBlock labels={["Option A", "Option B", "Option C"]} accent="electric">
+  <ComparisonColumn>Simple but fragile</ComparisonColumn>
+  <ComparisonColumn>More setup, linear cost growth</ComparisonColumn>
+  <ComparisonColumn>Distributed, sub-millisecond</ComparisonColumn>
+</ComparisonBlock>
+
+## Figure
+
+<Figure
+  id="tactics-fig"
+  src="https://picsum.photos/seed/tactics/1440/810"
+  alt="Placeholder landscape image for Figure component test"
+  caption="This is an editorial caption rendered in monospace below the image."
+  attribution="Photo: Picsum Photos (placeholder)"
+  width={1440}
+  height={810}
+/>
+
+<Figure
+  src="https://picsum.photos/seed/hero/1440/400"
+  alt="Full-bleed placeholder image demonstrating the breakout layout"
+  caption="Full-bleed layout escapes the 680px prose column."
+  width={1440}
+  height={400}
+  fullBleed
+/>
+
+## Interactive Widget
+
+<InteractiveWidget name="CounterDemo" initialCount={5} />
+
+## Code Playground
+
+<CodePlayground template="react-ts" height={380}>
+{`import { useState } from 'react';
+
+export default function Counter() {
+  const [count, setCount] = useState(0);
+  return (
+    <div style={{ padding: '2rem', fontFamily: 'monospace', textAlign: 'center' }}>
+      <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>{count}</div>
+      <button onClick={() => setCount(n => n - 1)} style={{ marginRight: '0.5rem' }}>−</button>
+      <button onClick={() => setCount(0)}>Reset</button>
+      <button onClick={() => setCount(n => n + 1)} style={{ marginLeft: '0.5rem' }}>+</button>
+    </div>
+  );
+}`}
+</CodePlayground>
+
+All 9 components rendered successfully.

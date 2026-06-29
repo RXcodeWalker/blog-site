@@ -426,6 +426,12 @@
     background: transparent !important;
   }
 
+  /* Full-bleed figure breakout — escapes the 680px prose column */
+  .mdx-figure-fullbleed {
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
   /* Distraction-free focus mode ---------------------------------------------- */
   .focus-mode [data-reading-chrome] {
     opacity: 0.08;

@@ -9,6 +9,19 @@ import { toast } from "sonner";
 import { copyToClipboard } from "@/lib/share";
 import { CodeBlock } from "@/components/article/CodeBlock";
 import { ImageLightbox } from "@/components/article/ImageLightbox";
+import {
+  PullQuote,
+  Sidenote,
+  Callout,
+  Timeline,
+  TimelineItem,
+  ComparisonBlock,
+  ComparisonColumn,
+  Statistic,
+  CodePlayground,
+  InteractiveWidget,
+  Figure,
+} from "@/components/article/mdx";
 
 type AnchorProps = ComponentPropsWithoutRef<"a">;
 
@@ -151,7 +164,8 @@ function MdxOl({ children, ...rest }: ComponentPropsWithoutRef<"ol">) {
  * Pass this to MDXProvider's `components` prop or to the compiled MDX component
  * via the `components` prop to apply publication styles globally.
  */
-export const mdxComponents = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const mdxComponents: Record<string, any> = {
   a: MdxLink,
   img: ImageLightbox,
   blockquote: MdxBlockquote,
@@ -163,4 +177,16 @@ export const mdxComponents = {
   hr: MdxHr,
   ul: MdxUl,
   ol: MdxOl,
-} as const;
+
+  PullQuote,
+  Sidenote,
+  Callout,
+  Timeline,
+  TimelineItem,
+  ComparisonBlock,
+  ComparisonColumn,
+  Statistic,
+  CodePlayground,
+  InteractiveWidget,
+  Figure,
+};
