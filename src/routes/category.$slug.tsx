@@ -7,9 +7,12 @@ import {
   getPostsByCategory,
   getCategoryWithCount,
   getAllCategoriesWithCounts,
+  toPostMeta,
 } from "@/content/api.ts";
 import type { CategorySlug } from "@/content/api.ts";
-import { ArrowUpRight, SlidersHorizontal, Check } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
+import { ArticleCard } from "@/components/site/ArticleCard";
+import { categoryCssVars, getCategoryStyle } from "@/lib/categoryStyle";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -35,7 +38,7 @@ export const Route = createFileRoute("/category/$slug")({
   loader: ({ params }) => {
     const category = getCategoryWithCount(params.slug);
     if (!category) throw notFound();
-    const posts = getPostsByCategory(category.slug as CategorySlug);
+    const posts = getPostsByCategory(category.slug as CategorySlug).map(toPostMeta);
     return { category, posts };
   },
   head: ({ loaderData }) => ({
@@ -140,14 +143,26 @@ function Category() {
     long: "Long (> 10m)",
   };
 
+  const catStyle = getCategoryStyle(c.slug);
+  const Icon = catStyle.icon;
+
   return (
     <SiteShell>
       {/* Masthead */}
-      <section className="relative overflow-hidden border-b border-border">
+      <section
+        className="relative overflow-hidden border-b border-border"
+        style={categoryCssVars(c.slug)}
+      >
+        <img
+          src={c.defaultCover}
+          alt=""
+          className="absolute inset-0 -z-20 h-full w-full object-cover opacity-25"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background/70 via-background/85 to-background" />
         <div
-          className="absolute inset-0 -z-10 opacity-30"
+          className="absolute inset-0 -z-10 opacity-50"
           style={{
-            background: `radial-gradient(ellipse at top left, oklch(0.6 0.18 ${c.accent.split(" ")[0]} / 0.5), transparent 60%)`,
+            background: `radial-gradient(ellipse at top left, color-mix(in oklab, var(--cat) 45%, transparent), transparent 60%)`,
           }}
         />
         <div className="mx-auto max-w-[1440px] px-6 py-14 lg:px-12 lg:pt-20">
@@ -158,11 +173,14 @@ function Category() {
             <span>/</span>
             <span className="text-foreground">Section</span>
             <span>/</span>
-            <span className="text-gold">{c.name}</span>
+            <span className="text-[var(--cat)]">{c.name}</span>
           </div>
           <div className="mt-8 grid gap-8 md:grid-cols-12">
             <div className="md:col-span-8">
-              <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-electric">
+              <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.22em] text-[var(--cat)]">
+                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[color-mix(in_oklab,var(--cat)_20%,transparent)]">
+                  <Icon className="h-4 w-4" />
+                </span>
                 — Section {String(categoryIndex + 1).padStart(2, "0")}
               </div>
               <h1 className="mt-4 font-serif text-[clamp(2.5rem,8vw,6rem)] font-light leading-[0.9] tracking-[-0.03em] text-balance">
@@ -182,7 +200,7 @@ function Category() {
       </section>
 
       {/* Filter row */}
-      <section className="border-b border-border">
+      <section className="border-b border-border" style={categoryCssVars(c.slug)}>
         <div className="mx-auto flex max-w-[1440px] items-center gap-2 overflow-x-auto px-6 py-4 lg:px-12 font-mono text-[11px] uppercase tracking-[0.18em]">
           {["All", "Articles", "Notes", "Series"].map((t) => (
             <button
@@ -190,7 +208,7 @@ function Category() {
               onClick={() => setTag(t)}
               className={`whitespace-nowrap rounded-full border px-4 py-1.5 transition-colors ${
                 tag === t
-                  ? "border-foreground bg-foreground text-background"
+                  ? "border-[var(--cat)] bg-[var(--cat)] text-background"
                   : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
               }`}
             >
@@ -286,40 +304,11 @@ function Category() {
             No posts in this filter yet.
           </p>
         ) : (
-          <ol className="divide-y divide-border">
-            {filteredItems.map((post, i) => {
-              const displayDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              });
-              return (
-                <li key={post.slug}>
-                  <Link
-                    to="/article/$slug"
-                    params={{ slug: post.slug }}
-                    className="group grid grid-cols-1 gap-4 py-6 md:grid-cols-12 md:gap-8"
-                  >
-                    <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground md:col-span-1">
-                      {String(i + 1).padStart(2, "0")}
-                    </div>
-                    <div className="md:col-span-10">
-                      <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-electric">
-                        {post.tags[0]} · {displayDate}
-                      </div>
-                      <h3 className="mt-2 font-serif text-2xl font-light leading-tight tracking-tight transition-colors group-hover:text-gold md:text-3xl">
-                        {post.title}
-                      </h3>
-                      <p className="mt-2 max-w-xl text-muted-foreground">{post.excerpt}</p>
-                    </div>
-                    <div className="flex items-start justify-end md:col-span-1">
-                      <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground" />
-                    </div>
-                  </Link>
-                </li>
-              );
-            })}
-          </ol>
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {filteredItems.map((post) => (
+              <ArticleCard key={post.slug} post={post} />
+            ))}
+          </div>
         )}
       </section>
     </SiteShell>

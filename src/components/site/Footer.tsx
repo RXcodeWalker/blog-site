@@ -5,15 +5,15 @@ export function Footer() {
   const { email, setEmail, status, handleSubmit } = useNewsletterSubscription("footer");
 
   return (
-    <footer className="mt-20 border-t border-border">
-      <div className="mx-auto max-w-[1440px] px-6 py-10 lg:px-12">
+    <footer className="relative mt-20 overflow-hidden border-t border-border">
+      <div className="pointer-events-none absolute inset-x-0 -top-24 h-48 bg-[radial-gradient(ellipse_at_top,color-mix(in_oklab,var(--electric)_12%,transparent),transparent_70%)]" />
+      <div className="relative mx-auto max-w-[1440px] px-6 py-12 lg:px-12">
         <div className="grid gap-8 md:grid-cols-12">
           <div className="md:col-span-5">
-            <p className="font-serif text-2xl leading-[1.1] tracking-tight md:text-3xl">
+            <p className="font-serif text-3xl leading-[1.08] tracking-tight md:text-4xl">
               A student blog on <em className="text-gold">Arsenal, code, and growth</em>.
             </p>
-            <form className="mt-8 flex max-w-md gap-2" onSubmit={handleSubmit}>
-              {/* honeypot — bots fill this, humans don't */}
+            <form className="mt-8 flex max-w-md items-center gap-0" onSubmit={handleSubmit}>
               <input
                 type="text"
                 name="website"
@@ -29,14 +29,14 @@ export function Footer() {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="your@inbox.com"
                 disabled={status === "loading" || status === "success"}
-                className="flex-1 border-b border-border bg-transparent py-2 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60"
+                className="flex-1 rounded-l-full border border-border bg-secondary/40 px-4 py-2.5 text-sm placeholder:text-muted-foreground focus:border-foreground focus:outline-none disabled:opacity-60"
               />
               <button
                 type="submit"
                 disabled={status === "loading" || status === "success"}
-                className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground disabled:opacity-60"
+                className="rounded-r-full border border-l-0 border-border bg-foreground px-4 py-2.5 font-mono text-[11px] uppercase tracking-[0.16em] text-background transition-opacity hover:opacity-90 disabled:opacity-60"
               >
-                {status === "loading" ? "..." : status === "success" ? "Check inbox →" : "Subscribe →"}
+                {status === "loading" ? "..." : status === "success" ? "Check inbox" : "Subscribe"}
               </button>
             </form>
           </div>

@@ -3,9 +3,10 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { ChevronDown, ChevronRight, SlidersHorizontal, X } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
-import { getAllPosts, getAllCategoriesWithCounts, getPostYears } from "@/content/api.ts";
-import type { CategoryWithCount, PostRecord } from "@/content/api.ts";
+import { getAllPosts, getAllCategoriesWithCounts, getPostYears, toPostMeta } from "@/content/api.ts";
+import type { CategoryWithCount, PostMeta } from "@/content/api.ts";
 import { ArchivePostRow } from "@/components/archive/ArchivePostRow";
+import { categoryCssVars } from "@/lib/categoryStyle";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -54,7 +55,7 @@ type ReadTimeOption = ArchiveSearch["readTime"];
 export const Route = createFileRoute("/archive")({
   validateSearch: archiveSearchSchema,
   loader: () => ({
-    posts: getAllPosts(),
+    posts: getAllPosts().map(toPostMeta),
     categories: getAllCategoriesWithCounts(),
     years: getPostYears(),
   }),
@@ -86,9 +87,9 @@ export const Route = createFileRoute("/archive")({
 });
 
 function applyFilters(
-  posts: readonly PostRecord[],
+  posts: readonly PostMeta[],
   { q, category, tag, readTime, year, sort }: Omit<ArchiveSearch, "view" | "page">,
-): PostRecord[] {
+): PostMeta[] {
   let base = [...posts];
 
   if (q.trim()) {
@@ -311,9 +312,10 @@ function Archive() {
               <button
                 key={c.slug}
                 onClick={() => setParam("category", c.slug)}
+                style={categoryCssVars(c.slug)}
                 className={`whitespace-nowrap rounded-full border px-3 py-1 transition-colors ${
                   category === c.slug
-                    ? "border-foreground bg-foreground text-background"
+                    ? "border-[var(--cat)] bg-[var(--cat)] text-background"
                     : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
                 }`}
               >
@@ -514,11 +516,11 @@ function TimelineView({
   posts,
   allFilteredPosts,
 }: {
-  posts: PostRecord[];
-  allFilteredPosts: PostRecord[];
+  posts: PostMeta[];
+  allFilteredPosts: PostMeta[];
 }) {
   const yearGroups = useMemo(() => {
-    const map = new Map<number, PostRecord[]>();
+    const map = new Map<number, PostMeta[]>();
     for (const p of allFilteredPosts) {
       const y = new Date(p.publishedAt).getFullYear();
       if (!map.has(y)) map.set(y, []);
@@ -528,7 +530,7 @@ function TimelineView({
   }, [allFilteredPosts]);
 
   const groupedPage = useMemo(() => {
-    const map = new Map<number, PostRecord[]>();
+    const map = new Map<number, PostMeta[]>();
     for (const p of posts) {
       const y = new Date(p.publishedAt).getFullYear();
       if (!map.has(y)) map.set(y, []);
@@ -589,11 +591,11 @@ function CategoryView({
   posts,
   categories,
 }: {
-  posts: PostRecord[];
+  posts: PostMeta[];
   categories: readonly CategoryWithCount[];
 }) {
   const byCategory = useMemo(() => {
-    const map = new Map<string, PostRecord[]>();
+    const map = new Map<string, PostMeta[]>();
     for (const p of posts) {
       if (!map.has(p.category)) map.set(p.category, []);
       map.get(p.category)!.push(p);

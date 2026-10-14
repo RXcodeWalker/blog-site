@@ -9,46 +9,21 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as StartRouteImport } from './routes/start'
-import { Route as ReadingListRouteImport } from './routes/reading-list'
-import { Route as NewsletterRouteImport } from './routes/newsletter'
-import { Route as FeedsRouteImport } from './routes/feeds'
-import { Route as AuthoringRouteImport } from './routes/authoring'
-import { Route as ArchiveRouteImport } from './routes/archive'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as NewsletterConfirmedRouteImport } from './routes/newsletter_.confirmed'
-import { Route as CategorySlugRouteImport } from './routes/category.$slug'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as ArchiveRouteImport } from './routes/archive'
+import { Route as AuthoringRouteImport } from './routes/authoring'
+import { Route as FeedsRouteImport } from './routes/feeds'
+import { Route as NewsletterRouteImport } from './routes/newsletter'
+import { Route as ReadingListRouteImport } from './routes/reading-list'
+import { Route as StartRouteImport } from './routes/start'
 import { Route as ArticleSlugRouteImport } from './routes/article.$slug'
+import { Route as CategorySlugRouteImport } from './routes/category.$slug'
+import { Route as NewsletterConfirmedRouteImport } from './routes/newsletter_.confirmed'
 
-const StartRoute = StartRouteImport.update({
-  id: '/start',
-  path: '/start',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ReadingListRoute = ReadingListRouteImport.update({
-  id: '/reading-list',
-  path: '/reading-list',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NewsletterRoute = NewsletterRouteImport.update({
-  id: '/newsletter',
-  path: '/newsletter',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FeedsRoute = FeedsRouteImport.update({
-  id: '/feeds',
-  path: '/feeds',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthoringRoute = AuthoringRouteImport.update({
-  id: '/authoring',
-  path: '/authoring',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ArchiveRoute = ArchiveRouteImport.update({
-  id: '/archive',
-  path: '/archive',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -56,14 +31,39 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const ArchiveRoute = ArchiveRouteImport.update({
+  id: '/archive',
+  path: '/archive',
   getParentRoute: () => rootRouteImport,
 } as any)
-const NewsletterConfirmedRoute = NewsletterConfirmedRouteImport.update({
-  id: '/newsletter_/confirmed',
-  path: '/newsletter/confirmed',
+const AuthoringRoute = AuthoringRouteImport.update({
+  id: '/authoring',
+  path: '/authoring',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FeedsRoute = FeedsRouteImport.update({
+  id: '/feeds',
+  path: '/feeds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NewsletterRoute = NewsletterRouteImport.update({
+  id: '/newsletter',
+  path: '/newsletter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReadingListRoute = ReadingListRouteImport.update({
+  id: '/reading-list',
+  path: '/reading-list',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StartRoute = StartRouteImport.update({
+  id: '/start',
+  path: '/start',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArticleSlugRoute = ArticleSlugRouteImport.update({
+  id: '/article/$slug',
+  path: '/article/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CategorySlugRoute = CategorySlugRouteImport.update({
@@ -71,9 +71,9 @@ const CategorySlugRoute = CategorySlugRouteImport.update({
   path: '/category/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ArticleSlugRoute = ArticleSlugRouteImport.update({
-  id: '/article/$slug',
-  path: '/article/$slug',
+const NewsletterConfirmedRoute = NewsletterConfirmedRouteImport.update({
+  id: '/newsletter_/confirmed',
+  path: '/newsletter/confirmed',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -175,46 +175,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/start': {
-      id: '/start'
-      path: '/start'
-      fullPath: '/start'
-      preLoaderRoute: typeof StartRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reading-list': {
-      id: '/reading-list'
-      path: '/reading-list'
-      fullPath: '/reading-list'
-      preLoaderRoute: typeof ReadingListRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/newsletter': {
-      id: '/newsletter'
-      path: '/newsletter'
-      fullPath: '/newsletter'
-      preLoaderRoute: typeof NewsletterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/feeds': {
-      id: '/feeds'
-      path: '/feeds'
-      fullPath: '/feeds'
-      preLoaderRoute: typeof FeedsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/authoring': {
-      id: '/authoring'
-      path: '/authoring'
-      fullPath: '/authoring'
-      preLoaderRoute: typeof AuthoringRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/archive': {
-      id: '/archive'
-      path: '/archive'
-      fullPath: '/archive'
-      preLoaderRoute: typeof ArchiveRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -224,18 +189,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/archive': {
+      id: '/archive'
+      path: '/archive'
+      fullPath: '/archive'
+      preLoaderRoute: typeof ArchiveRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/newsletter_/confirmed': {
-      id: '/newsletter_/confirmed'
-      path: '/newsletter/confirmed'
-      fullPath: '/newsletter/confirmed'
-      preLoaderRoute: typeof NewsletterConfirmedRouteImport
+    '/authoring': {
+      id: '/authoring'
+      path: '/authoring'
+      fullPath: '/authoring'
+      preLoaderRoute: typeof AuthoringRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/feeds': {
+      id: '/feeds'
+      path: '/feeds'
+      fullPath: '/feeds'
+      preLoaderRoute: typeof FeedsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/newsletter': {
+      id: '/newsletter'
+      path: '/newsletter'
+      fullPath: '/newsletter'
+      preLoaderRoute: typeof NewsletterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reading-list': {
+      id: '/reading-list'
+      path: '/reading-list'
+      fullPath: '/reading-list'
+      preLoaderRoute: typeof ReadingListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/start': {
+      id: '/start'
+      path: '/start'
+      fullPath: '/start'
+      preLoaderRoute: typeof StartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/article/$slug': {
+      id: '/article/$slug'
+      path: '/article/$slug'
+      fullPath: '/article/$slug'
+      preLoaderRoute: typeof ArticleSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/category/$slug': {
@@ -245,11 +245,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CategorySlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/article/$slug': {
-      id: '/article/$slug'
-      path: '/article/$slug'
-      fullPath: '/article/$slug'
-      preLoaderRoute: typeof ArticleSlugRouteImport
+    '/newsletter_/confirmed': {
+      id: '/newsletter_/confirmed'
+      path: '/newsletter/confirmed'
+      fullPath: '/newsletter/confirmed'
+      preLoaderRoute: typeof NewsletterConfirmedRouteImport
       parentRoute: typeof rootRouteImport
     }
   }

@@ -16,6 +16,12 @@ import type { CategorySlug, CategoryWithCount, PostMeta, PostRecord } from "./ty
 
 export type { CategorySlug, CategoryWithCount, PostMeta, PostRecord };
 
+/** Drop the compiled MDX component so loader payloads stay serializable. */
+export function toPostMeta(post: PostRecord): PostMeta {
+  const { Content: _content, ...meta } = post;
+  return meta;
+}
+
 // ---------------------------------------------------------------------------
 // Post queries
 // ---------------------------------------------------------------------------
