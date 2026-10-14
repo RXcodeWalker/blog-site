@@ -190,25 +190,25 @@ function Article() {
       <ShortcutsHelp open={helpOpen} onOpenChange={setHelpOpen} />
 
       <article>
-        <header className="mx-auto max-w-3xl px-6 pb-16 pt-20 text-center lg:pt-32">
+        <header className="mx-auto max-w-3xl px-6 pb-10 pt-12 text-center lg:pt-16">
           <Link
             to="/"
             className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground hover:text-foreground inline-flex items-center gap-2"
           >
             <ArrowLeft className="h-3 w-3" /> All essays
           </Link>
-          <div className="mt-12 flex items-center justify-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-electric">
+          <div className="mt-8 flex items-center justify-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-electric">
             <span>{post.category}</span>
             <span className="h-px w-8 bg-border" />
             {post.tags[0] && <span>{post.tags[0]}</span>}
           </div>
-          <h1 className="mt-6 font-serif text-[clamp(2.5rem,6vw,5.5rem)] font-light leading-[1.02] tracking-[-0.025em] text-balance">
+          <h1 className="mt-4 font-serif text-[clamp(2rem,5vw,3.5rem)] font-light leading-[1.02] tracking-[-0.025em] text-balance">
             {post.title}
           </h1>
-          <p className="mt-8 mx-auto max-w-2xl font-serif text-xl leading-relaxed text-muted-foreground italic text-pretty md:text-2xl">
+          <p className="mt-5 mx-auto max-w-2xl font-serif text-lg leading-relaxed text-muted-foreground italic text-pretty md:text-xl">
             {post.excerpt}
           </p>
-          <div className="mt-10 flex items-center justify-center gap-6 font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+          <div className="mt-6 flex items-center justify-center gap-6 font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
             <span>{post.author}</span>
             <span className="h-1 w-1 rounded-full bg-border" />
             <span>{displayDate}</span>
@@ -216,12 +216,6 @@ function Article() {
             <span>{post.readingTimeMinutes} min</span>
           </div>
         </header>
-
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="relative aspect-[16/9] overflow-hidden rounded">
-            <img src={post.cover} alt="" className="h-full w-full object-cover" />
-          </div>
-        </div>
 
         {/* Resume prompt */}
         {savedPercent !== null && (
@@ -247,13 +241,13 @@ function Article() {
 
         {/* Series index (kept outside .reading-prose so it doesn't inherit prose styles) */}
         {seriesPosts.length > 1 && (
-          <div className="mt-16 px-6">
+          <div className="mt-10 px-6">
             <SeriesNav posts={seriesPosts} currentSlug={post.slug} />
           </div>
         )}
 
         {/* Body + rails */}
-        <div className="relative mx-auto mt-20 grid max-w-[1280px] grid-cols-1 gap-12 px-6 lg:grid-cols-[1fr_minmax(0,680px)_1fr]">
+        <div className="relative mx-auto mt-12 grid max-w-[1280px] grid-cols-1 gap-10 px-6 lg:grid-cols-[1fr_minmax(0,680px)_1fr]">
           <ReadingRail
             bookmarked={bookmarked}
             onToggleBookmark={handleToggleBookmark}
@@ -286,8 +280,8 @@ function Article() {
         <Interactions slug={post.slug} initialInteractions={interactions} />
 
         {/* Author + CTA */}
-        <div className="mx-auto mt-16 max-w-2xl px-6">
-          <div className="flex items-start gap-5 border-y border-border py-8">
+        <div className="mx-auto mt-10 max-w-2xl px-6">
+          <div className="flex items-start gap-5 border-y border-border py-6">
             <div className="flex h-12 w-12 items-center justify-center rounded-full border border-border font-serif italic text-gold">
               O
             </div>
@@ -308,16 +302,16 @@ function Article() {
 
       {/* Related */}
       {related.length > 0 && (
-        <section className="mx-auto mt-32 max-w-[1440px] px-6 lg:px-12">
-          <div className="border-b border-border pb-6">
+        <section className="mx-auto mt-20 max-w-[1440px] px-6 lg:px-12">
+          <div className="border-b border-border pb-4">
             <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
               — Continue reading
             </div>
-            <h3 className="mt-2 font-serif text-4xl font-light tracking-tight md:text-5xl">
+            <h3 className="mt-2 font-serif text-3xl font-light tracking-tight md:text-4xl">
               Adjacent essays
             </h3>
           </div>
-          <div className="mt-10 grid gap-10 md:grid-cols-3">
+          <div className="mt-8 grid gap-8 md:grid-cols-3">
             {related.map((r) => {
               const relatedDate = new Date(r.publishedAt).toLocaleDateString("en-US", {
                 year: "numeric",
@@ -331,19 +325,11 @@ function Article() {
                   params={{ slug: r.slug }}
                   className="group block hover-lift"
                 >
-                  <div className="aspect-[4/5] overflow-hidden">
-                    <img
-                      src={r.cover}
-                      alt=""
-                      loading="lazy"
-                      className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.22em] text-electric">
+                  <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.22em] text-electric">
                     {r.category}
                   </div>
-                  <h4 className="mt-2 font-serif text-2xl leading-tight">{r.title}</h4>
-                  <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                  <h4 className="mt-2 font-serif text-xl leading-tight">{r.title}</h4>
+                  <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                     <span>{relatedDate}</span>
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                   </div>

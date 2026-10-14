@@ -99,21 +99,21 @@ function NewsletterPage() {
 
   return (
     <SiteShell>
-      <section className="mx-auto max-w-[1280px] px-6 pb-24 pt-24 lg:px-12 lg:pt-36">
+      <section className="mx-auto max-w-[1280px] px-6 pb-16 pt-16 lg:px-12 lg:pt-20">
         <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
           — The Newsletter
         </div>
-        <h1 className="mt-8 max-w-3xl font-serif text-[clamp(2.5rem,6vw,5rem)] font-light leading-[0.95] tracking-[-0.03em]">
+        <h1 className="mt-6 max-w-3xl font-serif text-[clamp(2rem,5vw,3.5rem)] font-light leading-[0.95] tracking-[-0.03em]">
           Occasional, considered writing.
         </h1>
-        <p className="mt-6 max-w-md text-sm text-muted-foreground">
+        <p className="mt-4 max-w-md text-sm text-muted-foreground">
           No noise. No hype. Just the things I can't stop thinking about — football, code, and
           what it means to keep getting better.
         </p>
 
         <SubscribeForm />
 
-        <div className="mt-24">
+        <div className="mt-16">
           <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
             — Archive
           </div>

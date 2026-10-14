@@ -7,7 +7,7 @@ import { useBookmarks } from "@/hooks/useBookmarks";
 type Props = { onSearch: () => void };
 
 const navCls =
-  "font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground transition-colors hover:text-foreground underline-grow";
+  "font-mono text-sm uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground underline-grow";
 
 export function Header({ onSearch }: Props) {
   const [scrolled, setScrolled] = useState(false);
@@ -28,15 +28,15 @@ export function Header({ onSearch }: Props) {
       }`}
     >
       <div className="mx-auto max-w-[1440px] px-6 lg:px-12">
-        <div className="flex h-16 items-center justify-between">
+        <div className="flex h-14 items-center justify-between">
           <Link to="/" className="group flex items-baseline gap-3">
-            <span className="font-serif text-xl tracking-tight">Beyond&nbsp;the&nbsp;Basics</span>
-            <span className="hidden font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:inline">
+            <span className="font-serif text-lg tracking-tight">Beyond&nbsp;the&nbsp;Basics</span>
+            <span className="hidden font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground sm:inline">
               / Om's Blog
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-6 md:flex">
+          <nav className="hidden items-center gap-5 md:flex">
             <Link to="/start" className={navCls} activeProps={{ className: "text-foreground" }}>
               <span className="text-gold">Start Here</span>
             </Link>
@@ -85,12 +85,12 @@ export function Header({ onSearch }: Props) {
             </button>
             <button
               onClick={onSearch}
-              className="group flex cursor-pointer items-center gap-3 rounded-md border border-border bg-secondary/40 px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+              className="group flex cursor-pointer items-center gap-2 rounded-md border border-border bg-secondary/40 px-3 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               aria-label="Open search"
             >
               <Search className="h-3.5 w-3.5" />
               <span className="hidden sm:inline">Search</span>
-              <kbd className="hidden items-center gap-0.5 rounded border border-border bg-background/60 px-1.5 py-0.5 font-mono text-[10px] sm:flex">
+              <kbd className="hidden items-center gap-0.5 rounded border border-border bg-background/60 px-1.5 py-0.5 font-mono text-xs sm:flex">
                 <Command className="h-2.5 w-2.5" /> K
               </kbd>
             </button>

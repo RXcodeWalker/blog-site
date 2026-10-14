@@ -23,29 +23,29 @@ function ReadingList() {
 
   return (
     <SiteShell>
-      <div className="mx-auto max-w-3xl px-6 pb-24 pt-24 lg:pt-32">
+      <div className="mx-auto max-w-3xl px-6 pb-16 pt-16 lg:pt-20">
         <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
           — Saved for later
         </div>
-        <h1 className="mt-3 font-serif text-5xl font-light tracking-tight md:text-6xl">
+        <h1 className="mt-3 font-serif text-3xl font-light tracking-tight md:text-4xl">
           Reading list
         </h1>
 
         {posts.length === 0 ? (
-          <div className="mt-16 flex flex-col items-center rounded-lg border border-dashed border-border py-20 text-center">
-            <Bookmark className="h-7 w-7 text-muted-foreground" />
-            <p className="mt-5 max-w-sm font-serif text-xl text-muted-foreground">
+          <div className="mt-10 flex flex-col items-center rounded-lg border border-dashed border-border py-14 text-center">
+            <Bookmark className="h-6 w-6 text-muted-foreground" />
+            <p className="mt-4 max-w-sm font-serif text-lg text-muted-foreground">
               Nothing saved yet. Tap the bookmark on any essay to keep it here.
             </p>
             <Link
               to="/"
-              className="mt-6 font-mono text-[11px] uppercase tracking-[0.22em] underline-grow"
+              className="mt-5 font-mono text-[11px] uppercase tracking-[0.22em] underline-grow"
             >
               Browse the index →
             </Link>
           </div>
         ) : (
-          <ul className="mt-12 divide-y divide-border border-y border-border">
+          <ul className="mt-8 divide-y divide-border border-y border-border">
             {posts.map((post) => {
               const date = new Date(post.publishedAt).toLocaleDateString("en-US", {
                 year: "numeric",
@@ -53,15 +53,15 @@ function ReadingList() {
                 day: "numeric",
               });
               return (
-                <li key={post.slug} className="group flex items-center gap-4 py-6">
+                <li key={post.slug} className="group flex items-center gap-4 py-4">
                   <Link to="/article/$slug" params={{ slug: post.slug }} className="min-w-0 flex-1">
                     <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-electric">
                       {post.category}
                     </div>
-                    <h2 className="mt-1 truncate font-serif text-2xl leading-tight transition-colors group-hover:text-gold">
+                    <h2 className="mt-1 truncate font-serif text-xl leading-tight transition-colors group-hover:text-gold">
                       {post.title}
                     </h2>
-                    <div className="mt-2 flex items-center gap-3 text-xs text-muted-foreground">
+                    <div className="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
                       <span>{date}</span>
                       <span className="h-1 w-1 rounded-full bg-border" />
                       <span>{post.readingTimeMinutes} min</span>

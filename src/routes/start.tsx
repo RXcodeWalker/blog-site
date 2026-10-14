@@ -116,14 +116,14 @@ function StartHere() {
   return (
     <SiteShell>
       {/* A. WELCOME HERO */}
-      <section className="mx-auto max-w-[1280px] px-6 pb-20 pt-24 lg:px-12 lg:pt-36">
+      <section className="mx-auto max-w-[1280px] px-6 pb-12 pt-16 lg:px-12 lg:pt-20">
         <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
           — Start Here
         </div>
-        <h1 className="mt-8 max-w-3xl font-serif text-[clamp(2.5rem,7vw,6rem)] font-light leading-[0.95] tracking-[-0.03em] text-balance">
+        <h1 className="mt-6 max-w-3xl font-serif text-[clamp(2rem,6vw,4.5rem)] font-light leading-[0.95] tracking-[-0.03em] text-balance">
           New here? This is where to begin.
         </h1>
-        <p className="mt-8 max-w-xl text-lg leading-relaxed text-muted-foreground text-pretty">
+        <p className="mt-5 max-w-xl text-base leading-relaxed text-muted-foreground text-pretty">
           I'm Om Jhamvar — a student from India who writes about Arsenal tactics,
           building software, and growing up in public. This page cuts through the
           archive and gets you to the right work, fast.
@@ -141,17 +141,17 @@ function StartHere() {
       </section>
 
       {/* B. READER PATHS */}
-      <section className="mx-auto max-w-[1280px] px-6 pb-32 lg:px-12">
-        <div className="border-b border-border pb-6">
+      <section className="mx-auto max-w-[1280px] px-6 pb-20 lg:px-12">
+        <div className="border-b border-border pb-4">
           <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
             — 01
           </div>
-          <h2 className="mt-2 font-serif text-4xl font-light tracking-tight md:text-5xl">
+          <h2 className="mt-2 font-serif text-3xl font-light tracking-tight md:text-4xl">
             Choose your entry point
           </h2>
         </div>
 
-        <div className="mt-10 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
           {READER_PATHS.map((path) => {
             const Icon = path.icon;
             return (
@@ -199,17 +199,17 @@ function StartHere() {
       </section>
 
       {/* C. CURATED "BEST OF" */}
-      <section className="mx-auto max-w-[1280px] px-6 pb-32 lg:px-12">
-        <div className="border-b border-border pb-6">
+      <section className="mx-auto max-w-[1280px] px-6 pb-20 lg:px-12">
+        <div className="border-b border-border pb-4">
           <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
             — 02
           </div>
-          <h2 className="mt-2 font-serif text-4xl font-light tracking-tight md:text-5xl">
+          <h2 className="mt-2 font-serif text-3xl font-light tracking-tight md:text-4xl">
             The Work
           </h2>
         </div>
 
-        <div className="mt-10 grid gap-x-10 gap-y-16 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-x-8 gap-y-10 md:grid-cols-2 lg:grid-cols-3">
           {curated.map((post, i) => (
             <CuratedCard key={post.slug} post={post} index={i} />
           ))}
@@ -217,16 +217,16 @@ function StartHere() {
       </section>
 
       {/* D. ABOUT THE AUTHOR */}
-      <section className="mx-auto max-w-[1280px] border-t border-border px-6 pb-32 pt-16 lg:px-12">
-        <div className="grid gap-12 md:grid-cols-2 md:items-start">
+      <section className="mx-auto max-w-[1280px] border-t border-border px-6 pb-20 pt-12 lg:px-12">
+        <div className="grid gap-8 md:grid-cols-2 md:items-start">
           <div>
             <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
               — 03
             </div>
-            <h2 className="mt-2 font-serif text-4xl font-light tracking-tight md:text-5xl">
+            <h2 className="mt-2 font-serif text-3xl font-light tracking-tight md:text-4xl">
               About Om
             </h2>
-            <p className="mt-6 text-muted-foreground leading-relaxed">
+            <p className="mt-4 text-muted-foreground leading-relaxed">
               Om Jhamvar is a student from India writing about Arsenal, software, and
               growth. He publishes match analysis, leadership essays, and reflections
               in public. LCM Grade 8 Guitar with High Distinction.
@@ -262,7 +262,7 @@ function StartHere() {
 
       {/* E. NEWSLETTER CTA */}
       <SubscribeCTA />
-      <div className="pb-24" />
+      <div className="pb-16" />
     </SiteShell>
   );
 }
@@ -271,9 +271,7 @@ function StartHere() {
 // Sub-components
 // ---------------------------------------------------------------------------
 
-function CuratedCard({ post, index }: { post: PostRecord; index: number }) {
-  const tall = index % 5 === 1;
-  const isFootball = post.category === "football";
+function CuratedCard({ post }: { post: PostRecord; index: number }) {
   const displayDate = new Date(post.publishedAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
@@ -286,32 +284,14 @@ function CuratedCard({ post, index }: { post: PostRecord; index: number }) {
       params={{ slug: post.slug }}
       className="group flex flex-col hover-lift"
     >
-      <div
-        className={`relative overflow-hidden ${
-          isFootball ? "aspect-[16/10]" : tall ? "aspect-[3/4]" : "aspect-[4/5]"
-        }`}
-      >
-        <img
-          src={post.cover}
-          alt=""
-          loading="lazy"
-          className="h-full w-full object-cover transition-transform duration-[1.2s] group-hover:scale-[1.05]"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-        {post.tags[0] && (
-          <span className="absolute left-4 top-4 rounded-full glass px-2.5 py-1 font-mono text-[9px] uppercase tracking-[0.22em]">
-            {post.tags[0]}
-          </span>
-        )}
-      </div>
-      <div className="mt-5 font-mono text-[10px] uppercase tracking-[0.22em] text-electric">
+      <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-electric">
         {post.category}
       </div>
-      <h3 className="mt-3 font-serif text-2xl font-normal leading-tight tracking-tight">
+      <h3 className="mt-2 font-serif text-xl font-normal leading-tight tracking-tight">
         {post.title}
       </h3>
-      <p className="mt-3 line-clamp-2 text-sm text-muted-foreground">{post.excerpt}</p>
-      <div className="mt-4 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+      <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{post.excerpt}</p>
+      <div className="mt-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
         <span>{displayDate}</span>
         <span>{post.readingTimeMinutes} min</span>
       </div>

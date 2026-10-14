@@ -23,23 +23,23 @@ export const Route = createFileRoute("/about")({
 function About() {
   return (
     <SiteShell>
-      <section className="mx-auto max-w-[1280px] px-6 pb-24 pt-24 lg:px-12 lg:pt-36">
+      <section className="mx-auto max-w-[1280px] px-6 pb-16 pt-16 lg:px-12 lg:pt-20">
         <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
           — The Story
         </div>
-        <h1 className="mt-8 max-w-4xl font-serif text-[clamp(3rem,8vw,7rem)] font-light leading-[0.95] tracking-[-0.03em] text-balance">
+        <h1 className="mt-6 max-w-4xl font-serif text-[clamp(2.5rem,7vw,5rem)] font-light leading-[0.95] tracking-[-0.03em] text-balance">
           About <em className="italic text-gold">Me.</em>
         </h1>
 
-        <div className="mt-20 grid gap-16 md:grid-cols-12">
+        <div className="mt-12 grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
-            <p className="font-serif text-2xl leading-snug text-muted-foreground italic text-pretty">
+            <p className="font-serif text-xl leading-snug text-muted-foreground italic text-pretty">
               Hey! I'm Om Jhamvar, a 10th grade student from India who is obsessed with football,
               coding, and continuous learning.
             </p>
             <Link
               to="/"
-              className="mt-10 inline-block font-mono text-[11px] uppercase tracking-[0.22em] underline-grow"
+              className="mt-6 inline-block font-mono text-[11px] uppercase tracking-[0.22em] underline-grow"
             >
               ← Back to the index
             </Link>
@@ -65,14 +65,14 @@ function About() {
 
       {/* What Drives Me */}
       <section className="border-y border-border bg-secondary/30">
-        <div className="mx-auto max-w-[1280px] px-6 py-24 lg:px-12">
+        <div className="mx-auto max-w-[1280px] px-6 py-16 lg:px-12">
           <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
             — What Drives Me
           </div>
-          <h2 className="mt-4 font-serif text-5xl font-light tracking-tight md:text-6xl">
+          <h2 className="mt-3 font-serif text-3xl font-light tracking-tight md:text-4xl">
             Four pillars.
           </h2>
-          <ol className="mt-16 grid gap-px overflow-hidden border border-border md:grid-cols-2">
+          <ol className="mt-10 grid gap-px overflow-hidden border border-border md:grid-cols-2">
             {[
               {
                 n: "I",
@@ -95,10 +95,10 @@ function About() {
                 d: "Committed to continuous learning and personal development across everything I do.",
               },
             ].map((p) => (
-              <li key={p.n} className="bg-background p-10 md:p-14">
-                <div className="font-serif text-5xl italic text-gold">{p.n}</div>
-                <h3 className="mt-6 font-serif text-3xl tracking-tight">{p.t}</h3>
-                <p className="mt-3 text-muted-foreground">{p.d}</p>
+              <li key={p.n} className="bg-background p-8 md:p-10">
+                <div className="font-serif text-4xl italic text-gold">{p.n}</div>
+                <h3 className="mt-4 font-serif text-2xl tracking-tight">{p.t}</h3>
+                <p className="mt-2 text-muted-foreground">{p.d}</p>
               </li>
             ))}
           </ol>
@@ -106,16 +106,16 @@ function About() {
       </section>
 
       {/* Editor */}
-      <section className="mx-auto max-w-[1280px] px-6 py-24 lg:px-12">
-        <div className="grid gap-16 md:grid-cols-12">
+      <section className="mx-auto max-w-[1280px] px-6 py-16 lg:px-12">
+        <div className="grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
             <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
               — Quick Facts
             </div>
-            <h2 className="mt-4 font-serif text-5xl font-light leading-tight tracking-tight">
+            <h2 className="mt-3 font-serif text-3xl font-light leading-tight tracking-tight">
               Om Jhamvar
             </h2>
-            <p className="mt-6 max-w-md text-muted-foreground">
+            <p className="mt-4 max-w-md text-muted-foreground">
               Student builder, Arsenal fan, and curious creator sharing honest progress over
               polished perfection.
             </p>
@@ -144,13 +144,13 @@ function About() {
 
       {/* Colophon */}
       <section className="border-t border-border">
-        <div className="mx-auto max-w-[1280px] px-6 py-24 lg:px-12">
-          <div className="grid gap-12 md:grid-cols-12">
+        <div className="mx-auto max-w-[1280px] px-6 py-16 lg:px-12">
+          <div className="grid gap-8 md:grid-cols-12">
             <div className="md:col-span-4">
               <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
                 — Let's Connect
               </div>
-              <h2 className="mt-4 font-serif text-4xl font-light leading-tight tracking-tight">
+              <h2 className="mt-3 font-serif text-3xl font-light leading-tight tracking-tight">
                 Let's talk football or build something cool.
               </h2>
             </div>

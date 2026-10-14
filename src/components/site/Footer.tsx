@@ -5,11 +5,11 @@ export function Footer() {
   const { email, setEmail, status, handleSubmit } = useNewsletterSubscription("footer");
 
   return (
-    <footer className="mt-32 border-t border-border">
-      <div className="mx-auto max-w-[1440px] px-6 py-16 lg:px-12">
-        <div className="grid gap-12 md:grid-cols-12">
+    <footer className="mt-20 border-t border-border">
+      <div className="mx-auto max-w-[1440px] px-6 py-10 lg:px-12">
+        <div className="grid gap-8 md:grid-cols-12">
           <div className="md:col-span-5">
-            <p className="font-serif text-3xl leading-[1.1] tracking-tight md:text-4xl">
+            <p className="font-serif text-2xl leading-[1.1] tracking-tight md:text-3xl">
               A student blog on <em className="text-gold">Arsenal, code, and growth</em>.
             </p>
             <form className="mt-8 flex max-w-md gap-2" onSubmit={handleSubmit}>
@@ -124,8 +124,8 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="editorial-rule mt-16" />
-        <div className="mt-8 flex flex-wrap items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+        <div className="editorial-rule mt-10" />
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-4 font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
           <span>© 2026 Beyond the Basics by Om Jhamvar.</span>
           <span>Built in public. Learning every day.</span>
         </div>

@@ -452,7 +452,7 @@ function Archive() {
             Archive / Every Post
           </div>
           <div className="mt-2 flex items-baseline gap-6">
-            <h1 className="font-serif text-4xl font-light tracking-tight">
+            <h1 className="font-serif text-3xl font-light tracking-tight">
               {filteredPosts.length} {filteredPosts.length === 1 ? "entry" : "entries"}
             </h1>
             {!isFiltered && oldestYear && newestYear && (

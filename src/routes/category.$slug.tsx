@@ -150,7 +150,7 @@ function Category() {
             background: `radial-gradient(ellipse at top left, oklch(0.6 0.18 ${c.accent.split(" ")[0]} / 0.5), transparent 60%)`,
           }}
         />
-        <div className="mx-auto max-w-[1440px] px-6 py-24 lg:px-12 lg:py-36">
+        <div className="mx-auto max-w-[1440px] px-6 py-14 lg:px-12 lg:pt-20">
           <div className="flex items-center gap-4 font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
             <Link to="/" className="hover:text-foreground">
               Index
@@ -160,20 +160,20 @@ function Category() {
             <span>/</span>
             <span className="text-gold">{c.name}</span>
           </div>
-          <div className="mt-12 grid gap-12 md:grid-cols-12">
+          <div className="mt-8 grid gap-8 md:grid-cols-12">
             <div className="md:col-span-8">
               <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-electric">
                 — Section {String(categoryIndex + 1).padStart(2, "0")}
               </div>
-              <h1 className="mt-6 font-serif text-[clamp(3rem,10vw,9rem)] font-light leading-[0.9] tracking-[-0.03em] text-balance">
+              <h1 className="mt-4 font-serif text-[clamp(2.5rem,8vw,6rem)] font-light leading-[0.9] tracking-[-0.03em] text-balance">
                 {c.name}
               </h1>
             </div>
-            <div className="md:col-span-4 md:pt-12">
-              <p className="font-serif text-xl italic leading-relaxed text-muted-foreground text-pretty">
+            <div className="md:col-span-4 md:pt-8">
+              <p className="font-serif text-lg italic leading-relaxed text-muted-foreground text-pretty">
                 {c.desc}
               </p>
-              <div className="mt-6 font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
+              <div className="mt-4 font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
                 {c.count} {c.count === 1 ? "entry" : "entries"} · Updated regularly
               </div>
             </div>
@@ -280,7 +280,7 @@ function Category() {
       </section>
 
       {/* List */}
-      <section className="mx-auto max-w-[1440px] px-6 py-20 lg:px-12">
+      <section className="mx-auto max-w-[1440px] px-6 py-12 lg:px-12">
         {filteredItems.length === 0 ? (
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
             No posts in this filter yet.
@@ -298,27 +298,19 @@ function Category() {
                   <Link
                     to="/article/$slug"
                     params={{ slug: post.slug }}
-                    className="group grid grid-cols-1 gap-6 py-10 md:grid-cols-12 md:gap-10"
+                    className="group grid grid-cols-1 gap-4 py-6 md:grid-cols-12 md:gap-8"
                   >
                     <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground md:col-span-1">
                       {String(i + 1).padStart(2, "0")}
                     </div>
-                    <div className="md:col-span-7">
+                    <div className="md:col-span-10">
                       <div className="font-mono text-[10px] uppercase tracking-[0.22em] text-electric">
                         {post.tags[0]} · {displayDate}
                       </div>
-                      <h3 className="mt-2 font-serif text-3xl font-light leading-tight tracking-tight transition-colors group-hover:text-gold md:text-4xl">
+                      <h3 className="mt-2 font-serif text-2xl font-light leading-tight tracking-tight transition-colors group-hover:text-gold md:text-3xl">
                         {post.title}
                       </h3>
-                      <p className="mt-3 max-w-xl text-muted-foreground">{post.excerpt}</p>
-                    </div>
-                    <div className="relative aspect-[4/3] overflow-hidden md:col-span-3">
-                      <img
-                        src={post.cover}
-                        alt=""
-                        loading="lazy"
-                        className="h-full w-full object-cover transition-transform duration-1000 group-hover:scale-105"
-                      />
+                      <p className="mt-2 max-w-xl text-muted-foreground">{post.excerpt}</p>
                     </div>
                     <div className="flex items-start justify-end md:col-span-1">
                       <ArrowUpRight className="h-5 w-5 text-muted-foreground transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-foreground" />

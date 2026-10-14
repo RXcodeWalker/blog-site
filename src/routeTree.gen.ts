@@ -13,6 +13,7 @@ import { Route as StartRouteImport } from './routes/start'
 import { Route as ReadingListRouteImport } from './routes/reading-list'
 import { Route as NewsletterRouteImport } from './routes/newsletter'
 import { Route as FeedsRouteImport } from './routes/feeds'
+import { Route as AuthoringRouteImport } from './routes/authoring'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
@@ -38,6 +39,11 @@ const NewsletterRoute = NewsletterRouteImport.update({
 const FeedsRoute = FeedsRouteImport.update({
   id: '/feeds',
   path: '/feeds',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthoringRoute = AuthoringRouteImport.update({
+  id: '/authoring',
+  path: '/authoring',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ArchiveRoute = ArchiveRouteImport.update({
@@ -75,6 +81,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
+  '/authoring': typeof AuthoringRoute
   '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
@@ -87,6 +94,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
+  '/authoring': typeof AuthoringRoute
   '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
@@ -100,6 +108,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
+  '/authoring': typeof AuthoringRoute
   '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
@@ -114,6 +123,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/archive'
+    | '/authoring'
     | '/feeds'
     | '/newsletter'
     | '/reading-list'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/archive'
+    | '/authoring'
     | '/feeds'
     | '/newsletter'
     | '/reading-list'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/archive'
+    | '/authoring'
     | '/feeds'
     | '/newsletter'
     | '/reading-list'
@@ -151,6 +163,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   ArchiveRoute: typeof ArchiveRoute
+  AuthoringRoute: typeof AuthoringRoute
   FeedsRoute: typeof FeedsRoute
   NewsletterRoute: typeof NewsletterRoute
   ReadingListRoute: typeof ReadingListRoute
@@ -188,6 +201,13 @@ declare module '@tanstack/react-router' {
       path: '/feeds'
       fullPath: '/feeds'
       preLoaderRoute: typeof FeedsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/authoring': {
+      id: '/authoring'
+      path: '/authoring'
+      fullPath: '/authoring'
+      preLoaderRoute: typeof AuthoringRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/archive': {
@@ -239,6 +259,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ArchiveRoute: ArchiveRoute,
+  AuthoringRoute: AuthoringRoute,
   FeedsRoute: FeedsRoute,
   NewsletterRoute: NewsletterRoute,
   ReadingListRoute: ReadingListRoute,
