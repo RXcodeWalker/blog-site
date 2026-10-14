@@ -79,6 +79,16 @@ export function Footer() {
             </h4>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
+                <Link to="/start" className="underline-grow">
+                  Start Here
+                </Link>
+              </li>
+              <li>
+                <Link to="/archive" className="underline-grow">
+                  Archive
+                </Link>
+              </li>
+              <li>
                 <Link to="/about" className="underline-grow">
                   About
                 </Link>

@@ -23,7 +23,7 @@ import { cn } from "@/lib/utils";
 type Props = { onSearch: () => void };
 
 const navCls =
-  "relative font-mono text-sm uppercase tracking-[0.14em] text-muted-foreground transition-colors hover:text-foreground";
+  "relative font-mono text-[11px] uppercase tracking-[0.12em] text-muted-foreground transition-colors hover:text-foreground";
 
 export function Header({ onSearch }: Props) {
   const [scrolled, setScrolled] = useState(false);
@@ -52,24 +52,17 @@ export function Header({ onSearch }: Props) {
           scrolled && "px-4 lg:px-6",
         )}
       >
-        <div className="flex h-14 items-center justify-between">
-          <Link to="/" className="group flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-secondary/60 font-serif text-[11px] italic tracking-tight text-gradient-brand">
-              BtB
+        <div className="flex min-h-16 items-center justify-between gap-4 py-2">
+          <Link to="/" className="group flex min-w-0 flex-col justify-center leading-none">
+            <span className="font-serif text-xl tracking-tight sm:text-2xl">
+              Beyond the Basics
             </span>
-            <span className="flex items-baseline gap-3">
-              <span className="font-serif text-lg tracking-tight">Beyond&nbsp;the&nbsp;Basics</span>
-              <span className="hidden font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground sm:inline">
-                / Om's Blog
-              </span>
+            <span className="mt-1 font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
+              Om's Blog
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-5 lg:flex">
-            <Link to="/start" className={`${navCls} group`} activeProps={{ className: "text-foreground" }}>
-              <span className="text-gold">Start Here</span>
-              <ActiveDot className="bg-gold" />
-            </Link>
+          <nav className="hidden items-center gap-4 lg:flex">
             <NavItem to="/" exact>
               Index
             </NavItem>
@@ -78,7 +71,6 @@ export function Header({ onSearch }: Props) {
                 {CATEGORIES[slug].name}
               </NavCat>
             ))}
-            <NavItem to="/archive">Archive</NavItem>
             <NavItem to="/about">About</NavItem>
           </nav>
 
@@ -88,7 +80,7 @@ export function Header({ onSearch }: Props) {
                 <Link
                   to="/reading-list"
                   aria-label="Reading list"
-                  className="group relative flex h-9 w-9 items-center justify-center rounded-full border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+                  className="group relative hidden h-9 w-9 items-center justify-center rounded-full border border-border bg-secondary/40 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground lg:flex"
                   activeProps={{ className: "text-foreground" }}
                 >
                   <Bookmark className="h-3.5 w-3.5" />
@@ -195,23 +187,12 @@ function IconTip({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function ActiveDot({ className }: { className?: string }) {
-  return (
-    <span
-      className={cn(
-        "absolute -bottom-1 left-1/2 hidden h-1 w-1 -translate-x-1/2 rounded-full group-data-[status=active]:block",
-        className,
-      )}
-    />
-  );
-}
-
 function NavItem({
   to,
   exact,
   children,
 }: {
-  to: "/" | "/about" | "/archive";
+  to: "/" | "/about";
   exact?: boolean;
   children: ReactNode;
 }) {
