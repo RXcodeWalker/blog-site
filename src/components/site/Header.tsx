@@ -4,7 +4,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { categoryCssVars, getCategoryStyle } from "@/lib/categoryStyle";
-import { CATEGORY_SLUGS, CATEGORIES } from "@/content/taxonomy/categories";
+import { getAllCategoriesWithCounts } from "@/content/api.ts";
 import {
   Tooltip,
   TooltipContent,
@@ -28,13 +28,19 @@ const navCls =
 export function Header({ onSearch }: Props) {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [searchMod, setSearchMod] = useState("Ctrl");
   const { theme, toggleTheme } = useTheme();
   const { bookmarks } = useBookmarks();
+  const navCategories = getAllCategoriesWithCounts().filter((c) => c.count > 0);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  useEffect(() => {
+    const mac = /Mac|iPhone|iPad/.test(navigator.platform);
+    setSearchMod(mac ? "⌘" : "Ctrl");
   }, []);
 
   return (
@@ -66,9 +72,9 @@ export function Header({ onSearch }: Props) {
             <NavItem to="/" exact>
               Index
             </NavItem>
-            {CATEGORY_SLUGS.map((slug) => (
-              <NavCat key={slug} slug={slug}>
-                {CATEGORIES[slug].name}
+            {navCategories.map((c) => (
+              <NavCat key={c.slug} slug={c.slug}>
+                {c.name}
               </NavCat>
             ))}
             <NavItem to="/about">About</NavItem>
@@ -117,7 +123,13 @@ export function Header({ onSearch }: Props) {
                   <Search className="h-3.5 w-3.5" />
                   <span className="hidden sm:inline">Search</span>
                   <kbd className="hidden items-center gap-0.5 rounded border border-border bg-background/60 px-1.5 py-0.5 font-mono text-xs sm:flex">
-                    <Command className="h-2.5 w-2.5" /> K
+                    {searchMod === "⌘" ? (
+                      <>
+                        <Command className="h-2.5 w-2.5" /> K
+                      </>
+                    ) : (
+                      "Ctrl K"
+                    )}
                   </kbd>
                 </button>
               </IconTip>
@@ -144,18 +156,18 @@ export function Header({ onSearch }: Props) {
                     <MobileLink to="/" exact onClick={() => setMenuOpen(false)}>
                       Index
                     </MobileLink>
-                    {CATEGORY_SLUGS.map((slug) => (
+                    {navCategories.map((c) => (
                       <Link
-                        key={slug}
+                        key={c.slug}
                         to="/category/$slug"
-                        params={{ slug }}
+                        params={{ slug: c.slug }}
                         onClick={() => setMenuOpen(false)}
-                        style={categoryCssVars(slug)}
+                        style={categoryCssVars(c.slug)}
                         className="flex items-center gap-3 rounded-lg px-2 py-2.5 text-sm text-muted-foreground hover:bg-secondary hover:text-foreground"
                         activeProps={{ className: "text-foreground bg-secondary/60" }}
                       >
                         <span className="h-2 w-2 rounded-full bg-[var(--cat)]" />
-                        {CATEGORIES[slug].name}
+                        {c.name}
                       </Link>
                     ))}
                     <MobileLink to="/archive" onClick={() => setMenuOpen(false)}>

@@ -145,6 +145,22 @@ function Category() {
 
   const catStyle = getCategoryStyle(c.slug);
   const Icon = catStyle.icon;
+  const liveTags = useMemo(() => {
+    const tags = new Set<string>();
+    for (const post of allPosts) {
+      for (const t of post.tags) tags.add(t);
+    }
+    return [...tags].sort((a, b) => a.localeCompare(b));
+  }, [allPosts]);
+  const showTagFilters = liveTags.length > 1;
+  const newestPost = allPosts[0];
+  const newestDate = newestPost
+    ? new Date(newestPost.publishedAt).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    : null;
 
   return (
     <SiteShell>
@@ -192,7 +208,8 @@ function Category() {
                 {c.desc}
               </p>
               <div className="mt-4 font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                {c.count} {c.count === 1 ? "entry" : "entries"} · Updated regularly
+                {c.count} {c.count === 1 ? "entry" : "entries"}
+                {newestDate ? ` · Latest ${newestDate}` : ""}
               </div>
             </div>
           </div>
@@ -202,19 +219,20 @@ function Category() {
       {/* Filter row */}
       <section className="border-b border-border" style={categoryCssVars(c.slug)}>
         <div className="mx-auto flex max-w-[1440px] items-center gap-2 overflow-x-auto px-6 py-4 lg:px-12 font-mono text-[11px] uppercase tracking-[0.18em]">
-          {["All", "Articles", "Notes", "Series"].map((t) => (
-            <button
-              key={t}
-              onClick={() => setTag(t)}
-              className={`whitespace-nowrap rounded-full border px-4 py-1.5 transition-colors ${
-                tag === t
-                  ? "border-[var(--cat)] bg-[var(--cat)] text-background"
-                  : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
-              }`}
-            >
-              {t}
-            </button>
-          ))}
+          {showTagFilters &&
+            ["All", ...liveTags].map((t) => (
+              <button
+                key={t}
+                onClick={() => setTag(t)}
+                className={`whitespace-nowrap rounded-full border px-4 py-1.5 transition-colors ${
+                  tag === t
+                    ? "border-[var(--cat)] bg-[var(--cat)] text-background"
+                    : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
+                }`}
+              >
+                {t}
+              </button>
+            ))}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -266,18 +284,22 @@ function Category() {
                 ))}
               </DropdownMenuRadioGroup>
 
-              <DropdownMenuSeparator />
+              {showTagFilters && (
+                <>
+                  <DropdownMenuSeparator />
 
-              <DropdownMenuLabel className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
-                Tag
-              </DropdownMenuLabel>
-              <DropdownMenuRadioGroup value={tag} onValueChange={setTag}>
-                {["All", "Articles", "Notes", "Series"].map((t) => (
-                  <DropdownMenuRadioItem key={t} value={t} className="text-xs uppercase">
-                    {t}
-                  </DropdownMenuRadioItem>
-                ))}
-              </DropdownMenuRadioGroup>
+                  <DropdownMenuLabel className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground">
+                    Tag
+                  </DropdownMenuLabel>
+                  <DropdownMenuRadioGroup value={tag} onValueChange={setTag}>
+                    {["All", ...liveTags].map((t) => (
+                      <DropdownMenuRadioItem key={t} value={t} className="text-xs uppercase">
+                        {t}
+                      </DropdownMenuRadioItem>
+                    ))}
+                  </DropdownMenuRadioGroup>
+                </>
+              )}
 
               {(sort !== "recency-desc" || readTime !== "any" || tag !== "All") && (
                 <>

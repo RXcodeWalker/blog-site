@@ -9,7 +9,6 @@ interface PostCoverProps {
   photo?: string;
   photoAlt?: string;
   className?: string;
-  issue?: number;
 }
 
 function hashSlug(slug: string): number {
@@ -21,21 +20,15 @@ function hashSlug(slug: string): number {
   return h >>> 0;
 }
 
-function issueFromHash(h: number) {
-  return (h % 96) + 4;
-}
-
 export function PostCover({
   slug,
   category,
   photo,
   photoAlt,
   className,
-  issue,
 }: PostCoverProps) {
   const style = getCategoryStyle(category);
   const h = hashSlug(slug);
-  const n = issue ?? issueFromHash(h);
   const rot = (h % 17) - 8;
   const ox = ((h >> 3) % 21) - 10;
   const oy = ((h >> 7) % 17) - 8;
@@ -55,9 +48,6 @@ export function PostCover({
         <GeneratedArt pattern={style.pattern} hash={h} rot={rot} ox={ox} oy={oy} />
       )}
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-background/70 via-background/10 to-transparent" />
-      <span className="pointer-events-none absolute bottom-2 right-3 font-serif text-4xl italic leading-none text-foreground/25 md:text-5xl">
-        No.&nbsp;{String(n).padStart(2, "0")}
-      </span>
     </div>
   );
 }

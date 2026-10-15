@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
-import { getPostBySlug } from "@/content/api.ts";
+import { getAllCategoriesWithCounts, getAllPosts, getPostBySlug } from "@/content/api.ts";
 import type { PostRecord } from "@/content/api.ts";
 import { SubscribeCTA } from "@/components/article/SubscribeCTA";
 import {
@@ -30,8 +30,10 @@ interface ReaderPath {
   icon: LucideIcon;
   title: string;
   audience: string;
-  posts: string[];
-  cta: { label: string; to: string; params?: Record<string, string> };
+  slugs: string[];
+  cta:
+    | { label: string; to: "/category/$slug"; params: { slug: string } }
+    | { label: string; to: "/about" };
 }
 
 const READER_PATHS: ReaderPath[] = [
@@ -39,10 +41,10 @@ const READER_PATHS: ReaderPath[] = [
     icon: Target,
     title: "Football Analyst",
     audience: "You want tactical breakdowns and match analysis.",
-    posts: [
-      "Arsenal Destroy Madrid 3-0",
-      "Arsenal's Attacking Struggles",
-      "Arsenal vs Tottenham",
+    slugs: [
+      "arsenal-destroy-madrid-3-0",
+      "arsenals-attacking-struggles",
+      "game-review-arsenal-vs-tottenham",
     ],
     cta: { label: "Football →", to: "/category/$slug", params: { slug: "football" } },
   },
@@ -50,10 +52,10 @@ const READER_PATHS: ReaderPath[] = [
     icon: Brain,
     title: "Mindset Reader",
     audience: "You want growth frameworks and mental models.",
-    posts: [
-      "37.78x Better Each Year",
-      "Leadership Essentially",
-      "Confirmation Bias",
+    slugs: [
+      "how-to-become-37-78x-better-each-year",
+      "leadership-essentially",
+      "confirmation-bias-we-sure-love-ourselves",
     ],
     cta: { label: "Mindset →", to: "/category/$slug", params: { slug: "mindset" } },
   },
@@ -61,10 +63,10 @@ const READER_PATHS: ReaderPath[] = [
     icon: User,
     title: "Who is Om?",
     audience: "You're reviewing Om's full profile and range.",
-    posts: [
-      "Arsenal Destroy Madrid 3-0",
-      "37.78x Better Each Year",
-      "My Summer at Ashoka",
+    slugs: [
+      "arsenal-destroy-madrid-3-0",
+      "how-to-become-37-78x-better-each-year",
+      "my-summer-at-ashoka-university",
     ],
     cta: { label: "Full story →", to: "/about" },
   },
@@ -72,12 +74,12 @@ const READER_PATHS: ReaderPath[] = [
     icon: Code2,
     title: "Builder / Coder",
     audience: "You want technical thinking and software projects.",
-    posts: [
-      "Arsenal's Attacking Struggles",
-      "37.78x Better Each Year",
-      "About page projects",
+    slugs: [
+      "why-i-started-building-french-coach",
+      "i-thought-i-was-building-a-productivity-app",
+      "building-starts-here",
     ],
-    cta: { label: "About →", to: "/about" },
+    cta: { label: "Building →", to: "/category/$slug", params: { slug: "building" } },
   },
 ];
 
@@ -165,27 +167,34 @@ function StartHere() {
                 </div>
                 <p className="mt-2 text-sm text-muted-foreground">{path.audience}</p>
                 <ul className="mt-4 flex-1 space-y-1">
-                  {path.posts.map((post) => (
-                    <li
-                      key={post}
-                      className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70"
-                    >
-                      — {post}
-                    </li>
-                  ))}
+                  {path.slugs.map((slug) => {
+                    const post = getPostBySlug(slug);
+                    if (!post) return null;
+                    return (
+                      <li key={slug}>
+                        <Link
+                          to="/article/$slug"
+                          params={{ slug }}
+                          className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/70 hover:text-foreground"
+                        >
+                          — {post.title}
+                        </Link>
+                      </li>
+                    );
+                  })}
                 </ul>
                 <div className="mt-6 border-t border-border pt-4">
-                  {"params" in path.cta && path.cta.params ? (
+                  {path.cta.to === "/category/$slug" ? (
                     <Link
-                      to={path.cta.to as "/category/$slug"}
-                      params={path.cta.params as { slug: string }}
+                      to="/category/$slug"
+                      params={path.cta.params}
                       className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.18em] text-gold hover:text-foreground transition-colors"
                     >
                       {path.cta.label} <ArrowUpRight className="h-3 w-3" />
                     </Link>
                   ) : (
                     <Link
-                      to={path.cta.to as "/about"}
+                      to="/about"
                       className="inline-flex items-center gap-1 font-mono text-[11px] uppercase tracking-[0.18em] text-gold hover:text-foreground transition-colors"
                     >
                       {path.cta.label} <ArrowUpRight className="h-3 w-3" />
@@ -241,8 +250,11 @@ function StartHere() {
           <div className="flex flex-col justify-center gap-4">
             <div className="grid grid-cols-3 gap-4">
               {[
-                { value: "28", label: "Essays" },
-                { value: "5", label: "Categories" },
+                { value: String(getAllPosts().length), label: "Posts" },
+                {
+                  value: String(getAllCategoriesWithCounts().filter((c) => c.count > 0).length),
+                  label: "Categories",
+                },
                 { value: "2020", label: "Since" },
               ].map(({ value, label }) => (
                 <div

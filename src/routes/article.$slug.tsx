@@ -192,10 +192,10 @@ function Article() {
       <article>
         <header className="mx-auto max-w-3xl px-6 pb-10 pt-12 text-center lg:pt-16">
           <Link
-            to="/"
+            to="/archive"
             className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground hover:text-foreground inline-flex items-center gap-2"
           >
-            <ArrowLeft className="h-3 w-3" /> All essays
+            <ArrowLeft className="h-3 w-3" /> All posts
           </Link>
           <div className="mt-8 flex items-center justify-center gap-4 font-mono text-[11px] uppercase tracking-[0.22em] text-electric">
             <span>{post.category}</span>
@@ -286,14 +286,19 @@ function Article() {
               O
             </div>
             <div className="flex-1">
-              <div className="font-serif text-lg">{post.author}</div>
+              <Link to="/about" className="font-serif text-lg hover:text-gold">
+                {post.author}
+              </Link>
               <div className="text-sm text-muted-foreground">
-                Founding editor. Writes about the things he can't stop thinking about.
+                Student from India writing about Arsenal, code, and growth in public.
               </div>
             </div>
-            <button className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground hover:text-foreground underline-grow">
+            <Link
+              to="/newsletter"
+              className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground hover:text-foreground underline-grow"
+            >
               Follow →
-            </button>
+            </Link>
           </div>
         </div>
 
@@ -329,6 +334,7 @@ function Article() {
                     {r.category}
                   </div>
                   <h4 className="mt-2 font-serif text-xl leading-tight">{r.title}</h4>
+                  <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{r.excerpt}</p>
                   <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                     <span>{relatedDate}</span>
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />

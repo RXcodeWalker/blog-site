@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { useNewsletterSubscription } from "@/hooks/useNewsletterSubscription";
+import { getAllCategoriesWithCounts } from "@/content/api.ts";
 
 export function Footer() {
   const { email, setEmail, status, handleSubmit } = useNewsletterSubscription("footer");
+  const sections = getAllCategoriesWithCounts().filter((c) => c.count > 0);
 
   return (
     <footer className="relative mt-20 overflow-hidden border-t border-border">
@@ -46,31 +48,13 @@ export function Footer() {
               Sections
             </h4>
             <ul className="mt-4 space-y-2 text-sm">
-              <li>
-                <Link to="/category/$slug" params={{ slug: "football" }} className="underline-grow">
-                  Football
-                </Link>
-              </li>
-              <li>
-                <Link to="/category/$slug" params={{ slug: "mindset" }} className="underline-grow">
-                  Mindset
-                </Link>
-              </li>
-              <li>
-                <Link to="/category/$slug" params={{ slug: "learning" }} className="underline-grow">
-                  Learning
-                </Link>
-              </li>
-              <li>
-                <Link to="/category/$slug" params={{ slug: "building" }} className="underline-grow">
-                  Building
-                </Link>
-              </li>
-              <li>
-                <Link to="/category/$slug" params={{ slug: "journal" }} className="underline-grow">
-                  Journal
-                </Link>
-              </li>
+              {sections.map((c) => (
+                <li key={c.slug}>
+                  <Link to="/category/$slug" params={{ slug: c.slug }} className="underline-grow">
+                    {c.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div className="md:col-span-2">
@@ -94,11 +78,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a className="underline-grow" href="#">
-                  Colophon
-                </a>
-              </li>
-              <li>
                 <Link to="/newsletter" className="underline-grow">
                   Newsletter
                 </Link>
@@ -118,11 +97,6 @@ export function Footer() {
               <li>
                 <a className="underline-grow" href="/feeds">
                   All Feeds
-                </a>
-              </li>
-              <li>
-                <a className="underline-grow" href="https://x.com" target="_blank" rel="noreferrer">
-                  X / Twitter
                 </a>
               </li>
               <li>
