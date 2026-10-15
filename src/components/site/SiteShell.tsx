@@ -18,7 +18,7 @@ export function SiteShell({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground">
+    <div className="site-canvas relative min-h-screen bg-background text-foreground">
       <Header onSearch={() => setSearch(true)} />
       <main>{children}</main>
       <Footer />

@@ -1,5 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
+/* "sepia" is our theme class on <html>; without this Tailwind emits filter: sepia(100%) for it */
+@source not inline("sepia");
 @import "tw-animate-css";
 @import url("https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
 
@@ -33,6 +35,7 @@
   --color-electric: var(--electric);
   --color-ivory: var(--ivory);
   --color-graphite: var(--graphite);
+  --color-warning: var(--warning);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -71,6 +74,7 @@
   --accent-foreground: oklch(0.95 0.014 80);
   --electric: oklch(0.74 0.17 245);
   --gold: oklch(0.8 0.13 75);
+  --warning: oklch(0.83 0.15 85);
   --destructive: oklch(0.6 0.22 25);
   --destructive-foreground: oklch(0.97 0 0);
   --border: oklch(1 0 0 / 0.09);
@@ -106,6 +110,7 @@
   --accent-foreground: #000000;
   --electric: oklch(0.5 0.18 245);
   --gold: oklch(0.58 0.13 75);
+  --warning: oklch(0.56 0.13 65);
   --border: oklch(0 0 0 / 0.09);
   --input: oklch(0 0 0 / 0.1);
   --ring: oklch(0.5 0.18 245 / 0.4);
@@ -118,33 +123,66 @@
 }
 
 .sepia {
-  --background: oklch(0.92 0.03 85);
-  --foreground: oklch(0.25 0.03 85);
-  --ivory: oklch(0.2 0.03 85);
-  --graphite: oklch(0.88 0.03 85);
-  --card: oklch(0.9 0.03 85);
-  --card-foreground: oklch(0.25 0.03 85);
-  --popover: oklch(0.9 0.03 85);
-  --popover-foreground: oklch(0.25 0.03 85);
-  --primary: oklch(0.25 0.03 85);
-  --primary-foreground: oklch(0.92 0.03 85);
-  --secondary: oklch(0.88 0.03 85);
-  --secondary-foreground: oklch(0.25 0.03 85);
-  --muted: oklch(0.88 0.03 85);
-  --muted-foreground: oklch(0.45 0.03 85);
-  --accent: oklch(0.85 0.03 85);
-  --accent-foreground: oklch(0.25 0.03 85);
-  --electric: oklch(0.45 0.1 245);
-  --gold: oklch(0.55 0.12 75);
-  --border: oklch(0.25 0.03 85 / 0.12);
-  --input: oklch(0.25 0.03 85 / 0.05);
-  --ring: oklch(0.45 0.1 245 / 0.4);
-  --cat-football: oklch(0.48 0.16 25);
-  --cat-mindset: oklch(0.46 0.12 295);
-  --cat-learning: oklch(0.46 0.08 210);
-  --cat-building: oklch(0.44 0.1 160);
-  --cat-journal: oklch(0.5 0.12 75);
-  --shadow-float-token: 0 16px 32px -14px rgba(60, 40, 10, 0.16);
+  /* Warm linen, not lemon: hue ~65-75 with very low chroma. Text is espresso, never black. */
+  --background: oklch(0.925 0.017 70);
+  --foreground: oklch(0.3 0.026 50);
+  --ivory: oklch(0.25 0.024 48);
+  --graphite: oklch(0.89 0.018 66);
+  --card: oklch(0.948 0.013 76);
+  --card-foreground: oklch(0.3 0.026 50);
+  --popover: oklch(0.948 0.013 76);
+  --popover-foreground: oklch(0.3 0.026 50);
+  --primary: oklch(0.3 0.026 50);
+  --primary-foreground: oklch(0.948 0.013 76);
+  --secondary: oklch(0.895 0.018 66);
+  --secondary-foreground: oklch(0.3 0.026 50);
+  --muted: oklch(0.89 0.018 66);
+  --muted-foreground: oklch(0.48 0.026 52);
+  --accent: oklch(0.87 0.02 64);
+  --accent-foreground: oklch(0.3 0.026 50);
+  --electric: oklch(0.46 0.07 225);
+  --gold: oklch(0.51 0.095 46);
+  --warning: oklch(0.52 0.11 58);
+  --destructive: oklch(0.5 0.15 28);
+  --border: oklch(0.35 0.03 50 / 0.13);
+  --input: oklch(0.35 0.03 50 / 0.07);
+  --ring: oklch(0.51 0.095 46 / 0.4);
+  --cat-football: oklch(0.5 0.13 28);
+  --cat-mindset: oklch(0.48 0.09 320);
+  --cat-learning: oklch(0.48 0.06 215);
+  --cat-building: oklch(0.47 0.07 155);
+  --cat-journal: oklch(0.5 0.09 55);
+  --shadow-float-token: 0 18px 36px -18px rgba(70, 45, 25, 0.16);
+}
+
+/* Ambient lamp-lit paper: warm glow from above, gently deepened edges, faint grain */
+.sepia .site-canvas {
+  isolation: isolate;
+}
+.sepia .site-canvas::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.3  0 0 0 0 0.2  0 0 0 0 0.1  0 0 0 0.1 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>"),
+    radial-gradient(ellipse 80% 55% at 50% -5%, oklch(0.96 0.014 78 / 0.9), transparent 70%),
+    radial-gradient(ellipse 120% 90% at 50% 50%, transparent 55%, oklch(0.87 0.022 58 / 0.6) 100%),
+    var(--background);
+}
+.sepia .bg-mesh {
+  background:
+    radial-gradient(
+      ellipse 70% 55% at 15% -10%,
+      color-mix(in oklab, var(--gold) 9%, transparent),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse 50% 45% at 90% 5%,
+      color-mix(in oklab, var(--cat-mindset) 5%, transparent),
+      transparent 55%
+    );
 }
 
 @layer base {
@@ -543,7 +581,8 @@
   .dark .reading-prose [data-rehype-pretty-code-figure] span {
     color: var(--shiki-dark, inherit);
   }
-  .light .reading-prose [data-rehype-pretty-code-figure] span {
+  .light .reading-prose [data-rehype-pretty-code-figure] span,
+  .sepia .reading-prose [data-rehype-pretty-code-figure] span {
     color: var(--shiki-light, inherit);
   }
   .reading-prose [data-rehype-pretty-code-figure] [data-line] span {

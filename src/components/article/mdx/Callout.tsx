@@ -24,9 +24,9 @@ const CONFIG: Record<
   },
   warning: {
     icon: AlertTriangle,
-    border: "border-yellow-500/40",
-    bg: "bg-yellow-500/5",
-    iconColor: "text-yellow-400",
+    border: "border-warning/40",
+    bg: "bg-warning/5",
+    iconColor: "text-warning",
     role: "alert",
   },
   danger: {
