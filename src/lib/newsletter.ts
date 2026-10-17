@@ -79,7 +79,7 @@ export const subscribeNewsletter = createServerFn({ method: "POST" })
     try {
       await buttondownFetch("/subscribers", {
         method: "POST",
-        body: JSON.stringify({ email: data.email, tags: [`source:${data.source}`] }),
+        body: JSON.stringify({ email_address: data.email }),
       });
       return { ok: true };
     } catch (err: unknown) {
