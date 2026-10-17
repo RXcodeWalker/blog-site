@@ -52,7 +52,7 @@ export function Header({ onSearch }: Props) {
         className={cn(
           "mx-auto max-w-[1440px] transition-all duration-500",
           scrolled
-            ? "rounded-2xl border border-white/5 shadow-float glass-strong"
+            ? "rounded-2xl border border-white/5 shadow-float glass-nav"
             : "bg-transparent",
           !scrolled && "px-6 lg:px-12",
           scrolled && "px-4 lg:px-6",
