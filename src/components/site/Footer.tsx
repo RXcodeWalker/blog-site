@@ -4,7 +4,9 @@ import { getAllCategoriesWithCounts } from "@/content/api.ts";
 
 export function Footer() {
   const { email, setEmail, status, handleSubmit } = useNewsletterSubscription("footer");
-  const sections = getAllCategoriesWithCounts().filter((c) => c.count > 0);
+  const sections = getAllCategoriesWithCounts().filter(
+    (c) => c.count > 0 || c.slug === "journal",
+  );
 
   return (
     <footer className="relative mt-20 overflow-hidden border-t border-border">

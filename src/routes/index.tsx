@@ -33,7 +33,9 @@ export const Route = createFileRoute("/")({
 function Index() {
   const feature = getLatestPost();
   const latestSix = getLatestPosts(6, 1);
-  const categories = getAllCategoriesWithCounts().filter((c) => c.count > 0);
+  const categories = getAllCategoriesWithCounts().filter(
+    (c) => c.count > 0 || c.slug === "journal",
+  );
 
   if (!feature) return null;
 
@@ -131,11 +133,9 @@ function Index() {
                   </div>
                   <div className="mt-2 font-serif text-2xl font-light leading-tight">{c.name}</div>
                   <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{c.desc}</p>
-                  {latest && (
-                    <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--cat)]">
-                      {categoryLatestLine(c.count, latest)}
-                    </div>
-                  )}
+                  <div className="mt-4 font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--cat)]">
+                    {latest ? categoryLatestLine(c.count, latest) : "No entries yet"}
+                  </div>
                 </div>
               </Link>
             );

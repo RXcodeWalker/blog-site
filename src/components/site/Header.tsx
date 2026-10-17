@@ -31,7 +31,9 @@ export function Header({ onSearch }: Props) {
   const [searchMod, setSearchMod] = useState("Ctrl");
   const { theme, toggleTheme } = useTheme();
   const { bookmarks } = useBookmarks();
-  const navCategories = getAllCategoriesWithCounts().filter((c) => c.count > 0);
+  const navCategories = getAllCategoriesWithCounts().filter(
+    (c) => c.count > 0 || c.slug === "journal",
+  );
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
