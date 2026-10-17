@@ -44,9 +44,9 @@ export function Footer() {
           </div>
 
           <div className="md:col-span-2 md:col-start-8">
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Sections
-            </h4>
+            </h2>
             <ul className="mt-4 space-y-2 text-sm">
               {sections.map((c) => (
                 <li key={c.slug}>
@@ -58,9 +58,9 @@ export function Footer() {
             </ul>
           </div>
           <div className="md:col-span-2">
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Editorial
-            </h4>
+            </h2>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <Link to="/start" className="underline-grow">
@@ -85,9 +85,9 @@ export function Footer() {
             </ul>
           </div>
           <div className="md:col-span-2">
-            <h4 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+            <h2 className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
               Index
-            </h4>
+            </h2>
             <ul className="mt-4 space-y-2 text-sm">
               <li>
                 <a className="underline-grow" href="/rss.xml">

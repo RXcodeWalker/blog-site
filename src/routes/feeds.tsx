@@ -3,17 +3,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { CATEGORY_SLUGS, CATEGORIES } from "@/content/taxonomy/categories";
 import { SITE_URL } from "@/content/feeds/constants";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/feeds")({
-  head: () => ({
-    meta: [
-      { title: "Subscribe — Beyond the Basics" },
-      {
-        name: "description",
-        content: "RSS and JSON feeds for every section of Beyond the Basics.",
-      },
-    ],
-  }),
+  head: () =>
+    buildHead({
+      title: "Subscribe",
+      description: "RSS and JSON feeds for every section of Beyond the Basics.",
+      path: "/feeds",
+    }),
   component: FeedsPage,
 });
 

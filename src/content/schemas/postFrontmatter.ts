@@ -24,6 +24,8 @@ export const postFrontmatterSchema = z.object({
   tags: z.array(PostTagSchema).default([]),
   featured: z.boolean().default(false),
   excerpt: z.string().optional(),
+  seoTitle: z.string().optional(),
+  description: z.string().optional(),
   author: z.string().default("Om Jhamvar"),
   related: z.array(z.string()).default([]),
   draft: z.boolean().default(false),

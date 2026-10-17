@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
 import { getArticleStructuredData } from "@/lib/structured-data";
+import { buildHead, jsonLd } from "@/lib/seo";
 import { getPostBySlug, getRelatedPosts, getAdjacentPosts, getSeriesPosts } from "@/content/api.ts";
 import { getInteractions } from "@/lib/interactions";
 import { mdxComponents } from "@/content/render/mdx-components";
@@ -35,43 +36,37 @@ export const Route = createFileRoute("/article/$slug")({
     const { Content: _content, ...serializablePost } = post;
     return { post: serializablePost, interactions };
   },
-  head: ({ loaderData }) => ({
-    scripts: loaderData?.post
-      ? getArticleStructuredData(loaderData.post).map((schema) => ({
-          type: "application/ld+json",
-          children: JSON.stringify(schema),
-        }))
-      : [],
-    meta: loaderData?.post
-      ? [
-          { title: `${loaderData.post.title} — Beyond the Basics` },
-          { name: "description", content: loaderData.post.excerpt },
-          { property: "og:type", content: "article" },
-          { property: "og:title", content: loaderData.post.title },
-          { property: "og:description", content: loaderData.post.excerpt },
-          { property: "og:url", content: `https://beyondthebasics.me/article/${loaderData.post.slug}` },
-          { property: "og:image", content: `https://beyondthebasics.me/og/${loaderData.post.slug}.png` },
-          { property: "og:image:width", content: "1200" },
-          { property: "og:image:height", content: "630" },
-          { property: "og:image:alt", content: `${loaderData.post.title} — Beyond the Basics` },
-          { name: "twitter:card", content: "summary_large_image" },
-          { name: "twitter:title", content: loaderData.post.title },
-          { name: "twitter:description", content: loaderData.post.excerpt },
-          { name: "twitter:image", content: `https://beyondthebasics.me/og/${loaderData.post.slug}.png` },
-          { name: "twitter:image:alt", content: `${loaderData.post.title} — Beyond the Basics` },
-        ]
-      : [],
-    links: loaderData?.post
-      ? [
-          {
-            rel: "alternate",
-            type: "application/rss+xml",
-            title: `${loaderData.post.category} — RSS Feed`,
-            href: `/category/${loaderData.post.category}/rss.xml`,
-          },
-        ]
-      : [],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData?.post) return {};
+    const post = loaderData.post;
+    const head = buildHead({
+      title: post.seoTitle,
+      description: post.description,
+      path: `/article/${post.slug}`,
+      image: `/og/${post.slug}.png`,
+      imageAlt: `${post.title} — Beyond the Basics`,
+      type: "article",
+      article: {
+        publishedAt: post.publishedAt,
+        updatedAt: post.updatedAt,
+        section: post.category,
+        author: post.author,
+      },
+    });
+    return {
+      ...head,
+      scripts: jsonLd(getArticleStructuredData(post)),
+      links: [
+        ...head.links,
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: `${post.category} — RSS Feed`,
+          href: `/category/${post.category}/rss.xml`,
+        },
+      ],
+    };
+  },
   notFoundComponent: () => (
     <SiteShell>
       <div className="mx-auto max-w-2xl px-6 py-40 text-center">
@@ -312,9 +307,9 @@ function Article() {
             <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
               — Continue reading
             </div>
-            <h3 className="mt-2 font-serif text-3xl font-light tracking-tight md:text-4xl">
+            <h2 className="mt-2 font-serif text-3xl font-light tracking-tight md:text-4xl">
               Adjacent essays
-            </h3>
+            </h2>
           </div>
           <div className="mt-8 grid gap-8 md:grid-cols-3">
             {related.map((r) => {
@@ -333,7 +328,7 @@ function Article() {
                   <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.22em] text-electric">
                     {r.category}
                   </div>
-                  <h4 className="mt-2 font-serif text-xl leading-tight">{r.title}</h4>
+                  <h3 className="mt-2 font-serif text-xl leading-tight">{r.title}</h3>
                   <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{r.excerpt}</p>
                   <div className="mt-2 flex items-center justify-between text-xs text-muted-foreground">
                     <span>{relatedDate}</span>

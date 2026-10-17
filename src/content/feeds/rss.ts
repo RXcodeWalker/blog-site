@@ -45,7 +45,7 @@ export function generateRssFeed(options: RssFeedOptions = {}): string {
       <title>${escapeXml(post.title)}</title>
       <link>${escapeXml(link)}</link>
       <guid isPermaLink="true">${escapeXml(link)}</guid>
-      <description>${escapeXml(post.excerpt)}</description>
+      <description>${escapeXml(post.description)}</description>
       <pubDate>${pubDate}</pubDate>
       <category>${escapeXml(post.category)}</category>
       ${post.tags.map((t) => `<category>${escapeXml(t)}</category>`).join("\n      ")}

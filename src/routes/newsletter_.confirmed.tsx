@@ -1,13 +1,15 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/newsletter_/confirmed")({
-  head: () => ({
-    meta: [
-      { title: "You're subscribed — Beyond the Basics" },
-      { name: "description", content: "Thanks for confirming. You're on the list." },
-    ],
-  }),
+  head: () =>
+    buildHead({
+      title: "You're subscribed",
+      description: "Thanks for confirming. You're on the list.",
+      path: "/newsletter/confirmed",
+      noindex: true,
+    }),
   component: NewsletterConfirmed,
 });
 

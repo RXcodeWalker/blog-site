@@ -113,6 +113,8 @@ function buildManifest(): PostRecord[] {
 
     const category = CATEGORIES[fm.category];
     const excerpt = fm.excerpt ?? extractExcerpt(body);
+    const description = fm.description ?? excerpt;
+    const seoTitle = fm.seoTitle ?? fm.title;
 
     records.push({
       slug,
@@ -123,6 +125,8 @@ function buildManifest(): PostRecord[] {
       tags: fm.tags,
       featured: fm.featured,
       excerpt,
+      seoTitle,
+      description,
       cover: category.defaultCover,
       author: fm.author,
       related: fm.related,

@@ -1,14 +1,22 @@
-import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION } from "@/content/feeds/constants";
+import {
+  AUTHOR,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_TITLE,
+  SITE_URL,
+} from "@/content/feeds/constants";
 import type { PostMeta, CategoryMeta } from "@/content/types";
 
 const PERSON_ID = `${SITE_URL}/#person`;
 const ORG_ID = `${SITE_URL}/#organization`;
 const WEBSITE_ID = `${SITE_URL}/#website`;
 
-interface SchemaRef { "@id": string }
+interface SchemaRef {
+  "@id": string;
+}
 
 interface SchemaPerson {
-  "@context": "https://schema.org";
+  "@context"?: "https://schema.org";
   "@type": "Person";
   "@id": string;
   name: string;
@@ -17,12 +25,11 @@ interface SchemaPerson {
 }
 
 interface SchemaOrganization {
-  "@context": "https://schema.org";
   "@type": "Organization";
   "@id": string;
   name: string;
   url: string;
-  logo: { "@type": "ImageObject"; url: string };
+  logo: { "@type": "ImageObject"; url: string; width: number; height: number };
 }
 
 interface SchemaListItem {
@@ -40,16 +47,16 @@ interface SchemaBreadcrumbList {
 
 interface SchemaBlogPosting {
   "@context": "https://schema.org";
-  "@type": "BlogPosting" | "Article";
+  "@type": "BlogPosting";
   "@id": string;
   headline: string;
   description: string;
   url: string;
   datePublished: string;
   dateModified: string;
-  author: SchemaRef;
+  author: SchemaPerson;
   publisher: SchemaRef;
-  image: { "@type": "ImageObject"; url: string };
+  image: { "@type": "ImageObject"; url: string; width: number; height: number };
   wordCount: number;
   timeRequired: string;
   articleSection: string;
@@ -68,16 +75,12 @@ interface SchemaWebSite {
   description: string;
   inLanguage: "en";
   publisher: SchemaRef;
-  potentialAction: {
-    "@type": "SearchAction";
-    target: { "@type": "EntryPoint"; urlTemplate: string };
-    "query-input": "required name=search_term_string";
-  };
+  author: SchemaRef;
 }
 
 interface SchemaWebPage {
   "@context": "https://schema.org";
-  "@type": "WebPage" | "CollectionPage";
+  "@type": "WebPage" | "CollectionPage" | "ProfilePage";
   "@id": string;
   name: string;
   description: string;
@@ -85,31 +88,32 @@ interface SchemaWebPage {
   inLanguage: "en";
   isPartOf: SchemaRef;
   breadcrumb?: SchemaBreadcrumbList;
+  mainEntity?: SchemaRef;
 }
 
 function capitalise(s: string): string {
   return s.charAt(0).toUpperCase() + s.slice(1);
 }
 
-function buildPerson(): SchemaPerson {
-  return {
-    "@context": "https://schema.org",
+function buildPerson(includeContext = true): SchemaPerson {
+  const person: SchemaPerson = {
     "@type": "Person",
     "@id": PERSON_ID,
-    name: "Om Jhamvar",
-    url: SITE_URL,
-    email: "jhamvar@gmail.com",
+    name: AUTHOR.name,
+    url: AUTHOR.url,
+    email: AUTHOR.email,
   };
+  if (includeContext) person["@context"] = "https://schema.org";
+  return person;
 }
 
 function buildOrganization(): SchemaOrganization {
   return {
-    "@context": "https://schema.org",
     "@type": "Organization",
     "@id": ORG_ID,
-    name: "Beyond the Basics",
+    name: SITE_NAME,
     url: SITE_URL,
-    logo: { "@type": "ImageObject", url: `${SITE_URL}/og/default.png` },
+    logo: { "@type": "ImageObject", url: `${SITE_URL}/og/default.png`, width: 1200, height: 630 },
   };
 }
 
@@ -123,11 +127,7 @@ function buildWebSite(): SchemaWebSite {
     description: SITE_DESCRIPTION,
     inLanguage: "en",
     publisher: { "@id": ORG_ID },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: { "@type": "EntryPoint", urlTemplate: `${SITE_URL}/?q={search_term_string}` },
-      "query-input": "required name=search_term_string",
-    },
+    author: { "@id": PERSON_ID },
   };
 }
 
@@ -145,11 +145,12 @@ function buildBreadcrumbList(items: Array<{ name: string; url: string }>): Schem
 }
 
 function buildWebPage(opts: {
-  type: "WebPage" | "CollectionPage";
+  type: "WebPage" | "CollectionPage" | "ProfilePage";
   id: string;
   name: string;
   desc: string;
   breadcrumb?: SchemaBreadcrumbList;
+  mainEntity?: SchemaRef;
 }): SchemaWebPage {
   const page: SchemaWebPage = {
     "@context": "https://schema.org",
@@ -162,6 +163,7 @@ function buildWebPage(opts: {
     isPartOf: { "@id": WEBSITE_ID },
   };
   if (opts.breadcrumb) page.breadcrumb = opts.breadcrumb;
+  if (opts.mainEntity) page.mainEntity = opts.mainEntity;
   return page;
 }
 
@@ -169,16 +171,21 @@ function buildBlogPosting(post: PostMeta): SchemaBlogPosting {
   const articleUrl = `${SITE_URL}/article/${post.slug}`;
   const schema: SchemaBlogPosting = {
     "@context": "https://schema.org",
-    "@type": post.tags.includes("Articles") ? "Article" : "BlogPosting",
+    "@type": "BlogPosting",
     "@id": `${articleUrl}#blogposting`,
     headline: post.title,
-    description: post.excerpt,
+    description: post.description,
     url: articleUrl,
-    datePublished: `${post.publishedAt}T00:00:00Z`,
-    dateModified: `${post.updatedAt ?? post.publishedAt}T00:00:00Z`,
-    author: { "@id": PERSON_ID },
+    datePublished: `${post.publishedAt.slice(0, 10)}T00:00:00Z`,
+    dateModified: `${(post.updatedAt ?? post.publishedAt).slice(0, 10)}T00:00:00Z`,
+    author: buildPerson(false),
     publisher: { "@id": ORG_ID },
-    image: { "@type": "ImageObject", url: `${SITE_URL}/og/${post.slug}.png` },
+    image: {
+      "@type": "ImageObject",
+      url: `${SITE_URL}/og/${post.slug}.png`,
+      width: 1200,
+      height: 630,
+    },
     wordCount: post.wordCount,
     timeRequired: `PT${post.readingTimeMinutes}M`,
     articleSection: capitalise(post.category),
@@ -186,41 +193,60 @@ function buildBlogPosting(post: PostMeta): SchemaBlogPosting {
     mainEntityOfPage: { "@id": articleUrl },
   };
   if (post.tags.length > 0) schema.keywords = post.tags.join(", ");
-  if (post.series !== null) schema.isPartOf = { "@type": "CreativeWorkSeries", name: post.series.name };
+  if (post.series !== null)
+    schema.isPartOf = { "@type": "CreativeWorkSeries", name: post.series.name };
   return schema;
 }
 
-export function getSiteStructuredData(): object[] {
-  const homeWebPage = buildWebPage({
-    type: "WebPage",
-    id: `${SITE_URL}/`,
-    name: SITE_TITLE,
-    desc: SITE_DESCRIPTION,
-  });
-  return [buildOrganization(), buildPerson(), buildWebSite(), homeWebPage];
+export function getHomeStructuredData(): object[] {
+  return [
+    buildOrganization(),
+    buildPerson(),
+    buildWebSite(),
+    buildWebPage({
+      type: "WebPage",
+      id: `${SITE_URL}/`,
+      name: SITE_TITLE,
+      desc: SITE_DESCRIPTION,
+    }),
+  ];
+}
+
+export function getAboutStructuredData(): object[] {
+  const aboutUrl = `${SITE_URL}/about`;
+  return [
+    buildPerson(),
+    buildWebPage({
+      type: "ProfilePage",
+      id: aboutUrl,
+      name: `About ${AUTHOR.name}`,
+      desc: "About Om Jhamvar: 10th grade student sharing football analysis, coding projects, and growth notes.",
+      mainEntity: { "@id": PERSON_ID },
+    }),
+  ];
 }
 
 export function getArticleStructuredData(post: PostMeta): object[] {
   const articleUrl = `${SITE_URL}/article/${post.slug}`;
   const breadcrumb = buildBreadcrumbList([
-    { name: "Home", url: SITE_URL },
+    { name: "Home", url: `${SITE_URL}/` },
     { name: capitalise(post.category), url: `${SITE_URL}/category/${post.category}` },
     { name: post.title, url: articleUrl },
   ]);
   const webPage = buildWebPage({
     type: "WebPage",
     id: articleUrl,
-    name: post.title,
-    desc: post.excerpt,
+    name: post.seoTitle,
+    desc: post.description,
     breadcrumb,
   });
-  return [buildBlogPosting(post), webPage, breadcrumb];
+  return [buildOrganization(), buildBlogPosting(post), webPage];
 }
 
 export function getCategoryStructuredData(category: CategoryMeta): object[] {
   const categoryUrl = `${SITE_URL}/category/${category.slug}`;
   const breadcrumb = buildBreadcrumbList([
-    { name: "Home", url: SITE_URL },
+    { name: "Home", url: `${SITE_URL}/` },
     { name: category.name, url: categoryUrl },
   ]);
   const collectionPage = buildWebPage({
@@ -230,5 +256,5 @@ export function getCategoryStructuredData(category: CategoryMeta): object[] {
     desc: category.desc,
     breadcrumb,
   });
-  return [collectionPage, breadcrumb];
+  return [collectionPage];
 }

@@ -1,21 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteShell } from "@/components/site/SiteShell";
+import { buildHead, jsonLd } from "@/lib/seo";
+import { getAboutStructuredData } from "@/lib/structured-data";
+
+const aboutDescription =
+  "About Om Jhamvar: 10th grade student sharing football analysis, coding projects, and growth notes.";
+
+const aboutHead = buildHead({
+  title: "About",
+  description: aboutDescription,
+  path: "/about",
+});
 
 export const Route = createFileRoute("/about")({
   head: () => ({
-    meta: [
-      { title: "About — Beyond the Basics" },
-      {
-        name: "description",
-        content:
-          "About Om Jhamvar: 10th grade student sharing football analysis, coding projects, and growth notes.",
-      },
-      { property: "og:title", content: "About — Beyond the Basics" },
-      {
-        property: "og:description",
-        content: "Get to know Om Jhamvar and the story behind Beyond the Basics.",
-      },
-    ],
+    ...aboutHead,
+    scripts: jsonLd(getAboutStructuredData()),
   }),
   component: About,
 });

@@ -13,13 +13,18 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as ArchiveRouteImport } from './routes/archive'
 import { Route as AuthoringRouteImport } from './routes/authoring'
+import { Route as FeedDotjsonRouteImport } from './routes/feed[.]json'
 import { Route as FeedsRouteImport } from './routes/feeds'
 import { Route as NewsletterRouteImport } from './routes/newsletter'
 import { Route as ReadingListRouteImport } from './routes/reading-list'
+import { Route as RssDotxmlRouteImport } from './routes/rss[.]xml'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as StartRouteImport } from './routes/start'
 import { Route as ArticleSlugRouteImport } from './routes/article.$slug'
 import { Route as CategorySlugRouteImport } from './routes/category.$slug'
 import { Route as NewsletterConfirmedRouteImport } from './routes/newsletter_.confirmed'
+import { Route as CategorySlugRssDotxmlRouteImport } from './routes/category.$slug.rss[.]xml'
+import { Route as TagTagRssDotxmlRouteImport } from './routes/tag.$tag.rss[.]xml'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -41,6 +46,11 @@ const AuthoringRoute = AuthoringRouteImport.update({
   path: '/authoring',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FeedDotjsonRoute = FeedDotjsonRouteImport.update({
+  id: '/feed.json',
+  path: '/feed.json',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FeedsRoute = FeedsRouteImport.update({
   id: '/feeds',
   path: '/feeds',
@@ -54,6 +64,16 @@ const NewsletterRoute = NewsletterRouteImport.update({
 const ReadingListRoute = ReadingListRouteImport.update({
   id: '/reading-list',
   path: '/reading-list',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RssDotxmlRoute = RssDotxmlRouteImport.update({
+  id: '/rss.xml',
+  path: '/rss.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const StartRoute = StartRouteImport.update({
@@ -76,32 +96,52 @@ const NewsletterConfirmedRoute = NewsletterConfirmedRouteImport.update({
   path: '/newsletter/confirmed',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CategorySlugRssDotxmlRoute = CategorySlugRssDotxmlRouteImport.update({
+  id: '/rss.xml',
+  path: '/rss.xml',
+  getParentRoute: () => CategorySlugRoute,
+} as any)
+const TagTagRssDotxmlRoute = TagTagRssDotxmlRouteImport.update({
+  id: '/tag/$tag/rss.xml',
+  path: '/tag/$tag/rss.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
   '/authoring': typeof AuthoringRoute
+  '/feed.json': typeof FeedDotjsonRoute
   '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
+  '/rss.xml': typeof RssDotxmlRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/start': typeof StartRoute
   '/article/$slug': typeof ArticleSlugRoute
-  '/category/$slug': typeof CategorySlugRoute
+  '/category/$slug': typeof CategorySlugRouteWithChildren
   '/newsletter/confirmed': typeof NewsletterConfirmedRoute
+  '/category/$slug/rss.xml': typeof CategorySlugRssDotxmlRoute
+  '/tag/$tag/rss.xml': typeof TagTagRssDotxmlRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
   '/authoring': typeof AuthoringRoute
+  '/feed.json': typeof FeedDotjsonRoute
   '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
+  '/rss.xml': typeof RssDotxmlRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/start': typeof StartRoute
   '/article/$slug': typeof ArticleSlugRoute
-  '/category/$slug': typeof CategorySlugRoute
+  '/category/$slug': typeof CategorySlugRouteWithChildren
   '/newsletter/confirmed': typeof NewsletterConfirmedRoute
+  '/category/$slug/rss.xml': typeof CategorySlugRssDotxmlRoute
+  '/tag/$tag/rss.xml': typeof TagTagRssDotxmlRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -109,13 +149,18 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/archive': typeof ArchiveRoute
   '/authoring': typeof AuthoringRoute
+  '/feed.json': typeof FeedDotjsonRoute
   '/feeds': typeof FeedsRoute
   '/newsletter': typeof NewsletterRoute
   '/reading-list': typeof ReadingListRoute
+  '/rss.xml': typeof RssDotxmlRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/start': typeof StartRoute
   '/article/$slug': typeof ArticleSlugRoute
-  '/category/$slug': typeof CategorySlugRoute
+  '/category/$slug': typeof CategorySlugRouteWithChildren
   '/newsletter_/confirmed': typeof NewsletterConfirmedRoute
+  '/category/$slug/rss.xml': typeof CategorySlugRssDotxmlRoute
+  '/tag/$tag/rss.xml': typeof TagTagRssDotxmlRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -124,39 +169,54 @@ export interface FileRouteTypes {
     | '/about'
     | '/archive'
     | '/authoring'
+    | '/feed.json'
     | '/feeds'
     | '/newsletter'
     | '/reading-list'
+    | '/rss.xml'
+    | '/sitemap.xml'
     | '/start'
     | '/article/$slug'
     | '/category/$slug'
     | '/newsletter/confirmed'
+    | '/category/$slug/rss.xml'
+    | '/tag/$tag/rss.xml'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/archive'
     | '/authoring'
+    | '/feed.json'
     | '/feeds'
     | '/newsletter'
     | '/reading-list'
+    | '/rss.xml'
+    | '/sitemap.xml'
     | '/start'
     | '/article/$slug'
     | '/category/$slug'
     | '/newsletter/confirmed'
+    | '/category/$slug/rss.xml'
+    | '/tag/$tag/rss.xml'
   id:
     | '__root__'
     | '/'
     | '/about'
     | '/archive'
     | '/authoring'
+    | '/feed.json'
     | '/feeds'
     | '/newsletter'
     | '/reading-list'
+    | '/rss.xml'
+    | '/sitemap.xml'
     | '/start'
     | '/article/$slug'
     | '/category/$slug'
     | '/newsletter_/confirmed'
+    | '/category/$slug/rss.xml'
+    | '/tag/$tag/rss.xml'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -164,13 +224,17 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   ArchiveRoute: typeof ArchiveRoute
   AuthoringRoute: typeof AuthoringRoute
+  FeedDotjsonRoute: typeof FeedDotjsonRoute
   FeedsRoute: typeof FeedsRoute
   NewsletterRoute: typeof NewsletterRoute
   ReadingListRoute: typeof ReadingListRoute
+  RssDotxmlRoute: typeof RssDotxmlRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   StartRoute: typeof StartRoute
   ArticleSlugRoute: typeof ArticleSlugRoute
-  CategorySlugRoute: typeof CategorySlugRoute
+  CategorySlugRoute: typeof CategorySlugRouteWithChildren
   NewsletterConfirmedRoute: typeof NewsletterConfirmedRoute
+  TagTagRssDotxmlRoute: typeof TagTagRssDotxmlRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -203,6 +267,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthoringRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/feed.json': {
+      id: '/feed.json'
+      path: '/feed.json'
+      fullPath: '/feed.json'
+      preLoaderRoute: typeof FeedDotjsonRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/feeds': {
       id: '/feeds'
       path: '/feeds'
@@ -222,6 +293,20 @@ declare module '@tanstack/react-router' {
       path: '/reading-list'
       fullPath: '/reading-list'
       preLoaderRoute: typeof ReadingListRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rss.xml': {
+      id: '/rss.xml'
+      path: '/rss.xml'
+      fullPath: '/rss.xml'
+      preLoaderRoute: typeof RssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/start': {
@@ -252,21 +337,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NewsletterConfirmedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/category/$slug/rss.xml': {
+      id: '/category/$slug/rss.xml'
+      path: '/rss.xml'
+      fullPath: '/category/$slug/rss.xml'
+      preLoaderRoute: typeof CategorySlugRssDotxmlRouteImport
+      parentRoute: typeof CategorySlugRoute
+    }
+    '/tag/$tag/rss.xml': {
+      id: '/tag/$tag/rss.xml'
+      path: '/tag/$tag/rss.xml'
+      fullPath: '/tag/$tag/rss.xml'
+      preLoaderRoute: typeof TagTagRssDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
+
+interface CategorySlugRouteChildren {
+  CategorySlugRssDotxmlRoute: typeof CategorySlugRssDotxmlRoute
+}
+
+const CategorySlugRouteChildren: CategorySlugRouteChildren = {
+  CategorySlugRssDotxmlRoute: CategorySlugRssDotxmlRoute,
+}
+
+const CategorySlugRouteWithChildren = CategorySlugRoute._addFileChildren(
+  CategorySlugRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   ArchiveRoute: ArchiveRoute,
   AuthoringRoute: AuthoringRoute,
+  FeedDotjsonRoute: FeedDotjsonRoute,
   FeedsRoute: FeedsRoute,
   NewsletterRoute: NewsletterRoute,
   ReadingListRoute: ReadingListRoute,
+  RssDotxmlRoute: RssDotxmlRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   StartRoute: StartRoute,
   ArticleSlugRoute: ArticleSlugRoute,
-  CategorySlugRoute: CategorySlugRoute,
+  CategorySlugRoute: CategorySlugRouteWithChildren,
   NewsletterConfirmedRoute: NewsletterConfirmedRoute,
+  TagTagRssDotxmlRoute: TagTagRssDotxmlRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

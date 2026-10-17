@@ -3,14 +3,16 @@ import { SiteShell } from "@/components/site/SiteShell";
 import { getPostBySlug } from "@/content/api.ts";
 import { useBookmarks } from "@/hooks/useBookmarks";
 import { ArrowUpRight, Bookmark, X } from "lucide-react";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/reading-list")({
-  head: () => ({
-    meta: [
-      { title: "Reading list — Beyond the Basics" },
-      { name: "description", content: "Essays you've saved to read later." },
-    ],
-  }),
+  head: () =>
+    buildHead({
+      title: "Reading list",
+      description: "Essays you've saved to read later.",
+      path: "/reading-list",
+      noindex: true,
+    }),
   component: ReadingList,
 });
 

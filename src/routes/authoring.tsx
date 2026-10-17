@@ -5,15 +5,17 @@ import { COMPONENT_REGISTRY } from "@/components/article/mdx/component-registry"
 import type { ComponentMeta, PropDef } from "@/components/article/mdx/component-registry";
 import { cn } from "@/lib/utils";
 import { ChevronDown } from "lucide-react";
+import { buildHead } from "@/lib/seo";
 
 // @ts-expect-error route type generated on dev server start
 export const Route = createFileRoute("/authoring")({
-  head: () => ({
-    meta: [
-      { title: "Component Reference — Beyond the Basics" },
-      { name: "description", content: "MDX component library for article authors." },
-    ],
-  }),
+  head: () =>
+    buildHead({
+      title: "Component Reference",
+      description: "MDX component library for article authors.",
+      path: "/authoring",
+      noindex: true,
+    }),
   component: Authoring,
 });
 

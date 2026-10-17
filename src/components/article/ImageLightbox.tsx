@@ -21,6 +21,7 @@ export function ImageLightbox({ src, alt, ...rest }: ComponentPropsWithoutRef<"i
               src={src}
               alt={alt ?? ""}
               loading="lazy"
+              decoding="async"
               className="w-full rounded object-cover transition-transform duration-700 hover:scale-[1.02]"
               {...rest}
             />
@@ -28,7 +29,11 @@ export function ImageLightbox({ src, alt, ...rest }: ComponentPropsWithoutRef<"i
         </DialogTrigger>
         <DialogContent className="max-w-[95vw] border-none bg-transparent p-0 shadow-none sm:max-w-5xl">
           <DialogTitle className="sr-only">{alt || "Image"}</DialogTitle>
-          <img src={src} alt={alt ?? ""} className="max-h-[90vh] w-full rounded object-contain" />
+          <img
+            src={src}
+            alt={alt || "Expanded article image"}
+            className="max-h-[90vh] w-full rounded object-contain"
+          />
         </DialogContent>
       </Dialog>
       {alt && (

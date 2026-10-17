@@ -9,6 +9,7 @@ interface PostCoverProps {
   photo?: string;
   photoAlt?: string;
   className?: string;
+  priority?: boolean;
 }
 
 function hashSlug(slug: string): number {
@@ -26,6 +27,7 @@ export function PostCover({
   photo,
   photoAlt,
   className,
+  priority = false,
 }: PostCoverProps) {
   const style = getCategoryStyle(category);
   const h = hashSlug(slug);
@@ -42,6 +44,11 @@ export function PostCover({
         <img
           src={photo}
           alt={photoAlt ?? ""}
+          width={1600}
+          height={900}
+          decoding="async"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
           className="img-zoom absolute inset-0 h-full w-full object-cover"
         />
       ) : (

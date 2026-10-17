@@ -1,4 +1,4 @@
-import { createAPIFileRoute } from "@tanstack/react-start/api";
+import { createFileRoute } from "@tanstack/react-router";
 import { generateRssFeed } from "../content/feeds/rss";
 import { getPostsByTag } from "../content/api";
 import { SITE_URL } from "../content/feeds/constants";
@@ -10,25 +10,27 @@ const TAG_DESCRIPTIONS: Record<string, string> = {
   Series: "Multi-part series from Beyond the Basics.",
 };
 
-export const APIRoute = createAPIFileRoute("/tag/$tag/rss.xml")({
-  GET: ({ params }) => {
-    const normalized = VALID_TAGS.find(
-      (t) => t.toLowerCase() === params.tag.toLowerCase(),
-    );
-    if (!normalized) return new Response("Not found", { status: 404 });
-    return new Response(
-      generateRssFeed({
-        title: `${normalized} — Beyond the Basics`,
-        description: TAG_DESCRIPTIONS[normalized],
-        posts: getPostsByTag(normalized),
-        selfUrl: `${SITE_URL}/tag/${normalized}/rss.xml`,
-      }),
-      {
-        headers: {
-          "Content-Type": "application/rss+xml; charset=utf-8",
-          "Cache-Control": "public, max-age=3600, s-maxage=3600",
-        },
+export const Route = createFileRoute("/tag/$tag/rss.xml")({
+  server: {
+    handlers: {
+      GET: ({ params }) => {
+        const normalized = VALID_TAGS.find((t) => t.toLowerCase() === params.tag.toLowerCase());
+        if (!normalized) return new Response("Not found", { status: 404 });
+        return new Response(
+          generateRssFeed({
+            title: `${normalized} — Beyond the Basics`,
+            description: TAG_DESCRIPTIONS[normalized],
+            posts: getPostsByTag(normalized),
+            selfUrl: `${SITE_URL}/tag/${normalized}/rss.xml`,
+          }),
+          {
+            headers: {
+              "Content-Type": "application/rss+xml; charset=utf-8",
+              "Cache-Control": "public, max-age=3600, s-maxage=3600",
+            },
+          },
+        );
       },
-    );
+    },
   },
 });

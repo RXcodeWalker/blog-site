@@ -12,6 +12,7 @@ import {
   Code2,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { buildHead } from "@/lib/seo";
 
 // ---------------------------------------------------------------------------
 // Data
@@ -88,21 +89,13 @@ const READER_PATHS: ReaderPath[] = [
 // ---------------------------------------------------------------------------
 
 export const Route = createFileRoute("/start")({
-  head: () => ({
-    meta: [
-      { title: "Start Here — Beyond the Basics" },
-      {
-        name: "description",
-        content:
-          "New to Beyond the Basics? Start here. Find the right work fast, whatever you're looking for.",
-      },
-      { property: "og:title", content: "Start Here — Beyond the Basics" },
-      {
-        property: "og:description",
-        content: "A curated entry point for football analysis, mindset essays, and Om's full story.",
-      },
-    ],
-  }),
+  head: () =>
+    buildHead({
+      title: "Start Here",
+      description:
+        "New to Beyond the Basics? Start here. Find the right work fast, whatever you're looking for.",
+      path: "/start",
+    }),
   component: StartHere,
 });
 

@@ -3,20 +3,19 @@ import { ArrowRight, ArrowUpRight, Loader2 } from "lucide-react";
 import { SiteShell } from "@/components/site/SiteShell";
 import { getNewsletterArchive, type ArchiveIssue } from "@/lib/newsletter";
 import { useNewsletterSubscription } from "@/hooks/useNewsletterSubscription";
+import { buildHead } from "@/lib/seo";
 
 export const Route = createFileRoute("/newsletter")({
   loader: async () => {
     const issues = await getNewsletterArchive();
     return { issues };
   },
-  head: () => ({
-    meta: [
-      { title: "Newsletter — Beyond the Basics" },
-      { name: "description", content: "Occasional, considered writing. No noise." },
-      { property: "og:title", content: "Newsletter — Beyond the Basics" },
-      { property: "og:description", content: "Occasional, considered writing. No noise." },
-    ],
-  }),
+  head: () =>
+    buildHead({
+      title: "Newsletter",
+      description: "Occasional, considered writing. No noise.",
+      path: "/newsletter",
+    }),
   component: NewsletterPage,
 });
 

@@ -27,6 +27,8 @@ export interface PostMeta {
   tags: PostTag[];
   featured: boolean;
   excerpt: string;
+  seoTitle: string;
+  description: string;
   cover: string;
   author: string;
   related: string[];

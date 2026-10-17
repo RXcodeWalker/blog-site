@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getCategoryStructuredData } from "@/lib/structured-data";
+import { buildHead, jsonLd } from "@/lib/seo";
 import { z } from "zod";
 import { SiteShell } from "@/components/site/SiteShell";
 import {
@@ -41,36 +42,30 @@ export const Route = createFileRoute("/category/$slug")({
     const posts = getPostsByCategory(category.slug as CategorySlug).map(toPostMeta);
     return { category, posts };
   },
-  head: ({ loaderData }) => ({
-    scripts: loaderData
-      ? getCategoryStructuredData(loaderData.category).map((schema) => ({
-          type: "application/ld+json",
-          children: JSON.stringify(schema),
-        }))
-      : [],
-    meta: loaderData
-      ? [
-          { title: `${loaderData.category.name} — Beyond the Basics` },
-          { name: "description", content: loaderData.category.desc },
-          { property: "og:title", content: `${loaderData.category.name} — Beyond the Basics` },
-          { property: "og:description", content: loaderData.category.desc },
-          { property: "og:image", content: `https://beyondthebasics.me/og/category--${loaderData.category.slug}.png` },
-          { property: "og:image:alt", content: `${loaderData.category.name} — Beyond the Basics` },
-          { name: "twitter:card", content: "summary_large_image" },
-          { name: "twitter:image", content: `https://beyondthebasics.me/og/category--${loaderData.category.slug}.png` },
-        ]
-      : [],
-    links: loaderData
-      ? [
-          {
-            rel: "alternate",
-            type: "application/rss+xml",
-            title: `${loaderData.category.name} — RSS Feed`,
-            href: `/category/${loaderData.category.slug}/rss.xml`,
-          },
-        ]
-      : [],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData) return {};
+    const { category } = loaderData;
+    const head = buildHead({
+      title: category.name,
+      description: category.desc,
+      path: `/category/${category.slug}`,
+      image: `/og/category--${category.slug}.png`,
+      imageAlt: `${category.name} — Beyond the Basics`,
+    });
+    return {
+      ...head,
+      scripts: jsonLd(getCategoryStructuredData(category)),
+      links: [
+        ...head.links,
+        {
+          rel: "alternate",
+          type: "application/rss+xml",
+          title: `${category.name} — RSS Feed`,
+          href: `/category/${category.slug}/rss.xml`,
+        },
+      ],
+    };
+  },
   notFoundComponent: () => (
     <SiteShell>
       <div className="mx-auto max-w-2xl px-6 py-40 text-center">
@@ -172,6 +167,11 @@ function Category() {
         <img
           src={c.defaultCover}
           alt=""
+          width={1600}
+          height={900}
+          decoding="async"
+          loading="eager"
+          fetchPriority="high"
           className="absolute inset-0 -z-20 h-full w-full object-cover opacity-25"
         />
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background/70 via-background/85 to-background" />

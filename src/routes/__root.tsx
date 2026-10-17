@@ -9,7 +9,8 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
-import { getSiteStructuredData } from "@/lib/structured-data";
+import { buildHead } from "@/lib/seo";
+import { SITE_DESCRIPTION, SITE_NAME } from "@/content/feeds/constants";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { Toaster } from "@/components/ui/sonner";
 import { ReadingPreferencesProvider } from "../contexts/ReadingPreferencesContext";
@@ -71,30 +72,27 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+const defaultHead = buildHead({
+  title: SITE_NAME,
+  description: SITE_DESCRIPTION,
+  path: "/",
+});
+
+const GOOGLE_FONTS_HREF =
+  "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap";
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Beyond the Basics" },
-      { name: "description", content: "Personal blog of Om Jhamvar" },
-      { name: "author", content: "Om Jhamvar" },
-      { property: "og:title", content: "Beyond the Basics" },
-      { property: "og:description", content: "Personal blog of Om Jhamvar" },
-      { property: "og:type", content: "website" },
-      { property: "og:image", content: "https://beyondthebasics.me/og/default.png" },
-      { property: "og:image:width", content: "1200" },
-      { property: "og:image:height", content: "630" },
-      { property: "og:image:alt", content: "Beyond the Basics — Om Jhamvar" },
-      { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:image", content: "https://beyondthebasics.me/og/default.png" },
+      ...defaultHead.meta,
     ],
-    scripts: getSiteStructuredData().map((schema) => ({
-      type: "application/ld+json",
-      children: JSON.stringify(schema),
-    })),
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      { rel: "stylesheet", href: GOOGLE_FONTS_HREF },
       {
         rel: "alternate",
         type: "application/rss+xml",

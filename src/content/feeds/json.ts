@@ -30,13 +30,13 @@ export function generateJsonFeed(options: JsonFeedOptions = {}): string {
     home_page_url: siteUrl,
     feed_url: feedUrl,
     favicon: `${siteUrl}/favicon.ico`,
-    authors: [{ name: "Om Jhamvar", url: siteUrl }],
+    authors: [{ name: "Om Jhamvar", url: `${siteUrl}/about` }],
     language: "en-US",
     items: resolvedPosts.map((post) => ({
       id: `${siteUrl}${post.url}`,
       url: `${siteUrl}${post.url}`,
       title: post.title,
-      content_text: post.excerpt,
+      content_text: post.description,
       date_published: new Date(post.publishedAt).toISOString(),
       date_modified: post.updatedAt
         ? new Date(post.updatedAt).toISOString()

@@ -7,6 +7,7 @@ import { getAllPosts, getAllCategoriesWithCounts, getPostYears, toPostMeta } fro
 import type { CategoryWithCount, PostMeta } from "@/content/api.ts";
 import { ArchivePostRow } from "@/components/archive/ArchivePostRow";
 import { categoryCssVars } from "@/lib/categoryStyle";
+import { buildHead } from "@/lib/seo";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -64,24 +65,17 @@ export const Route = createFileRoute("/archive")({
     if (!posts) return {};
     const years = getPostYears();
     const description = `Every post on Beyond the Basics — ${posts.length} entries spanning ${years.at(-1)}–${years.at(0)}, covering football tactics, mindset, coding, and more.`;
-
     const totalPages = Math.ceil(posts.length / PAGE_SIZE);
-    const base = "https://beyondthebasics.me/archive";
-
-    const links: Array<{ rel: string; href: string }> = [{ rel: "canonical", href: base }];
+    const head = buildHead({
+      title: "Archive",
+      description,
+      path: "/archive",
+    });
+    const links = [...head.links];
     if (totalPages > 1) {
-      links.push({ rel: "next", href: `${base}?page=2` });
+      links.push({ rel: "next", href: "https://beyondthebasics.me/archive?page=2" });
     }
-
-    return {
-      meta: [
-        { title: "Archive — Beyond the Basics" },
-        { name: "description", content: description },
-        { property: "og:title", content: "Archive — Beyond the Basics" },
-        { property: "og:description", content: description },
-      ],
-      links,
-    };
+    return { ...head, links };
   },
   component: Archive,
 });
