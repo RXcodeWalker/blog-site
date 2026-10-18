@@ -1,0 +1,55 @@
+---
+title: "I Spent Months Polishing the Wrong Features"
+publishedAt: 2026-10-17
+category: building
+tags: [Articles]
+featured: false
+excerpt: "For months, I was trying to turn my French speaking site into Duolingo. Meanwhile, the one feature the app actually exists for couldn't hold itself together."
+seoTitle: "I Spent Months Polishing the Wrong Features"
+description: "I spent months polishing Duolingo-style extras for French Coach while avoiding the actual speaking exam. Here is what happened when I finally faced it."
+author: "Om Jhamvar"
+related: [why-i-started-building-french-coach, building-starts-here]
+---
+
+Hey everyone! For all the new readers here, French Coach (french.beyondthebasics.me) is a site I'm building to help students practice for the Cambridge IGCSE French speaking exam. You speak, the app plays the examiner, and AI gives you a mark out of 40 along with a detailed list of feedback. It also has a bunch of Duolingo-style extra features, like a shop, accent analyser, scenarios, duels, and more. Those extras are what this post is about.
+
+For months, I was basically trying to turn my French speaking site into Duolingo. I built all the things Duolingo has: duels against friends, a daily challenge, leagues and rankings, a shop where you spend XP, and role-play scenarios. I kept polishing them, and I even rewrote the Explore page three times. They looked great, they were fast... and almost nobody used them.
+
+Meanwhile, the one feature the app actually exists for, a full Cambridge IGCSE French (0520) speaking exam, still wasn't something I would let a student rely on. In the real exam, a student speaks French and gets marked out of 40 on a very specific structure: a role play (5 tasks at 2 marks each), followed by Communication (out of 15) and Quality of Language (out of 15) across two topic conversations. Mine couldn't even hold itself together for ten minutes.
+
+But honestly, at the time, I convinced myself I was making real progress. Every evening I opened my laptop, tweaked a duel screen or fixed something in the XP shop, and closed it feeling productive, when in reality, I was just avoiding the hard part.
+
+And the reason I kept putting it off is glaringly obvious when you look at what a real speaking exam actually requires. Unlike a simple flashcard or shop screen, building the exam meant creating a simulated examiner that follows Cambridge's exact conduct rules on when to repeat a question, when to offer an alternative, and when to ask further questions. It meant turning spoken French answers into text accurately enough to mark, scoring them against the official mark scheme instead of just guessing off a vibe, and saving every single attempt to a user account. 
+
+Even though I've been vibe coding this app using Claude Code, building the exam feature required a lot of deep backend work, which meant two things. One, it was quite time-consuming even for Claude. Two, it required a lot of work on my end: setting up Supabase tables, Render repositories, and other services. I had to manage many different API keys and test out a lot of things myself, which was a real pain for me given how accustomed I had become to making Claude do all the work. Not to mention how fixing one thing almost always broke another
+
+On the other hand, quick wins give fast feedback. I could change a duel screen and see it look better in five minutes. To make matters worse, I was building entirely on how I felt rather than any actual numbers. For every tweak I made, I never once stopped to ask whether a student would even notice if I hadn't done it. I had zero metrics for what "the exam is good" actually meant, so making the shop page look more attractive and engaging felt like the exact same amount of progress as fixing the exam itself.
+
+The turning point was my family. I finally got my brother and my dad to sit down and try the site, and it just didn't work. Failed. Completely. The speech recognition misheard their French, so answers they had actually said correctly came back marked as mistakes. Things froze or glitched at the worst possible moments, and neither of them could get through a single full exam without something breaking. Watching someone who isn't me try to use the app was worth more than months of my own tweaking. I had built a shiny, Duolingo-shaped shell around an exam that couldn't even survive two first-time users.
+
+That was when it finally clicked for me. A collection of polished features is not a product.
+
+So I stopped touching the side features altogether and started with one concrete step on the exam: fixing how it hears people. Up until then, the exam had been marking answers using Chrome's live captions, which are fast during a conversation but way too unreliable for grading. I changed it so that each recorded answer gets transcribed properly with Whisper and marked from that instead. The live captions still run the flow of the conversation, and if Whisper ever fails or times out, the app falls back to the captions and explicitly tells the student which answers were marked that way.
+
+However, this is also where building with AI gets genuinely frustrating. When you are just styling a page, AI builds it in seconds. When you are dealing with the heavy backend work of a speaking exam, it gets slow, messy, and starts making things up.
+
+For example, at one point, the AI wired one of the exam's backend calls to a hardcoded model name as a "fallback default" without me realizing. Later on, that model got retired, and the exam's interpretation step started failing on every single call. Every. Single. One. I only caught it because the exam kept breaking during my own testing, and to make sure it never happened again, I had to set a strict rule: model names only come from environment settings in one central place, and are never typed directly into the code.
+
+Once I pushed through all of that, the site finally stopped feeling like a side project and started feeling like a real product. Now, a student can actually go through the whole thing from start to finish:
+
+1. Pick an exam. Exam Sim has a single "Start Exam Sim" button, and just like the real exam, you can't see the topics or the role play beforehand. If you just want to practice, Coached Practice lets you browse and choose a set. (Screenshot 1)
+2. Take the full speaking exam. You get a real 10-minute preparation countdown with the role-play card, and then the examiner runs the role play and two topic conversations, asking the scripted and further questions the exact way the Cambridge notes describe. (Screenshot 2)
+3. Get a mark out of 40. Your recorded answers are transcribed with Whisper and scored by a three-layer pipeline: deterministic evidence checks, a constrained AI judge, and deterministic guardrails so the AI never freelances a grade. (Screenshot 3)
+4. See exactly what to fix. A separate report, generated after the marks are locked and saved so it can't accidentally change them, gives you per-criterion feedback and corrections on your own mistakes. (Screenshot 4)
+
+In fairness, don't get me wrong, the exam still isn't perfect. As a matter of fact, there's a lot of work left to do. Right now, pronunciation feedback on the exam mode isn't released because my calibration test failed, so I'm keeping word-level flags turned off until I find a design that actually works. The marks also haven't been validated against real graded Cambridge transcripts yet, so a score has to be treated as a practice estimate rather than an official grade prediction. And the loop itself isn't fully joined up yet, considering how the weak-areas page suggests practice modes, but nothing walks you directly from a weak area straight into a retake.
+
+Ultimately, though, those are the problems worth my time. Every app has a core loop, and everything else only exists to support it. For my site, it's simple:
+
+Take exam → get result → see weak areas → practice them → retake.
+
+Duels, the daily challenge, the shop, and scenarios are only worth building once that core loop works end to end for someone who isn't me. Going forward, I have one simple rule before I touch anything else on the site: can any user get through the whole loop without a glitch?
+
+If not, nothing else gets my time.
+
+Written by Om Jhamvar
