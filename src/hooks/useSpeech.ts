@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useLocation } from "@tanstack/react-router";
 
 type SpeechState = "idle" | "playing" | "paused";
 
@@ -11,6 +12,7 @@ export function useSpeech() {
   const [state, setState] = useState<SpeechState>("idle");
   const [supported, setSupported] = useState(false);
   const synthRef = useRef<SpeechSynthesis | null>(null);
+  const location = useLocation();
 
   useEffect(() => {
     if (typeof window !== "undefined" && "speechSynthesis" in window) {
@@ -20,17 +22,55 @@ export function useSpeech() {
   }, []);
 
   const stop = useCallback(() => {
-    synthRef.current?.cancel();
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
+      try {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+        window.speechSynthesis.cancel();
+      } catch {
+        // ignore
+      }
+    }
     setState("idle");
   }, []);
 
+  // Stop speech if route or pathname changes (e.g. clicking a link to another post)
+  useEffect(() => {
+    stop();
+  }, [location.pathname, stop]);
+
   // Stop speech if the component unmounts (e.g. navigating away).
-  useEffect(() => () => synthRef.current?.cancel(), []);
+  useEffect(() => {
+    return () => {
+      stop();
+    };
+  }, [stop]);
+
+  // Also stop if window unloads or page hides
+  useEffect(() => {
+    const handleUnload = () => {
+      stop();
+    };
+    window.addEventListener("beforeunload", handleUnload);
+    window.addEventListener("pagehide", handleUnload);
+    return () => {
+      window.removeEventListener("beforeunload", handleUnload);
+      window.removeEventListener("pagehide", handleUnload);
+    };
+  }, [stop]);
 
   const speak = useCallback((text: string) => {
-    const synth = synthRef.current;
-    if (!synth) return;
-    synth.cancel();
+    if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+    const synth = window.speechSynthesis;
+    try {
+      if (synth.paused) {
+        synth.resume();
+      }
+      synth.cancel();
+    } catch {
+      // ignore
+    }
 
     const chunks = text.replace(/\s+/g, " ").match(/[^.!?]+[.!?]*/g) ?? [text];
 
@@ -40,6 +80,11 @@ export function useSpeech() {
       if (i === chunks.length - 1) {
         utterance.onend = () => setState("idle");
       }
+      utterance.onerror = (e) => {
+        if (e.error !== "canceled" && e.error !== "interrupted") {
+          setState("idle");
+        }
+      };
       synth.speak(utterance);
     });
     setState("playing");
@@ -47,8 +92,8 @@ export function useSpeech() {
 
   const toggle = useCallback(
     (getText: () => string) => {
-      const synth = synthRef.current;
-      if (!synth) return;
+      if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+      const synth = window.speechSynthesis;
       if (state === "playing") {
         synth.pause();
         setState("paused");

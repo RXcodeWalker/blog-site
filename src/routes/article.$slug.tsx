@@ -24,6 +24,7 @@ import { PrevNextNav } from "@/components/article/PrevNextNav";
 import { SeriesNav } from "@/components/article/SeriesNav";
 import { ShortcutsHelp } from "@/components/article/ShortcutsHelp";
 import { Interactions } from "@/components/article/Interactions";
+import { PostShare } from "@/components/article/PostShare";
 
 export const Route = createFileRoute("/article/$slug")({
   loader: async ({ params }) => {
@@ -127,6 +128,14 @@ function Article() {
     const t = window.setTimeout(() => setShareStatus("idle"), 2500);
     return () => window.clearTimeout(t);
   }, [shareStatus]);
+
+  // Stop any active speech synthesis when navigating between articles or leaving
+  useEffect(() => {
+    speech.stop();
+    return () => {
+      speech.stop();
+    };
+  }, [post.slug, speech.stop]);
 
   const handleShare = useCallback(async () => {
     const outcome = await shareOrCopy({
@@ -269,6 +278,8 @@ function Article() {
             )}
           </div>
         </div>
+
+        <PostShare title={post.title} excerpt={post.excerpt} />
 
         <SubscribeCTA />
 

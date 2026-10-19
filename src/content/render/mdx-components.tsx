@@ -4,9 +4,6 @@
  */
 import type { ComponentPropsWithoutRef } from "react";
 import { Link } from "@tanstack/react-router";
-import { Link as LinkIcon } from "lucide-react";
-import { toast } from "sonner";
-import { copyToClipboard } from "@/lib/share";
 import { CodeBlock } from "@/components/article/CodeBlock";
 import { ImageLightbox } from "@/components/article/ImageLightbox";
 import {
@@ -25,7 +22,7 @@ import {
 
 type AnchorProps = ComponentPropsWithoutRef<"a">;
 
-/** A heading that reveals a click-to-copy permalink anchor on hover. */
+/** A heading with an id for table-of-contents navigation and deep-linking. */
 function AnchoredHeading({
   as: Tag,
   id,
@@ -33,30 +30,9 @@ function AnchoredHeading({
   children,
   ...rest
 }: { as: "h2" | "h3"; id?: string } & ComponentPropsWithoutRef<"h2">) {
-  const copyLink = async () => {
-    if (!id) return;
-    const url = `${window.location.origin}${window.location.pathname}#${id}`;
-    history.replaceState(null, "", `#${id}`);
-    try {
-      await copyToClipboard(url);
-      toast.success("Section link copied");
-    } catch {
-      toast.error("Couldn't copy link");
-    }
-  };
   return (
-    <Tag id={id} className={`group scroll-mt-28 ${className ?? ""}`} {...rest}>
+    <Tag id={id} className={`scroll-mt-28 ${className ?? ""}`} {...rest}>
       {children}
-      {id && (
-        <button
-          type="button"
-          onClick={copyLink}
-          aria-label="Copy link to this section"
-          className="ml-2 inline-flex translate-y-[-2px] align-middle text-muted-foreground opacity-0 transition-opacity hover:text-gold group-hover:opacity-100 focus-visible:opacity-100"
-        >
-          <LinkIcon className="h-4 w-4" />
-        </button>
-      )}
     </Tag>
   );
 }
