@@ -4,7 +4,7 @@ import { buildHead, jsonLd } from "@/lib/seo";
 import { getAboutStructuredData } from "@/lib/structured-data";
 
 const aboutDescription =
-  "About Om Jhamvar: 10th grade student sharing football analysis, coding projects, and growth notes.";
+  "About Om Jhamvar: 11th grade student sharing football analysis, coding projects, and growth notes.";
 
 const aboutHead = buildHead({
   title: "About",
@@ -34,7 +34,7 @@ function About() {
         <div className="mt-12 grid gap-10 md:grid-cols-12">
           <div className="md:col-span-5">
             <p className="font-serif text-xl leading-snug text-muted-foreground italic text-pretty">
-              Hey! I'm Om Jhamvar, a 10th grade student from India who is obsessed with football,
+              Hey! I'm Om Jhamvar, an 11th grade student from India who is obsessed with football,
               coding, and continuous learning.
             </p>
             <Link
@@ -123,7 +123,7 @@ function About() {
           <div className="md:col-span-7">
             <dl className="grid grid-cols-2 gap-x-12 gap-y-8 font-mono text-[11px] uppercase tracking-[0.18em]">
               {[
-                ["Grade", "10th Grade Student"],
+                ["Grade", "11th Grade Student"],
                 ["Club", "Arsenal FC"],
                 ["Based in", "India"],
                 ["Focus", "Learning and building daily"],

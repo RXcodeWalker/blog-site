@@ -14,7 +14,7 @@ export function SubscribeCTA() {
           Get the next essay in your inbox
         </h3>
         <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-          Occasional, considered writing on the things I can't stop thinking about. No noise.
+          I only send an email when I finish a new piece on football or building software.
         </p>
         <form
           onSubmit={handleSubmit}

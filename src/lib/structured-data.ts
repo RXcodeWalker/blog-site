@@ -220,7 +220,7 @@ export function getAboutStructuredData(): object[] {
       type: "ProfilePage",
       id: aboutUrl,
       name: `About ${AUTHOR.name}`,
-      desc: "About Om Jhamvar: 10th grade student sharing football analysis, coding projects, and growth notes.",
+      desc: "About Om Jhamvar: 11th grade student sharing football analysis, coding projects, and growth notes.",
       mainEntity: { "@id": PERSON_ID },
     }),
   ];

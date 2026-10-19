@@ -13,7 +13,7 @@ export const Route = createFileRoute("/newsletter")({
   head: () =>
     buildHead({
       title: "Newsletter",
-      description: "Occasional, considered writing. No noise.",
+      description: "Occasional writing from Om Jhamvar on football and building software.",
       path: "/newsletter",
     }),
   component: NewsletterPage,
@@ -100,21 +100,20 @@ function NewsletterPage() {
     <SiteShell>
       <section className="mx-auto max-w-[1280px] px-6 pb-16 pt-16 lg:px-12 lg:pt-20">
         <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-          — The Newsletter
+          The Newsletter
         </div>
         <h1 className="mt-6 max-w-3xl font-serif text-[clamp(2rem,5vw,3.5rem)] font-light leading-[0.95] tracking-[-0.03em]">
-          Occasional, considered writing.
+          Notes from my desk.
         </h1>
         <p className="mt-4 max-w-md text-sm text-muted-foreground">
-          No noise. No hype. Just the things I can't stop thinking about — football, code, and
-          what it means to keep getting better.
+          I am an eleventh grader writing about football and the software projects I build. I only send an email when I finish a full piece worth reading.
         </p>
 
         <SubscribeForm />
 
         <div className="mt-16">
           <div className="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
-            — Archive
+            Archive
           </div>
 
           {issues.length === 0 ? (
